@@ -1,0 +1,17 @@
+{
+  "app_name": "Tiền về",
+  "label": {},
+  "message": {
+    "success": "Thành công",
+    "error": "Lỗi",
+    "err_unknown": "Có lỗi trong quá trình xử lý, xin vui lòng thử lại.",
+    "err_no_data": "Không tìm thấy dữ liệu",
+    "err_login_failed": "Tên đăng nhập hoặc email hoặc mật khẩu không chính xác.",
+    "err_no_login_permission": "Bạn không có quyền đăng nhập vào hệ thống.",
+    "timeout": "Hết thời gian xử lý. Vui lòng thử lại.",
+    "auth_false": "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại!"
+  },
+  "validation": {
+    "required": "Vui lòng nhập {field}."
+  }
+}

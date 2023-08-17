@@ -1,0 +1,11 @@
+{
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "dart.lineLength": 200,
+  "[dart]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 200,
+    "editor.rulers": [200]
+  }
+}
