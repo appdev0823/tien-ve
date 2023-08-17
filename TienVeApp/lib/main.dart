@@ -14,6 +14,21 @@ import 'package:tien_ve/utils/helpers.dart';
 import 'package:tien_ve/utils/http.dart';
 import 'package:tien_ve/utils/theme_provider.dart';
 
+@pragma('vm:entry-point')
+void backgroundMessageHandler(SmsMessage message) async {
+  final address = Helpers.isString(message.address) ? message.address.toString() : '';
+  final body = Helpers.isString(message.body) ? message.body.toString() : '';
+  final date = message.date != null ? message.date.toString() : '';
+
+  print("====== Listen in background:");
+  print("====== Listen in background: ${address}");
+  print("====== Listen in background: ${body}");
+  print("====== Listen in background: ${date}");
+
+  await MessageService.create(address, body, date);
+}
+
+@pragma('vm:entry-point')
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
@@ -93,19 +108,6 @@ class HomeState extends State<Home> {
     }
 
     ToastrService.success('success');
-  }
-
-  static void backgroundMessageHandler(SmsMessage message) async {
-    final address = Helpers.isString(message.address) ? message.address.toString() : '';
-    final body = Helpers.isString(message.body) ? message.body.toString() : '';
-    final date = message.date != null ? message.date.toString() : '';
-
-    print("====== Listen in background:");
-    print("====== Listen in background: ${address}");
-    print("====== Listen in background: ${body}");
-    print("====== Listen in background: ${date}");
-
-    await MessageService.create(address, body, date);
   }
 
   @override
