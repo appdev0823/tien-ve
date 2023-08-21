@@ -4,14 +4,16 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
 import 'package:telephony/telephony.dart';
+import 'package:tien_ve/entities/message_entity.dart';
 import 'package:tien_ve/services/message_service.dart';
 import 'package:tien_ve/services/toastr_service.dart';
 import 'package:tien_ve/utils/constants.dart';
 import 'package:tien_ve/utils/helpers.dart';
 import 'package:tien_ve/utils/http.dart';
+import 'package:tien_ve/utils/lifecycle_event_handler.dart';
+import 'package:tien_ve/utils/styles.dart';
 import 'package:tien_ve/utils/theme_provider.dart';
 
 @pragma('vm:entry-point')
@@ -74,7 +76,7 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  List<SmsMessage> smsList = [];
+  List<MessageEntity> smsList = [];
   Telephony telephony = Telephony.instance;
 
   @override
@@ -85,6 +87,14 @@ class HomeState extends State<Home> {
       listenInBackground: true,
     );
     super.initState();
+
+    WidgetsBinding.instance.addObserver(LifecycleEventHandler(
+      resumedCallBack: () async => setState(() {
+        getList();
+      }),
+    ));
+
+    getList();
   }
 
   void messageHandler(SmsMessage message) async {
@@ -97,10 +107,6 @@ class HomeState extends State<Home> {
     print("====== Listen in foreground: ${body}");
     print("====== Listen in foreground: ${date}");
 
-    setState(() {
-      smsList.add(message);
-    });
-
     final result = await MessageService.create(address, body, date);
     if (!result.isSuccess) {
       ToastrService.error(result.message);
@@ -108,6 +114,21 @@ class HomeState extends State<Home> {
     }
 
     ToastrService.success('success');
+
+    getList();
+  }
+
+  void getList() async {
+    final result = await MessageService.getList();
+    final data = result.data;
+    if (!result.isSuccess || data == null) {
+      ToastrService.error(result.message);
+      return;
+    }
+
+    setState(() {
+      smsList = data.list;
+    });
   }
 
   @override
@@ -124,8 +145,8 @@ class HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "SMS nhận được khi App ở Foreground",
-              style: TextStyle(fontSize: AppSizes.FS_TITLE.sp),
+              "SMS mà TienVe nhận được:",
+              style: const TextStyle().title(),
             ),
             const Divider(),
             for (int i = 0; i < smsList.length; i++)
@@ -133,20 +154,26 @@ class HomeState extends State<Home> {
                 padding: EdgeInsets.symmetric(vertical: AppSizes.SPACING_SMALL.sp),
                 child: Row(
                   children: [
-                    Text(
-                      smsList[i].address.toString(),
-                      style: TextStyle(fontSize: AppSizes.FS_CONTENT.sp),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: AppSizes.SPACING_SMALL.sp),
-                      child: Icon(
-                        Icons.send,
-                        size: AppSizes.ICON_SIZE_MD.sp,
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          text: "${smsList[i].address.toString()} (${smsList[i].sendDate.toString()})",
+                          style: const TextStyle().content(),
+                          children: [
+                            WidgetSpan(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: AppSizes.SPACING_SMALL.sp),
+                                child: Icon(Icons.send, size: AppSizes.ICON_SIZE_MD.sp),
+                              ),
+                            ),
+                            TextSpan(
+                              text: smsList[i].body.toString(),
+                              style: const TextStyle().content(),
+                            ),
+                          ],
+                        ),
+                        maxLines: 8,
                       ),
-                    ),
-                    Text(
-                      smsList[i].body.toString(),
-                      style: TextStyle(fontSize: AppSizes.FS_CONTENT.sp),
                     ),
                   ],
                 ),

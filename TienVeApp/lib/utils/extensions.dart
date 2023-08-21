@@ -49,3 +49,35 @@ extension MDateTime on DateTime {
     return formatter.format(this);
   }
 }
+
+extension MMap on Map<String, dynamic> {
+  String toQueryString() {
+    List<String> queryParameters = [];
+
+    forEach((key, value) {
+      if (value != null) {
+        if (value is List) {
+          for (var item in value) {
+            queryParameters.add('$key=${Uri.encodeQueryComponent(item.toString())}');
+          }
+        } else {
+          queryParameters.add('$key=${Uri.encodeQueryComponent(value.toString())}');
+        }
+      }
+    });
+
+    return queryParameters.join('&');
+  }
+}
+
+extension MString on String {
+  String convertDateFormat(String originalFormat, String targetFormat) {
+    try {
+      DateTime originalDate = DateFormat(originalFormat).parse(this);
+      DateFormat formatter = DateFormat(targetFormat);
+      return formatter.format(originalDate);
+    } catch (e) {
+      return '';
+    }
+  }
+}

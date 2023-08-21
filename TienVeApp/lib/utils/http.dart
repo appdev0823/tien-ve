@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:tien_ve/utils/api_response.dart';
 import 'package:tien_ve/utils/constants.dart';
+import 'package:tien_ve/utils/extensions.dart';
 import 'package:tien_ve/utils/helpers.dart';
 
 class BaseHTTPClient {
@@ -38,7 +39,44 @@ class BaseHTTPClient {
 
       if (shouldShowLoading) Helpers.hideLoading();
 
-      return APIResponse.success(resMap["message"], data: resMap["data"]);
+      return APIResponse.success(message: resMap["message"], data: resMap["data"]);
+    } catch (e) {
+      print(e);
+      if (shouldShowLoading) Helpers.hideLoading();
+      return APIResponse.error();
+    }
+  }
+
+  ///Construct a GET request
+  ///
+  ///[route] Defined in Constants.dart
+  ///
+  ///[query] The body of the GET request
+  Future<APIResponse<dynamic>> get(APIRoutes route, Map<String, dynamic>? query) async {
+    try {
+      if (shouldShowLoading) Helpers.showLoading();
+
+      String url = "${CONSTANTS.API_URL}/${route.value}";
+      if (query != null) {
+        final queryStr = query.toQueryString();
+        url = "$url?$queryStr";
+      }
+      final uri = Uri.parse(url);
+      final response = await http.get(uri, headers: _headers).timeout(const Duration(seconds: CONSTANTS.POST_TIMEOUT), onTimeout: () {
+        if (shouldShowLoading) Helpers.hideLoading();
+        final timeoutErrRes = APIResponse.error(message: 'timeout');
+        return http.Response(convert.jsonEncode(timeoutErrRes.toJson()), 200);
+      });
+
+      final resMap = convert.jsonDecode(response.body);
+      if (resMap is! Map<String, dynamic>) {
+        if (shouldShowLoading) Helpers.hideLoading();
+        return APIResponse.error();
+      }
+
+      if (shouldShowLoading) Helpers.hideLoading();
+
+      return APIResponse.success(message: resMap["message"], data: resMap["data"]);
     } catch (e) {
       print(e);
       if (shouldShowLoading) Helpers.hideLoading();

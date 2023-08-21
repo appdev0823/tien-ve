@@ -22,7 +22,7 @@ class APIResponse<T> {
     errors = parsedJson["errors"];
   }
 
-  static List<APIResponse> fromList(List<Map<String, dynamic>> list) {
+  static List<APIResponse> fromList(List<dynamic> list) {
     return list.map((map) => APIResponse.fromJson(map)).toList();
   }
 
@@ -35,7 +35,7 @@ class APIResponse<T> {
     return json;
   }
 
-  static success<T>(String message, {T? data}) {
+  static success<T>({String message = CONSTANTS.SUCCESS_MSG_KEY, T? data}) {
     return APIResponse(
       isSuccess: true,
       message: message,
@@ -51,4 +51,43 @@ class APIResponse<T> {
       errors: errors,
     );
   }
+}
+
+class ListResponse<T> {
+  List<T> list = [];
+  int total = 0;
+
+  ListResponse({
+    this.list = const [],
+    this.total = 0,
+  });
+
+  ListResponse.fromJson(Map<String, dynamic> json) {
+    if (json["list"] is List) {
+      list = json["list"] == null ? [] : List<T>.from(json["list"]);
+    }
+    if (json["total"] is int) {
+      total = json["total"];
+    }
+  }
+
+  static List<ListResponse> fromList(List<dynamic> list) {
+    return list.map((map) => ListResponse.fromJson(map)).toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["list"] = list;
+    data["total"] = total;
+    return data;
+  }
+
+  ListResponse copyWith({
+    List<T>? list,
+    int? total,
+  }) =>
+      ListResponse(
+        list: list ?? this.list,
+        total: total ?? this.total,
+      );
 }

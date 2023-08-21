@@ -21,9 +21,27 @@ class MessageService {
         return APIResponse.error(message: response.message);
       }
       final result = MessageEntity.fromJson(response.data);
-      return APIResponse.success('success', data: result);
+      return APIResponse.success(data: result);
     } catch (e) {
       return APIResponse.error();
+    }
+  }
+
+  ///Get message list
+  static Future<APIResponse<ListResponse<MessageEntity>>> getList({int page = -1}) async {
+    try {
+      final http = BaseHTTPClient();
+      http.shouldShowLoading = false;
+      final query = <String, dynamic>{"page": page};
+      final response = await http.get(APIRoutes.MESSAGE_LIST, query);
+      if (!response.isSuccess) {
+        return APIResponse.error(message: response.message, data: ListResponse<MessageEntity>(list: []));
+      }
+
+      final list = MessageEntity.fromList(response.data["list"]);
+      return APIResponse.success(data: ListResponse(list: list));
+    } catch (e) {
+      return APIResponse.error(data: ListResponse<MessageEntity>(list: []));
     }
   }
 }

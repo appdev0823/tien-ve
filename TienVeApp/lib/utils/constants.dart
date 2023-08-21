@@ -59,6 +59,7 @@ class CONSTANTS {
   /// Thời `gian (s) timeout cho một Multipart POST request
   static const MULTIPART_POST_TIMEOUT = 60;
 
+  static const SUCCESS_MSG_KEY = 'success';
   static const ERR_UNKNOWN_MSG_KEY = 'err_unknown';
 }
 
@@ -69,7 +70,8 @@ enum APIRoutes {
   // ========== [END] Auth [END] ==========
 
   // ========== [START] Message [START] ==========
-  MESSAGE_CREATE('message');
+  MESSAGE_CREATE('message'),
+  MESSAGE_LIST('message');
   // ========== [END] Message [END] ==========
 
   const APIRoutes(this.value);
