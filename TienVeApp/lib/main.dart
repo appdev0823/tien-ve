@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:telephony/telephony.dart';
+import 'package:tien_ve/entities/global_entity.dart';
 import 'package:tien_ve/entities/message_entity.dart';
 import 'package:tien_ve/services/message_service.dart';
 import 'package:tien_ve/services/toastr_service.dart';
@@ -15,20 +17,6 @@ import 'package:tien_ve/utils/http.dart';
 import 'package:tien_ve/utils/lifecycle_event_handler.dart';
 import 'package:tien_ve/utils/styles.dart';
 import 'package:tien_ve/utils/theme_provider.dart';
-
-@pragma('vm:entry-point')
-void backgroundMessageHandler(SmsMessage message) async {
-  final address = Helpers.isString(message.address) ? message.address.toString() : '';
-  final body = Helpers.isString(message.body) ? message.body.toString() : '';
-  final date = message.date != null ? message.date.toString() : '';
-
-  print("====== Listen in background:");
-  print("====== Listen in background: ${address}");
-  print("====== Listen in background: ${body}");
-  print("====== Listen in background: ${date}");
-
-  await MessageService.create(address, body, date);
-}
 
 @pragma('vm:entry-point')
 void main() async {
@@ -77,15 +65,21 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   List<MessageEntity> smsList = [];
+
   Telephony telephony = Telephony.instance;
+
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
-    telephony.listenIncomingSms(
-      onNewMessage: messageHandler,
-      onBackgroundMessage: backgroundMessageHandler,
-      listenInBackground: true,
-    );
+    if (GlobalEntity.isListeningSMS) {
+      telephony.listenIncomingSms(
+        onNewMessage: messageHandler,
+        onBackgroundMessage: backgroundMessageHandler,
+        listenInBackground: true,
+      );
+    }
+
     super.initState();
 
     WidgetsBinding.instance.addObserver(LifecycleEventHandler(
@@ -118,6 +112,19 @@ class HomeState extends State<Home> {
     getList();
   }
 
+  static void backgroundMessageHandler(SmsMessage message) async {
+    final address = Helpers.isString(message.address) ? message.address.toString() : '';
+    final body = Helpers.isString(message.body) ? message.body.toString() : '';
+    final date = message.date != null ? message.date.toString() : '';
+
+    print("====== Listen in background:");
+    print("====== Listen in background: ${address}");
+    print("====== Listen in background: ${body}");
+    print("====== Listen in background: ${date}");
+
+    await MessageService.create(address, body, date);
+  }
+
   void getList() async {
     final result = await MessageService.getList();
     final data = result.data;
@@ -128,6 +135,24 @@ class HomeState extends State<Home> {
 
     setState(() {
       smsList = data.list;
+    });
+  }
+
+  void onIsListeningToggled(bool isListen) {
+    print("=========== isListening: ${isListen}");
+
+    if (isListen) {
+      telephony.listenIncomingSms(
+        onNewMessage: messageHandler,
+        onBackgroundMessage: backgroundMessageHandler,
+        listenInBackground: true,
+      );
+    } else {
+      telephony.listenIncomingSms(onNewMessage: (SmsMessage message) {}, listenInBackground: false);
+    }
+
+    setState(() {
+      GlobalEntity.isListeningSMS = isListen;
     });
   }
 
@@ -144,40 +169,55 @@ class HomeState extends State<Home> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "SMS mà TienVe nhận được:",
-              style: const TextStyle().title(),
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: AppSizes.SPACING_SMALL.sp),
+                  child: Text(GlobalEntity.isListeningSMS ? "Đang lắng nghe SMS" : "Dừng lắng nghe SMS:", style: const TextStyle().title()),
+                ),
+                Switch(value: GlobalEntity.isListeningSMS, onChanged: onIsListeningToggled)
+              ],
             ),
             const Divider(),
-            for (int i = 0; i < smsList.length; i++)
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: AppSizes.SPACING_SMALL.sp),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          text: "${smsList[i].address.toString()} (${smsList[i].sendDate.toString()})",
-                          style: const TextStyle().content(),
+            Expanded(
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                controller: scrollController,
+                children: smsList
+                    .mapIndexed(
+                      (index, sms) => Padding(
+                        padding: EdgeInsets.symmetric(vertical: AppSizes.SPACING_SMALL.sp),
+                        child: Row(
                           children: [
-                            WidgetSpan(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: AppSizes.SPACING_SMALL.sp),
-                                child: Icon(Icons.send, size: AppSizes.ICON_SIZE_MD.sp),
+                            Expanded(
+                              child: RichText(
+                                textAlign: TextAlign.justify,
+                                text: TextSpan(
+                                  text: "${sms.address.toString()} (${sms.sendDate.toString()})",
+                                  style: const TextStyle().content(),
+                                  children: [
+                                    WidgetSpan(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: AppSizes.SPACING_SMALL.sp),
+                                        child: Icon(Icons.send, size: AppSizes.ICON_SIZE_MD.sp),
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: sms.body.toString(),
+                                      style: const TextStyle().content(),
+                                    ),
+                                  ],
+                                ),
+                                maxLines: 50,
                               ),
-                            ),
-                            TextSpan(
-                              text: smsList[i].body.toString(),
-                              style: const TextStyle().content(),
                             ),
                           ],
                         ),
-                        maxLines: 8,
                       ),
-                    ),
-                  ],
-                ),
+                    )
+                    .toList(),
               ),
+            )
           ],
         ),
       ),

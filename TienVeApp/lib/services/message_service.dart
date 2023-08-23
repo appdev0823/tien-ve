@@ -31,7 +31,6 @@ class MessageService {
   static Future<APIResponse<ListResponse<MessageEntity>>> getList({int page = -1}) async {
     try {
       final http = BaseHTTPClient();
-      http.shouldShowLoading = false;
       final query = <String, dynamic>{"page": page};
       final response = await http.get(APIRoutes.MESSAGE_LIST, query);
       if (!response.isSuccess) {
