@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:telephony/telephony.dart';
@@ -14,9 +15,23 @@ import 'package:tien_ve/services/toastr_service.dart';
 import 'package:tien_ve/utils/constants.dart';
 import 'package:tien_ve/utils/helpers.dart';
 import 'package:tien_ve/utils/http.dart';
-import 'package:tien_ve/utils/lifecycle_event_handler.dart';
 import 'package:tien_ve/utils/styles.dart';
 import 'package:tien_ve/utils/theme_provider.dart';
+
+/// Has to leave it here for working in release mode
+@pragma('vm:entry-point')
+void backgroundMessageHandler(SmsMessage message) async {
+  final address = Helpers.isString(message.address) ? message.address.toString() : '';
+  final body = Helpers.isString(message.body) ? message.body.toString() : '';
+  final date = message.date != null ? message.date.toString() : '';
+
+  print("====== Listen in background:");
+  print("====== Listen in background: ${address}");
+  print("====== Listen in background: ${body}");
+  print("====== Listen in background: ${date}");
+
+  await MessageService.create(address, body, date);
+}
 
 @pragma('vm:entry-point')
 void main() async {
@@ -34,6 +49,10 @@ void main() async {
       child: const App(),
     ),
   );
+}
+
+void onDidReceiveNotificationResponse(NotificationResponse res) {
+  print("=========== res.toString(): ${res.toString()}");
 }
 
 class App extends StatelessWidget {
@@ -63,32 +82,50 @@ class Home extends StatefulWidget {
   HomeState createState() => HomeState();
 }
 
-class HomeState extends State<Home> {
+class HomeState extends State<Home> with WidgetsBindingObserver {
   List<MessageEntity> smsList = [];
 
   Telephony telephony = Telephony.instance;
 
   ScrollController scrollController = ScrollController();
 
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
   @override
   void initState() {
-    if (GlobalEntity.isListeningSMS) {
-      telephony.listenIncomingSms(
-        onNewMessage: messageHandler,
-        onBackgroundMessage: backgroundMessageHandler,
-        listenInBackground: true,
-      );
-    }
-
     super.initState();
 
-    WidgetsBinding.instance.addObserver(LifecycleEventHandler(
-      resumedCallBack: () async => setState(() {
-        getList();
-      }),
-    ));
+    WidgetsBinding.instance.addObserver(this);
+
+    initLocalNotificationPlugin();
 
     getList();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("=========== resumed");
+        getList();
+        break;
+      case AppLifecycleState.inactive:
+        print("=========== inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("=========== paused");
+        break;
+      case AppLifecycleState.detached:
+        print("=========== detached");
+        cancelListeningNotification();
+        break;
+    }
   }
 
   void messageHandler(SmsMessage message) async {
@@ -112,19 +149,6 @@ class HomeState extends State<Home> {
     getList();
   }
 
-  static void backgroundMessageHandler(SmsMessage message) async {
-    final address = Helpers.isString(message.address) ? message.address.toString() : '';
-    final body = Helpers.isString(message.body) ? message.body.toString() : '';
-    final date = message.date != null ? message.date.toString() : '';
-
-    print("====== Listen in background:");
-    print("====== Listen in background: ${address}");
-    print("====== Listen in background: ${body}");
-    print("====== Listen in background: ${date}");
-
-    await MessageService.create(address, body, date);
-  }
-
   void getList() async {
     final result = await MessageService.getList();
     final data = result.data;
@@ -142,18 +166,62 @@ class HomeState extends State<Home> {
     print("=========== isListening: ${isListen}");
 
     if (isListen) {
-      telephony.listenIncomingSms(
-        onNewMessage: messageHandler,
-        onBackgroundMessage: backgroundMessageHandler,
-        listenInBackground: true,
-      );
+      startListeningSMS();
     } else {
-      telephony.listenIncomingSms(onNewMessage: (SmsMessage message) {}, listenInBackground: false);
+      stopListeningSMS();
     }
 
     setState(() {
       GlobalEntity.isListeningSMS = isListen;
     });
+  }
+
+  void initLocalNotificationPlugin() async {
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    const androidSettings = AndroidInitializationSettings('app_icon');
+
+    const initializationSettings = InitializationSettings(android: androidSettings);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
+
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+
+    startListeningSMS();
+  }
+
+  void startListeningSMS() async {
+    telephony.listenIncomingSms(
+      onNewMessage: messageHandler,
+      onBackgroundMessage: backgroundMessageHandler,
+      listenInBackground: true,
+    );
+
+    showListeningNotification();
+  }
+
+  void stopListeningSMS() async {
+    telephony.listenIncomingSms(onNewMessage: (SmsMessage message) {}, listenInBackground: false);
+
+    cancelListeningNotification();
+  }
+
+  void showListeningNotification() async {
+    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+      'tien_ve',
+      'TienVe',
+      channelDescription: 'Đang lắng nghe SMS',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+      ongoing: true,
+      autoCancel: false,
+    );
+    const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin.show(0, 'TienVe', 'Đang lắng nghe SMS', notificationDetails);
+  }
+
+  void cancelListeningNotification() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
   }
 
   @override
@@ -173,7 +241,7 @@ class HomeState extends State<Home> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(right: AppSizes.SPACING_SMALL.sp),
-                  child: Text(GlobalEntity.isListeningSMS ? "Đang lắng nghe SMS" : "Dừng lắng nghe SMS:", style: const TextStyle().title()),
+                  child: Text(GlobalEntity.isListeningSMS ? "Đang lắng nghe SMS" : "Dừng lắng nghe SMS", style: const TextStyle().title()),
                 ),
                 Switch(value: GlobalEntity.isListeningSMS, onChanged: onIsListeningToggled)
               ],

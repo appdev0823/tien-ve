@@ -51,7 +51,8 @@ class AppSizes {
 }
 
 class CONSTANTS {
-  static const API_URL = 'http://192.168.1.9:3000';
+//   static const API_URL = 'http://192.168.1.9:3000';
+  static const API_URL = 'https://tien-ve-stag-870680f060fb.herokuapp.com';
 
   /// Thời gian (s) timeout cho một POST request
   static const POST_TIMEOUT = 20;
