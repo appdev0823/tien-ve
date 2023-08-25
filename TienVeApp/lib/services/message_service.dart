@@ -7,14 +7,22 @@ import 'package:tien_ve/utils/http.dart';
 
 class MessageService {
   ///Create a message
-  static Future<APIResponse<MessageEntity>> create(String address, String body, String sendDate) async {
+  static Future<APIResponse<MessageEntity>> create(
+    String address,
+    String phone,
+    String body,
+    int sendTimestamp,
+    int receiveTimestamp,
+  ) async {
     try {
       final http = BaseHTTPClient();
       http.shouldShowLoading = false;
       final reqBody = <String, dynamic>{
         "address": address,
+        "phone": phone,
         "body": body,
-        "send_date": sendDate,
+        "send_date": sendTimestamp,
+        "receive_date": receiveTimestamp,
       };
       final response = await http.post(APIRoutes.MESSAGE_CREATE, reqBody);
       if (!response.isSuccess) {

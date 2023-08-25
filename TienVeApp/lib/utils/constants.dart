@@ -78,3 +78,12 @@ enum APIRoutes {
   const APIRoutes(this.value);
   final String value;
 }
+
+///Keys of values stored in device storage
+enum DeviceStorageKeys {
+  ///Device phone number
+  DEVICE_PHONE('phone');
+
+  const DeviceStorageKeys(this.value);
+  final String value;
+}

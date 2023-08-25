@@ -7,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:telephony/telephony.dart';
 import 'package:tien_ve/entities/global_entity.dart';
 import 'package:tien_ve/entities/message_entity.dart';
@@ -23,14 +24,19 @@ import 'package:tien_ve/utils/theme_provider.dart';
 void backgroundMessageHandler(SmsMessage message) async {
   final address = Helpers.isString(message.address) ? message.address.toString() : '';
   final body = Helpers.isString(message.body) ? message.body.toString() : '';
-  final date = message.date != null ? message.date.toString() : '';
+  final sendTimestamp = message.date ?? 0;
 
   print("====== Listen in background:");
   print("====== Listen in background: ${address}");
   print("====== Listen in background: ${body}");
-  print("====== Listen in background: ${date}");
+  print("====== Listen in background: ${sendTimestamp}");
+  final receiveTimestamp = DateTime.now().millisecondsSinceEpoch;
+  print("====== Listen in background: ${receiveTimestamp}");
+  final prefs = await SharedPreferences.getInstance();
+  final devicePhoneNumber = prefs.getString(DeviceStorageKeys.DEVICE_PHONE.value) ?? '';
+  print("====== Listen in background: ${devicePhoneNumber}");
 
-  await MessageService.create(address, body, date);
+  await MessageService.create(address, devicePhoneNumber, body, sendTimestamp, receiveTimestamp);
 }
 
 @pragma('vm:entry-point')
@@ -97,7 +103,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     WidgetsBinding.instance.addObserver(this);
 
-    initLocalNotificationPlugin();
+    initPhoneAndNotification();
 
     getList();
   }
@@ -106,6 +112,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  Future<void> initPhoneAndNotification() async {
+    await setPhoneToStorage();
+
+    await initLocalNotificationPlugin();
   }
 
   @override
@@ -131,14 +143,19 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void messageHandler(SmsMessage message) async {
     final address = Helpers.isString(message.address) ? message.address.toString() : '';
     final body = Helpers.isString(message.body) ? message.body.toString() : '';
-    final date = message.date != null ? message.date.toString() : '';
+    final sendTimestamp = message.date ?? 0;
 
     print("====== Listen in foreground:");
     print("====== Listen in foreground: ${address}");
     print("====== Listen in foreground: ${body}");
-    print("====== Listen in foreground: ${date}");
+    print("====== Listen in foreground: ${sendTimestamp}");
+    final receiveTimestamp = DateTime.now().millisecondsSinceEpoch;
+    print("====== Listen in foreground: ${receiveTimestamp}");
+    final prefs = await SharedPreferences.getInstance();
+    final devicePhoneNumber = prefs.getString(DeviceStorageKeys.DEVICE_PHONE.value) ?? '';
+    print("====== Listen in foreground: ${devicePhoneNumber}");
 
-    final result = await MessageService.create(address, body, date);
+    final result = await MessageService.create(address, devicePhoneNumber, body, sendTimestamp, receiveTimestamp);
     if (!result.isSuccess) {
       ToastrService.error(result.message);
       return;
@@ -176,7 +193,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  void initLocalNotificationPlugin() async {
+  Future<void> initLocalNotificationPlugin() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     const androidSettings = AndroidInitializationSettings('app_icon');
 
@@ -187,6 +204,15 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
 
     startListeningSMS();
+  }
+
+  Future<void> setPhoneToStorage() async {
+    await telephony.requestPhoneAndSmsPermissions;
+    final devicePhoneNumber = await Helpers.getDevicePhoneNumber();
+    print("=========== devicePhoneNumber: ${devicePhoneNumber}");
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(DeviceStorageKeys.DEVICE_PHONE.value, devicePhoneNumber);
   }
 
   void startListeningSMS() async {

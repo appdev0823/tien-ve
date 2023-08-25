@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:crypto/crypto.dart';
+import 'package:mobile_number/mobile_number.dart';
 
 class Helpers {
   ///Check if a string is not blank or null
@@ -28,5 +29,16 @@ class Helpers {
 
   static void hideLoading() {
     EasyLoading.dismiss();
+  }
+
+  static Future<String> getDevicePhoneNumber() async {
+    try {
+      final hasPermission = await MobileNumber.hasPhonePermission;
+      if (!hasPermission) return '';
+      return await MobileNumber.mobileNumber ?? '';
+    } catch (e) {
+      print(e);
+      return '';
+    }
   }
 }
