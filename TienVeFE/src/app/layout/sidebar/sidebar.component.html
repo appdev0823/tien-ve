@@ -1,0 +1,57 @@
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-light-primary elevation-4">
+    <!-- Brand Logo -->
+    <a
+        class="d-flex align-items-center justify-content-center"
+        [routerLink]="'/' + ROUTES.DASHBOARD"
+        (click)="collapseSidebar()">
+        <img
+            src="assets/img/app-icon.png"
+            alt="AdminLTE Logo"
+            class="brand-image mt-3" />
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar mt-0">
+        <div class="user-panel pt-2 pb-2 d-flex align-items-center">
+            <div class="image">
+                <img
+                    src="assets/img/default-user-avatar.png"
+                    class="img-circle elevation-2"
+                    alt="User Image"
+                    style="height: 30px; width: auto" />
+            </div>
+            <div class="info">
+                <p class="mb-1 text-black fs-5">{{ currentUser.name }}</p>
+                <p class="mb-0 text-black">
+                    <a
+                        class="cursor-pointer"
+                        title="{{ 'label.logout' | translate }}"
+                        (click)="logOut()">
+                        <fa-icon [icon]="icons.solid.faDoorOpen"></fa-icon>
+                    </a>
+                </p>
+            </div>
+        </div>
+        <nav class="mt-2">
+            <ul
+                class="nav nav-pills nav-sidebar flex-column"
+                data-widget="treeview"
+                role="menu"
+                data-accordion="true">
+                <li
+                    class="nav-item"
+                    (click)="collapseSidebar()">
+                    <a
+                        class="nav-link"
+                        [routerLink]="'/' + ROUTES.DASHBOARD"
+                        [class.active]="helpers.isFilledArray(routePathList) && routePathList[0] === ROUTES.DASHBOARD">
+                        <fa-icon [icon]="icons.solid.faHome"></fa-icon>
+                        <p class="ms-3">Trang chủ</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <!-- /.sidebar -->
+</aside>

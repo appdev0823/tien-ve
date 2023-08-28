@@ -1,0 +1,18 @@
+:host {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 0.5em;
+  z-index: 1200;
+}
+
+.circle-icon {
+  height: 15px;
+  width: 15px;
+  border: solid 1px white;
+  border-radius: 7.5px;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

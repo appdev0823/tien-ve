@@ -1,0 +1,25 @@
+<ngb-toast
+    *ngFor="let toast of toast$.toastList; let toastIdx = index"
+    [header]="toast.header || ''"
+    [autohide]="toast.type !== 'INFO'"
+    [class]="'d-flex ' + getToastClass(toast.type)"
+    (hidden)="toast$.remove(toastIdx)"
+    (click)="toast$.remove(toastIdx)">
+    <div class="d-flex align-items-center">
+        <span class="circle-icon">
+            <fa-icon
+                *ngIf="toast.type === 'INFO'"
+                [icon]="icons.solid.faInfo"
+                [size]="'sm'"></fa-icon>
+            <fa-icon
+                *ngIf="toast.type === 'SUCCESS'"
+                [icon]="icons.solid.faCheck"
+                [size]="'sm'"></fa-icon>
+            <fa-icon
+                *ngIf="toast.type === 'ERROR'"
+                [icon]="icons.solid.faTimes"
+                [size]="'sm'"></fa-icon>
+        </span>
+        {{ toast.message }}
+    </div>
+</ngb-toast>

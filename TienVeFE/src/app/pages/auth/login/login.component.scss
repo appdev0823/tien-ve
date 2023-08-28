@@ -1,0 +1,26 @@
+@import 'src/assets/scss/custom.scss';
+
+.login-container {
+  background-image: url('../../../../assets/img/login-background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  img.login_app-icon {
+    height: 150px;
+  }
+
+  .login__form {
+    background-color: #ffffff50;
+
+    .login__header {
+
+      .login__title {
+        color: white;
+        // text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+<div class="{{ formClassName }}">
+    <label
+        *ngIf="helpers.isString(label)"
+        for="{{ for }}"
+        class="{{ className }} {{ isRequired ? 'required' : '' }}">
+        {{ label }}
+    </label>
+    <ng-content></ng-content>
+    <p
+        *ngIf="helpers.isString(errorMessage)"
+        class="mt-1 app-error-message">
+        {{ errorMessage }}
+    </p>
+</div>

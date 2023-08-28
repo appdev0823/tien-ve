@@ -1,0 +1,56 @@
+$primary: #3f51b5;
+$danger: #ad000b;
+
+.btn-primary {
+    background-color: $primary !important;
+}
+
+.bg-primary {
+    background-color: $primary !important;
+}
+
+.text-danger {
+    color: $danger !important;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.custom-switch.custom-switch-on-primary .custom-control-input:checked~.custom-control-label::before {
+    background-color: $primary;
+    border-color: $primary;
+}
+
+.page-item.active .page-link {
+    background-color: $primary;
+    color: white;
+}
+
+.page-item .page-link {
+    background-color: white;
+    color: $primary;
+}
+
+.text-primary {
+    color: $primary !important;
+}
+
+ngb-pagination .pagination {
+    margin-bottom: 0;
+}
+
+.brand-image {
+    height: 130px;
+    width: auto;
+}
+
+.sidebar-collapse .brand-image {
+    height: 45px !important;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+    border-color: $primary;
+    background-color: $primary;
+}

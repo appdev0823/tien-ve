@@ -1,0 +1,6 @@
+@import 'src/assets/scss/custom.scss';
+
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
+.sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
+    background-color: $primary;
+}
