@@ -24,7 +24,7 @@ export class AuthController extends BaseController {
     @UsePipes(new ValidationPipe(AuthSchemas.loginSchema))
     public async login(
         @Body() body: { username: string; password: string },
-        @Res() res: Response<APIResponse<(UserDTO & { access_token: string }) | null>>,
+        @Res() res: Response<APIResponse<(UserDTO & { access_token: string }) | undefined>>,
     ) {
         try {
             const { username, password } = body;

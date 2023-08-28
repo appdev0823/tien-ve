@@ -10,6 +10,10 @@ const ROUTES = {
         CREATE: '',
         LIST: '',
     },
+    USER: {
+        MODULE: 'user',
+        PROFILE: 'profile',
+    },
 } as const;
 Helpers.deepFreeze(ROUTES);
 

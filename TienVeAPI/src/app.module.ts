@@ -15,6 +15,8 @@ import { MessageModule } from './modules/message/message.module';
 import ROUTES from './modules/routes';
 import { RepositoryModule } from './repository/repository.module';
 import { CONSTANTS } from './utils';
+import { UserModule } from './modules/user/user.module';
+import { UserController } from './modules/user/user.controller';
 
 @Module({
     imports: [
@@ -27,6 +29,7 @@ import { CONSTANTS } from './utils';
         MiddlewareModule,
         RepositoryModule,
         AuthModule,
+        UserModule,
         MessageModule,
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
@@ -61,6 +64,6 @@ export class AppModule {
      */
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(AuthMiddleware).exclude(`/${ROUTES.AUTH.MODULE}/${ROUTES.AUTH.LOGIN}`).forRoutes(AuthController);
-        // consumer.apply(AuthMiddleware).forRoutes(MessageController);
+        consumer.apply(AuthMiddleware).forRoutes(UserController);
     }
 }
