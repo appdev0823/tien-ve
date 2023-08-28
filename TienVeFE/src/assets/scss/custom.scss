@@ -1,16 +1,19 @@
-$primary: #3f51b5;
-$danger: #ad000b;
+$primaryColor: #d82d8b;
+$dangerColor: #ad000b;
+$tertiaryColor: #9880ff;
+$grayColor: #5a5c69;
 
 .btn-primary {
-    background-color: $primary !important;
+    background-color: $primaryColor !important;
+    border-color: $primaryColor !important;
 }
 
 .bg-primary {
-    background-color: $primary !important;
+    background-color: $primaryColor !important;
 }
 
 .text-danger {
-    color: $danger !important;
+    color: $dangerColor !important;
 }
 
 .table td,
@@ -19,22 +22,22 @@ $danger: #ad000b;
 }
 
 .custom-switch.custom-switch-on-primary .custom-control-input:checked~.custom-control-label::before {
-    background-color: $primary;
-    border-color: $primary;
+    background-color: $primaryColor;
+    border-color: $primaryColor;
 }
 
 .page-item.active .page-link {
-    background-color: $primary;
+    background-color: $primaryColor;
     color: white;
 }
 
 .page-item .page-link {
     background-color: white;
-    color: $primary;
+    color: $primaryColor;
 }
 
 .text-primary {
-    color: $primary !important;
+    color: $primaryColor !important;
 }
 
 ngb-pagination .pagination {
@@ -51,6 +54,6 @@ ngb-pagination .pagination {
 }
 
 .custom-control-input:checked~.custom-control-label::before {
-    border-color: $primary;
-    background-color: $primary;
+    border-color: $primaryColor;
+    background-color: $primaryColor;
 }

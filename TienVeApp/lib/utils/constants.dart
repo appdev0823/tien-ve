@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const MAIN = Color(0xff0e3564);
+  static const MAIN = Color.fromRGBO(216, 45, 139, 1);
   static const MAIN_BG = Color(0xffffffff);
 
   static const RED = Color(0xffdc3545);

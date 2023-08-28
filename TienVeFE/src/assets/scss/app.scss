@@ -1,14 +1,11 @@
 @import './custom.scss';
 
-$tertiaryColor: #9880ff;
-$gray: #5a5c69;
-
 html {
     font-size: 14px;
 }
 
 p.app-error-message {
-    color: $danger;
+    color: $dangerColor;
     margin-bottom: 0;
 }
 
@@ -32,8 +29,8 @@ p.app-error-message {
     margin-top: -20px;
     margin-left: -20px;
     border-radius: 10px;
-    background-color: $primary;
-    color: $primary;
+    background-color: $primaryColor;
+    color: $primaryColor;
     animation: dotElastic 1s infinite linear;
     z-index: 99999;
 }
@@ -51,8 +48,8 @@ p.app-error-message {
     width: 20px;
     height: 20px;
     border-radius: 10px;
-    background-color: $primary;
-    color: $primary;
+    background-color: $primaryColor;
+    color: $primaryColor;
     animation: dotElasticBefore 1s infinite linear;
 }
 
@@ -61,8 +58,8 @@ p.app-error-message {
     width: 20px;
     height: 20px;
     border-radius: 10px;
-    background-color: $primary;
-    color: $primary;
+    background-color: $primaryColor;
+    color: $primaryColor;
     animation: dotElasticAfter 1s infinite linear;
 }
 
@@ -138,7 +135,7 @@ p.app-error-message {
     font-size: 1.75rem;
     font-weight: 400;
     line-height: 1.2;
-    color: $gray;
+    color: $grayColor;
 }
 
 .total-text {
@@ -159,18 +156,18 @@ p.app-error-message {
     border-left: none !important;
 
     :hover {
-        color: $primary;
+        color: $primaryColor;
     }
 }
 
 .app-table {
     tr:hover {
-        background-color: rgba($primary, .3);
+        background-color: rgba($primaryColor, .3);
     }
 }
 
 .color-primary {
-    color: $primary !important;
+    color: $primaryColor !important;
 }
 
 .overflow-x-auto {
@@ -183,5 +180,5 @@ p.app-error-message {
 
 label.required::after {
     content: "*";
-    color: $danger;
+    color: $dangerColor;
 }

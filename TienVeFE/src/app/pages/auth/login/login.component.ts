@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import PageComponent from 'src/app/includes/page.component';
 import { AuthService } from 'src/app/services';
+import { AuthValidator } from 'src/app/validators';
 import { Md5 } from 'ts-md5';
 import { saveAuthStateAction } from './../../../store/auth/auth.actions';
-import { AuthValidator } from 'src/app/validators';
 
 @Component({
     selector: 'app-login',
