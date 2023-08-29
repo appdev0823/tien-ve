@@ -2,7 +2,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Helpers } from '../utils';
 
 export class CustomValidators {
-    static checkPassword = (control: AbstractControl): ValidationErrors | null => {
+    static password = (control: AbstractControl): ValidationErrors | null => {
         if (control == null) {
             return null;
         }
@@ -29,5 +29,20 @@ export class CustomValidators {
             return { match: true };
         }
         return null;
+    };
+
+    static phone = (control: AbstractControl): ValidationErrors | null => {
+        if (control == null) {
+            return null;
+        }
+        if (!Helpers.isString(control.value)) {
+            return null;
+        }
+        const regex = Helpers.getPhoneNumberRegex();
+        const test = control.value.match(regex);
+        if (test) {
+            return null;
+        }
+        return { phone: true };
     };
 }

@@ -22,7 +22,7 @@ export class UserController extends BaseController {
     @Get(ROUTES.USER.PROFILE)
     public async getProfile(@Req() req: AuthenticatedRequest, @Res() res: Response<APIResponse<UserDTO | undefined>>) {
         try {
-            const result = await this._userService.getByUsername(req.userPayload.username);
+            const result = await this._userService.getById(req.userPayload.id);
             if (!result) {
                 const unauthorizedErrRes = APIResponse.error<undefined>(MESSAGES.ERROR.ERR_UNAUTHORIZED);
                 return res.status(HttpStatus.UNAUTHORIZED).json(unauthorizedErrRes);

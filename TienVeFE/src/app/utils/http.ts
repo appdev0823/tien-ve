@@ -48,7 +48,7 @@ export class BaseHTTPClient {
      * @param query - a object used as the query string
      * @param opts - HTTP options
      */
-    public get<T>(route: string, query = {}, opts = new HTTPOptions()): Observable<HttpResponse<APIResponse<T>>> {
+    public get<T = { [key: string]: any }>(route: string, query = {}, opts = new HTTPOptions()): Observable<HttpResponse<APIResponse<T>>> {
         if (opts.showLoading) Helpers.showLoading();
 
         const queryString = qs.stringify(query);
@@ -76,7 +76,7 @@ export class BaseHTTPClient {
      * @param body - a object used as the request body
      * @param opts - HTTP options
      */
-    public post<T>(route: string, body: any = {}, opts = new HTTPOptions()) {
+    public post<T = { [key: string]: any }>(route: string, body: any = {}, opts = new HTTPOptions()) {
         if (opts.showLoading) Helpers.showLoading();
 
         const url = `${environment.api_url}/${route}`;
@@ -102,7 +102,7 @@ export class BaseHTTPClient {
      * @param body - a object used as the request body
      * @param opts - HTTP options
      */
-    public put<T>(route: string, body = {}, opts = new HTTPOptions()) {
+    public put<T = { [key: string]: any }>(route: string, body = {}, opts = new HTTPOptions()) {
         if (opts.showLoading) Helpers.showLoading();
 
         const url = `${environment.api_url}/${route}`;
@@ -127,7 +127,7 @@ export class BaseHTTPClient {
      * @param route - API route, `environment.api_url` is prepended to this, first `/` is not needed
      * @param opts - HTTP options
      */
-    public delete<T>(route: string, opts = new HTTPOptions()) {
+    public delete<T = { [key: string]: any }>(route: string, opts = new HTTPOptions()) {
         if (opts.showLoading) Helpers.showLoading();
 
         const url = `${environment.api_url}/${route}`;

@@ -13,14 +13,19 @@ const CONSTANTS = {
     PAGE_SIZE: 20,
     /** Max page count to be displayed in pagination */
     MAX_PAGE_COUNT: 5,
-    USER_ROLES: {
-        REGULAR: 0,
-        ADMIN: 1,
-    },
+    MYSQL_DATETIME_FORMAT: 'YYYY-MM-DD HH:mm:ss',
     BOOTSTRAP_TYPE_LIST: ['success', 'info', 'warning', 'danger', 'primary', 'secondary', 'dark'],
     SETTING_FIELD_NAMES: {
         INVOICE_ADDRESS: 'invoice_address',
         INVOICE_PHONE: 'invoice_phone',
+    },
+    LOGIN_TYPES: {
+        EMAIL: 1,
+        PHONE: 2,
+    },
+    OTP: {
+        LENGTH: 6,
+        EXPIRED_SECONDS: 300,
     },
 } as const;
 Helpers.deepFreeze(CONSTANTS);
@@ -30,67 +35,23 @@ const ROUTES = {
     AUTH: {
         MODULE: 'auth',
         LOGIN: 'login',
-        CHANGE_PASSWORD: 'change-password',
     },
     DASHBOARD: '',
-    INVOICE: {
-        MODULE: 'invoice',
-        LIST: '',
-        CREATE: 'create',
-        UPDATE_INFO: 'update-info',
-    },
-    REPORT: {
-        MODULE: 'report',
-        SUMMARY: '',
-        DAILY: 'daily',
-    },
-    PRODUCT: {
-        MODULE: 'product',
-        LIST: '',
-    },
-    USER: {
-        MODULE: 'user',
-        LIST: '',
-    },
 } as const;
 Helpers.deepFreeze(ROUTES);
 
 /** API routes */
 const API_ROUTES = {
     AUTH: {
-        LOGIN: 'auth/login',
-        CHANGE_PASSWORD: 'auth/change-password',
+        LOGIN_OTP: 'auth/login-otp',
+        SAVE_ACCOUNT: 'auth/save-account',
     },
     USER: {
         GET_PROFILE: 'user/profile',
-        LIST: 'user',
-        CREATE: 'user',
-        UPDATE: 'user/:username',
-        DETAIL: 'user/:username',
-        TOGGLE: 'user/toggle/:username',
+        UPDATE: 'user/:id',
     },
-    PRODUCT: {
-        LIST: 'product',
-        STATS_LIST: 'product/stats-list',
-        CREATE: 'product',
-        UPDATE: 'product/:id',
-        DETAIL: 'product/:id',
-        DELETE: 'product/:id',
-        UPDATE_ORDER: 'product/update-order',
-    },
-    INVOICE: {
-        LIST: 'invoice',
-        DETAIL: 'invoice/:id',
-        CREATE: 'invoice',
-        DELETE: 'invoice/:id',
-        TOTAL_STATS: 'invoice/total-stats',
-        DATE_STATS_LIST: 'invoice/date-stats-list',
-        MONTH_STATS_LIST: 'invoice/month-stats-list',
-        CUSTOMER_LIST: 'invoice/customer-list',
-    },
-    SETTING: {
-        GET_LIST_BY_FIELD_NAME_LIST: 'setting/list-by-field-name-list',
-        UPDATE_MULTIPLE: 'setting/update-multiple',
+    OTP: {
+        CREATE: 'otp',
     },
 } as const;
 Helpers.deepFreeze(API_ROUTES);

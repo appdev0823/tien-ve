@@ -22,6 +22,14 @@ const CONSTANTS = {
         INVOICE_ADDRESS: 'invoice_address',
         INVOICE_PHONE: 'invoice_phone',
     },
+    OTP: {
+        LENGTH: 6,
+        EXPIRED_SECONDS: 300,
+    },
+    LOGIN_TYPES: {
+        EMAIL: 1,
+        PHONE: 2,
+    },
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 

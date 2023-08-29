@@ -12,11 +12,12 @@ import { MiddlewareModule } from './middleware/middleware.module';
 import { AuthController } from './modules/auth/auth.controller';
 import { AuthModule } from './modules/auth/auth.module';
 import { MessageModule } from './modules/message/message.module';
+import { OtpModule } from './modules/otp/otp.module';
 import ROUTES from './modules/routes';
+import { UserController } from './modules/user/user.controller';
+import { UserModule } from './modules/user/user.module';
 import { RepositoryModule } from './repository/repository.module';
 import { CONSTANTS } from './utils';
-import { UserModule } from './modules/user/user.module';
-import { UserController } from './modules/user/user.controller';
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { UserController } from './modules/user/user.controller';
         AuthModule,
         UserModule,
         MessageModule,
+        OtpModule,
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -63,7 +65,7 @@ export class AppModule {
      * Configure middlewares
      */
     configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthMiddleware).exclude(`/${ROUTES.AUTH.MODULE}/${ROUTES.AUTH.LOGIN}`).forRoutes(AuthController);
+        consumer.apply(AuthMiddleware).exclude(`/${ROUTES.AUTH.MODULE}/${ROUTES.AUTH.LOGIN_OTP}`).forRoutes(AuthController);
         consumer.apply(AuthMiddleware).forRoutes(UserController);
     }
 }

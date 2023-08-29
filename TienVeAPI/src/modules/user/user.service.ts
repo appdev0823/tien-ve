@@ -12,12 +12,54 @@ export class UserService extends BaseService {
         super();
     }
 
-    public async getByUsername(username: string) {
-        if (!Helpers.isString(username)) return null;
+    public async getById(id: number) {
+        if (!id) return null;
 
-        const user = await this._userRepo.findOneBy({ username });
+        const user = await this._userRepo.findOneBy({ id });
         if (Helpers.isEmptyObject(user)) return null;
 
         return mapper.map(user, UserEntity, UserDTO);
+    }
+
+    public async getByEmailPhone(emailPhone: string) {
+        if (!Helpers.isString(emailPhone)) return null;
+
+        let user = await this._userRepo.findOneBy({ email: emailPhone });
+        if (Helpers.isEmptyObject(user)) {
+            user = await this._userRepo.findOneBy({ phone: emailPhone });
+            if (Helpers.isEmptyObject(user)) {
+                return null;
+            }
+        }
+
+        return mapper.map(user, UserEntity, UserDTO);
+    }
+
+    public async getByEmail(email: string) {
+        if (!Helpers.isString(email)) return null;
+
+        const user = await this._userRepo.findOneBy({ email });
+        if (Helpers.isEmptyObject(user)) return null;
+
+        return mapper.map(user, UserEntity, UserDTO);
+    }
+
+    public async getByPhone(phone: string) {
+        if (!Helpers.isString(phone)) return null;
+
+        const user = await this._userRepo.findOneBy({ phone });
+        if (Helpers.isEmptyObject(user)) return null;
+
+        return mapper.map(user, UserEntity, UserDTO);
+    }
+
+    public async save(data: UserDTO) {
+        if (Helpers.isEmptyObject(data)) return null;
+
+        const user = mapper.map(data, UserDTO, UserEntity);
+
+        await this._userRepo.save(user);
+
+        return mapper.map(data, UserEntity, UserDTO);
     }
 }

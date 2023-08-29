@@ -1,32 +1,25 @@
 export class UserDTO {
-    public username = '';
-    public password = '';
+    public id = 0;
+    public email = '';
+    public phone = '';
     public name = '';
     public is_active: 0 | 1 = 1;
     public created_date = '';
     public updated_date = '';
 
-    constructor(params?: { username?: string; password?: string; name?: string; is_active?: 0 | 1; created_date?: string; updated_date?: string }) {
-        this.username = params?.username || '';
-        this.password = params?.password || '';
-        this.name = params?.name || '';
-        this.is_active = params?.is_active ? 1 : 0;
-        this.created_date = params?.created_date || '';
-        this.updated_date = params?.updated_date || '';
+    static fromJson(json: { [key: string]: unknown }) {
+        const instance = new UserDTO();
+        instance.id = Number(json['id']) || 0;
+        instance.email = String(json['email'] || '');
+        instance.phone = String(json['phone'] || '');
+        instance.name = String(json['name'] || '');
+        instance.is_active = json['is_active'] ? 1 : 0;
+        instance.created_date = String(json['created_date'] || '');
+        instance.updated_date = String(json['updated_date'] || '');
+        return instance;
     }
 
-    static fromJson(json?: { [key: string]: any }) {
-        return new UserDTO({
-            username: json?.['username'],
-            password: json?.['password'],
-            name: json?.['name'],
-            is_active: json?.['is_active'],
-            created_date: json?.['created_date'],
-            updated_date: json?.['updated_date'],
-        });
-    }
-
-    static fromList(jsonList: { [key: string]: any }[]) {
+    static fromList(jsonList: { [key: string]: unknown }[]) {
         return jsonList.map((item) => UserDTO.fromJson(item));
     }
 }
@@ -34,12 +27,23 @@ export class UserDTO {
 export class LoginUserDTO extends UserDTO {
     public access_token = '';
 
-    constructor(params?: { username?: string; password?: string; name?: string; is_active?: 0 | 1; created_date?: string; updated_date?: string; access_token?: string }) {
-        super(params);
-        this.access_token = params?.access_token || '';
+    static override fromJson(json: { [key: string]: unknown }) {
+        const parent = super.fromJson(json);
+        const instance = new LoginUserDTO();
+        instance.id = parent.id;
+        instance.email = parent.email;
+        instance.phone = parent.phone;
+        instance.name = parent.name;
+        instance.is_active = parent.is_active;
+        instance.created_date = parent.created_date;
+        instance.updated_date = parent.updated_date;
+        instance.access_token = String(json['access_token'] || '');
+        return instance;
     }
+}
 
-    static override fromJson(json: { [key: string]: any }) {
-        return new LoginUserDTO(json);
-    }
+export class SaveAccountDTO {
+    public email = '';
+    public phone = '';
+    public name = '';
 }

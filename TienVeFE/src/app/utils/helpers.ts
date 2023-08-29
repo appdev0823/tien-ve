@@ -262,4 +262,12 @@ export default class Helpers {
 
         return new NgbDate(year, month, day);
     }
+
+    /**
+     * Get phone number regex
+     * @returns phone number regex
+     */
+    static getPhoneNumberRegex() {
+        return /^([0-9]{10})$/;
+    }
 }

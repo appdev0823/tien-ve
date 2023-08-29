@@ -16,34 +16,62 @@
                 <div class="card login__form">
                     <div class="card-body pt-3">
                         <form
-                            id="loginForm"
-                            [formGroup]="form"
-                            (ngSubmit)="onSubmit()">
+                            *ngIf="mode === 1"
+                            [formGroup]="loginForm"
+                            (ngSubmit)="sendOtp()">
                             <div class="row">
-                                <div class="col-12">
-                                    <app-form-input-wrapper
-                                        [for]="'username'"
-                                        [errorMessage]="form.controlErrorMessages.username">
+                                <div class="col-12 text-center">
+                                    <div class="custom-control custom-radio d-inline me-3">
                                         <input
-                                            id="username"
-                                            formControlName="username"
-                                            type="text"
-                                            class="form-control"
-                                            placeholder="{{ 'label.username' | translate }}" />
-                                    </app-form-input-wrapper>
+                                            id="email"
+                                            class="custom-control-input"
+                                            type="radio"
+                                            [formControl]="loginForm.controls.type"
+                                            [value]="CONSTANTS.LOGIN_TYPES.EMAIL"
+                                            (change)="onTypeChanged()" />
+                                        <label
+                                            for="email"
+                                            class="custom-control-label">
+                                            {{ 'label.email' | translate }}
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-radio d-inline">
+                                        <input
+                                            id="phone"
+                                            class="custom-control-input"
+                                            type="radio"
+                                            [formControl]="loginForm.controls.type"
+                                            [value]="CONSTANTS.LOGIN_TYPES.PHONE"
+                                            (change)="onTypeChanged()" />
+                                        <label
+                                            for="phone"
+                                            class="custom-control-label">
+                                            {{ 'label.phone' | translate }}
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <div class="col-12">
                                     <app-form-input-wrapper
-                                        [for]="'password'"
-                                        [errorMessage]="form.controlErrorMessages.password">
+                                        [for]="'email_phone'"
+                                        [errorMessage]="loginForm.controlErrorMessages.email_phone">
                                         <input
-                                            id="password"
-                                            formControlName="password"
-                                            type="password"
+                                            *ngIf="loginForm.controls.type.value === CONSTANTS.LOGIN_TYPES.EMAIL"
+                                            id="email_phone"
+                                            type="text"
                                             class="form-control"
-                                            placeholder="{{ 'label.password' | translate }}" />
+                                            [placeholder]="('label.input' | translate) + ' ' + ('label.email' | translate | lowercase)"
+                                            [formControl]="loginForm.controls.email_phone" />
+                                        <input
+                                            *ngIf="loginForm.controls.type.value === CONSTANTS.LOGIN_TYPES.PHONE"
+                                            appNumericInput
+                                            id="email_phone"
+                                            type="text"
+                                            class="form-control"
+                                            [shouldFormatNumber]="false"
+                                            [placeholder]="('label.input' | translate) + ' ' + ('label.phone' | translate | lowercase)"
+                                            [formControl]="loginForm.controls.email_phone" />
                                     </app-form-input-wrapper>
                                 </div>
                             </div>
@@ -52,7 +80,128 @@
                                     <button
                                         type="submit"
                                         class="btn btn-primary">
-                                        {{ 'label.login' | translate }}
+                                        {{ 'label.continue' | translate }}
+                                        <fa-icon
+                                            class="ms-2"
+                                            [icon]="icons.solid.faArrowRight"></fa-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form
+                            *ngIf="mode === 2"
+                            [formGroup]="otpForm"
+                            (ngSubmit)="onOtpFormSubmitted()">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <p *ngIf="remainingTime !== '00:00'">
+                                        Thời gian mã xác nhận hết hạn:&nbsp;<span class="text-danger">{{ remainingTime }}</span>
+                                    </p>
+                                    <p
+                                        *ngIf="remainingTime === '00:00'"
+                                        class="text-danger">
+                                        Mã xác nhận đã hết hạn
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <app-form-input-wrapper [errorMessage]="otpForm.controlErrorMessages.otp">
+                                        <ng-otp-input
+                                            [formCtrl]="otpForm.controls.otp"
+                                            [config]="{ length: CONSTANTS.OTP.LENGTH }"></ng-otp-input>
+                                    </app-form-input-wrapper>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-center mt-3">
+                                    <a
+                                        class="text text-decoration-none cursor-pointer"
+                                        [ngClass]="remainingTime !== '00:00' ? 'text-gray pointer-event-none' : 'text-primary'"
+                                        (click)="sendOtp(true)">
+                                        <fa-icon [icon]="icons.solid.faPaperPlane"></fa-icon>&nbsp;Gửi lại mã xác nhận
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 text-center">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary me-3"
+                                        (click)="viewLoginMode()">
+                                        <fa-icon
+                                            class="me-2"
+                                            [icon]="icons.solid.faArrowLeft"></fa-icon>
+                                        {{ 'label.back' | translate }}
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary">
+                                        {{ 'label.continue' | translate }}
+                                        <fa-icon
+                                            class="ms-2"
+                                            [icon]="icons.solid.faArrowRight"></fa-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <form
+                            *ngIf="mode === 3"
+                            [formGroup]="saveAccountForm"
+                            (ngSubmit)="onUpdateAccount()">
+                            <div class="row">
+                                <div class="col-12">
+                                    <app-form-input-wrapper
+                                        [for]="'email'"
+                                        [errorMessage]="saveAccountForm.controlErrorMessages.email">
+                                        <input
+                                            id="email"
+                                            type="text"
+                                            class="form-control"
+                                            [placeholder]="'label.email' | translate"
+                                            [formControl]="saveAccountForm.controls.email" />
+                                    </app-form-input-wrapper>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <app-form-input-wrapper
+                                        [for]="'phone'"
+                                        [errorMessage]="saveAccountForm.controlErrorMessages.phone">
+                                        <input
+                                            appNumericInput
+                                            id="phone"
+                                            type="text"
+                                            class="form-control"
+                                            [shouldFormatNumber]="false"
+                                            [placeholder]="'label.phone' | translate"
+                                            [formControl]="saveAccountForm.controls.phone" />
+                                    </app-form-input-wrapper>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <app-form-input-wrapper
+                                        [for]="'name'"
+                                        [errorMessage]="saveAccountForm.controlErrorMessages.name">
+                                        <input
+                                            id="name"
+                                            type="text"
+                                            class="form-control"
+                                            [placeholder]="'label.name' | translate"
+                                            [formControl]="saveAccountForm.controls.name" />
+                                    </app-form-input-wrapper>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 text-center">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary">
+                                        {{ 'label.save' | translate }}
+                                        <fa-icon
+                                            class="ms-2"
+                                            [icon]="icons.solid.faSave"></fa-icon>
                                     </button>
                                 </div>
                             </div>

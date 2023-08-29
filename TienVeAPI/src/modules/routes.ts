@@ -3,7 +3,8 @@ import { Helpers } from 'src/utils';
 const ROUTES = {
     AUTH: {
         MODULE: 'auth',
-        LOGIN: 'login',
+        LOGIN_OTP: 'login-otp',
+        SAVE_ACCOUNT: 'save-account',
     },
     MESSAGE: {
         MODULE: 'message',
@@ -13,6 +14,11 @@ const ROUTES = {
     USER: {
         MODULE: 'user',
         PROFILE: 'profile',
+    },
+    OTP: {
+        MODULE: 'otp',
+        CREATE: '',
+        IS_VALID: 'is-valid',
     },
 } as const;
 Helpers.deepFreeze(ROUTES);
