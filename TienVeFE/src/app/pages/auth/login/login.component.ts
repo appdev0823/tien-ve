@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as dayjs from 'dayjs';
+import { NgOtpInputComponent } from 'ng-otp-input';
 import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { LoginUserDTO, OtpDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
@@ -33,6 +34,7 @@ export class LoginComponent extends PageComponent {
     public remainingTime = '';
     /** Thời gian (s) còn lại */
     private _remainingSeconds = 0;
+    @ViewChild('otpInput', { static: false }) otpInput?: NgOtpInputComponent;
 
     private _loginUser = new LoginUserDTO();
 
@@ -60,6 +62,7 @@ export class LoginComponent extends PageComponent {
 
     public async sendOtp(isResend = false) {
         if (isResend) {
+            this.otpInput?.setValue('');
             this.otpForm.reset();
             this.otpForm.clearControlErrorMessages();
         }

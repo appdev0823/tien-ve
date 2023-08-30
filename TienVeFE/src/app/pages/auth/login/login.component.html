@@ -108,8 +108,9 @@
                                 <div class="col-12 text-center">
                                     <app-form-input-wrapper [errorMessage]="otpForm.controlErrorMessages.otp">
                                         <ng-otp-input
+                                            #otpInput
                                             [formCtrl]="otpForm.controls.otp"
-                                            [config]="{ length: CONSTANTS.OTP.LENGTH }"></ng-otp-input>
+                                            [config]="otpInputConfig"></ng-otp-input>
                                     </app-form-input-wrapper>
                                 </div>
                             </div>
