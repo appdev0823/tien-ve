@@ -8,11 +8,13 @@ import { APIResponse, CONSTANTS, Helpers, MESSAGES } from 'src/utils';
 import ROUTES from '../routes';
 import * as OtpSchemas from './otp.schemas';
 import { OtpService } from './otp.service';
+import { MailService } from '../messaging/mail.service';
+import { SMSService } from '../messaging/sms.service';
 
 @Controller(ROUTES.OTP.MODULE)
 export class OtpController extends BaseController {
     /** Constructor */
-    constructor(private readonly _otpService: OtpService) {
+    constructor(private readonly _otpService: OtpService, private readonly _mailService: MailService, private readonly _smsService: SMSService) {
         super();
     }
 
@@ -26,6 +28,18 @@ export class OtpController extends BaseController {
             otp.type = body.type;
             otp.expired_date = dayjs().add(CONSTANTS.OTP.EXPIRED_SECONDS, 'seconds').format(CONSTANTS.MYSQL_DATETIME_FORMAT);
             otp.is_used = 0;
+
+            if (body.type === CONSTANTS.LOGIN_TYPES.EMAIL) {
+                await this._mailService.sendOTP(body.receive_address, otp.otp);
+            }
+
+            if (body.type === CONSTANTS.LOGIN_TYPES.PHONE) {
+                const isSuccess = await this._smsService.sendOTP(body.receive_address, otp.otp);
+                if (!isSuccess) {
+                    const errRes = APIResponse.error<undefined>(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR);
+                    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
+                }
+            }
 
             const result = await this._otpService.create(otp);
             if (!result || Helpers.isEmptyObject(result)) {

@@ -18,6 +18,7 @@ import { UserController } from './modules/user/user.controller';
 import { UserModule } from './modules/user/user.module';
 import { RepositoryModule } from './repository/repository.module';
 import { CONSTANTS } from './utils';
+import { MessagingModule } from './modules/messaging/messaging.module';
 
 @Module({
     imports: [
@@ -47,6 +48,7 @@ import { CONSTANTS } from './utils';
             }),
         }),
         LoggerModule,
+        MessagingModule,
     ],
     controllers: [],
     providers: [

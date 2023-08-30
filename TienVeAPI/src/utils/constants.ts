@@ -30,6 +30,7 @@ const CONSTANTS = {
         EMAIL: 1,
         PHONE: 2,
     },
+    HTTP_REQUEST_TIMEOUT: 10000,
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 
