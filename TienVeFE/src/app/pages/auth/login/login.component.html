@@ -40,6 +40,7 @@
                                             id="phone"
                                             class="custom-control-input"
                                             type="radio"
+                                            [maxlength]="validator.PHONE_ML"
                                             [formControl]="loginForm.controls.type"
                                             [value]="CONSTANTS.LOGIN_TYPES.PHONE"
                                             (change)="onTypeChanged()" />

@@ -1,12 +1,10 @@
-import { inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
 import { AppFormGroup, CONSTANTS } from '../utils';
 import { ValueOf } from '../utils/types';
+import { BaseValidator } from './base.validator';
 import { CustomValidators } from './custom.validators';
 
-export class AuthValidator {
-    private _translate$ = inject(TranslateService);
+export class AuthValidator extends BaseValidator {
 
     /**
      * Get login form group

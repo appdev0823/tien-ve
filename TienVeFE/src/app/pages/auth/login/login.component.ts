@@ -10,7 +10,7 @@ import PageComponent from 'src/app/includes/page.component';
 import { AuthService, OtpService } from 'src/app/services';
 import { saveAuthStateAction } from 'src/app/store/auth/auth.actions';
 import { AuthValidator } from 'src/app/validators';
-import { CustomValidators } from 'src/app/validators/custom.validators';
+import { CustomValidators } from 'src/app/validators';
 
 @Component({
     selector: 'app-login',
