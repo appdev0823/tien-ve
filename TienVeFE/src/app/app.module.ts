@@ -18,6 +18,7 @@ import { AuthEffects } from './store/auth/auth.effects';
 import { reducers } from './store/app.states';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
+import { BankAccountModule } from './pages/bank-account/bank-account.module';
 
 @NgModule({
     declarations: [AppComponent],
@@ -38,6 +39,7 @@ import { environment } from 'src/environments/environment';
         }),
         AuthModule,
         DashboardModule,
+        BankAccountModule,
         ComponentModule,
         LayoutModule,
         FontAwesomeModule,

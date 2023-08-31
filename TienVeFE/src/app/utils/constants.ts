@@ -37,6 +37,10 @@ const ROUTES = {
         LOGIN: 'login',
     },
     DASHBOARD: '',
+    BANK_ACCOUNT: {
+        MODULE: 'bank-account',
+        LIST: '',
+    },
 } as const;
 Helpers.deepFreeze(ROUTES);
 
@@ -52,6 +56,16 @@ const API_ROUTES = {
     },
     OTP: {
         CREATE: 'otp',
+    },
+    BANK: {
+        LIST: 'bank',
+    },
+    BANK_ACCOUNT: {
+        LIST: 'bank-account',
+        CREATE: 'bank-account',
+        UPDATE: 'bank-account/:id',
+        DETAIL: 'bank-account/:id',
+        DELETE: 'bank-account/:id',
     },
 } as const;
 Helpers.deepFreeze(API_ROUTES);

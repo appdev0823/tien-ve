@@ -19,6 +19,10 @@ import { UserModule } from './modules/user/user.module';
 import { RepositoryModule } from './repository/repository.module';
 import { CONSTANTS } from './utils';
 import { MessagingModule } from './modules/messaging/messaging.module';
+import { BankModule } from './modules/bank/bank.module';
+import { BankAccountModule } from './modules/bank-account/bank-account.module';
+import { BankController } from './modules/bank/bank.controller';
+import { BankAccountController } from './modules/bank-account/bank-account.controller';
 
 @Module({
     imports: [
@@ -34,6 +38,8 @@ import { MessagingModule } from './modules/messaging/messaging.module';
         UserModule,
         MessageModule,
         OtpModule,
+        BankModule,
+        BankAccountModule,
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -68,6 +74,6 @@ export class AppModule {
      */
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(AuthMiddleware).exclude(`/${ROUTES.AUTH.MODULE}/${ROUTES.AUTH.LOGIN_OTP}`).forRoutes(AuthController);
-        consumer.apply(AuthMiddleware).forRoutes(UserController);
+        consumer.apply(AuthMiddleware).forRoutes(UserController, BankController, BankAccountController);
     }
 }

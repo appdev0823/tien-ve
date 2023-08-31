@@ -52,7 +52,7 @@ export class APIResponse<T> {
     }
 }
 
-export class ListResponse<T> {
+export class ListResponse<T = { [key: string]: any }> {
     public list: T[] = [];
     public total = 0;
 

@@ -18,7 +18,18 @@ const ROUTES = {
     OTP: {
         MODULE: 'otp',
         CREATE: '',
-        IS_VALID: 'is-valid',
+    },
+    BANK: {
+        MODULE: 'bank',
+        LIST: '',
+    },
+    BANK_ACCOUNT: {
+        MODULE: 'bank-account',
+        LIST: '',
+        DETAIL: ':id',
+        CREATE: '',
+        UPDATE: ':id',
+        DELETE: ':id',
     },
 } as const;
 Helpers.deepFreeze(ROUTES);

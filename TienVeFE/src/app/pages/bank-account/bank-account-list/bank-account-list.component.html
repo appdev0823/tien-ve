@@ -1,0 +1,103 @@
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid ps-0">
+        <div class="row mb-2">
+            <div class="col-12 d-flex">
+                <h1 class="m-0">
+                    <fa-icon
+                        class="me-3"
+                        [icon]="icons.solid.faList"
+                        [size]="'xs'"></fa-icon>
+                    Quản lý tài khoản nhận tiền
+                </h1>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-6 d-flex align-items-end">
+                        Tổng số dòng:&nbsp;<strong>{{ dataTotal }}</strong>
+                    </div>
+                    <div class="col-12 col-md-6 text-md-end">
+                        <button
+                            class="btn btn-primary mt-2 mt-md-0"
+                            (click)="onCreate()">
+                            <fa-icon
+                                class="me-2"
+                                [icon]="icons.solid.faPlusCircle"></fa-icon>
+                            Thêm mới
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped table-p-3 mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="a-w-50 text-center">ID</th>
+                                        <th class="a-w-150 text-center">Ngân hàng</th>
+                                        <th class="a-w-150 text-center">Tên gợi nhớ</th>
+                                        <th class="a-mw-200 text-center">Tên chi nhánh</th>
+                                        <th class="a-w-100 text-center">Số tài khoản</th>
+                                        <th class="a-w-150 text-center">Tên chủ tài khoản</th>
+                                        <th class="a-w-120 text-center">Số điện thoại</th>
+                                        <th class="a-w-120 text-center">Sửa / Xóa</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of dataList; let idx = index">
+                                        <td class="text-center">{{ item.id }}</td>
+                                        <td class="text-center">{{ item.bank_brand_name }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.branch_name }}</td>
+                                        <td class="text-center">{{ item.account_number }}</td>
+                                        <td>{{ item.card_owner }}</td>
+                                        <td class="text-center">{{ item.phone }}</td>
+                                        <td class="text-center">
+                                            <button
+                                                class="btn btn-primary me-2"
+                                                (click)="onUpdate(idx)">
+                                                <fa-icon [icon]="icons.solid.faEdit"></fa-icon>
+                                            </button>
+                                            <button
+                                                class="btn btn-primary"
+                                                (click)="onDelete(idx)">
+                                                <fa-icon [icon]="icons.solid.faTrash"></fa-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot *ngIf="!helpers.isFilledArray(dataList)">
+                                    <tr>
+                                        <td [colSpan]="99">{{ 'message.err_no_data' | translate }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 d-flex justify-content-center">
+                        <ngb-pagination
+                            [collectionSize]="dataTotal"
+                            [pageSize]="CONSTANTS.PAGE_SIZE"
+                            [page]="currentPage"
+                            [maxSize]="CONSTANTS.MAX_PAGE_COUNT"
+                            [rotate]="true"
+                            [boundaryLinks]="true"
+                            (pageChange)="onPageChanged($event)"></ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

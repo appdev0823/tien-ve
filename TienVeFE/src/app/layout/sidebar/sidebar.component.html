@@ -50,6 +50,17 @@
                         <p class="ms-3">Trang chủ</p>
                     </a>
                 </li>
+                <li
+                    class="nav-item"
+                    (click)="collapseSidebar()">
+                    <a
+                        class="nav-link"
+                        [routerLink]="'/' + ROUTES.BANK_ACCOUNT.MODULE + '/' + ROUTES.BANK_ACCOUNT.LIST"
+                        [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 1 && routePathList[0] === ROUTES.BANK_ACCOUNT.MODULE">
+                        <fa-icon [icon]="icons.solid.faList"></fa-icon>
+                        <p class="ms-3">Quản lý tài khoản nhận tiền</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

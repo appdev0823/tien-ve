@@ -1,0 +1,137 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title">{{ !id ? 'Tạo' : 'Cập nhật' }} tài khoản ngân hàng</h4>
+    </div>
+    <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="activeModal.close()"></button>
+</div>
+<div class="modal-body">
+    <form
+        id="saveForm"
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-12">
+                <app-form-input-wrapper
+                    [for]="'bank_id'"
+                    [label]="'Ngân hàng'"
+                    [isRequired]="true"
+                    [errorMessage]="form.controlErrorMessages.bank_id">
+                    <ng-select
+                        id="bank_id"
+                        bindValue="id"
+                        bindLabel="name"
+                        [formControl]="form.controls.bank_id"
+                        [items]="bankList"
+                        [clearable]="false"
+                        [placeholder]="'Chọn ngân hàng'">
+                    </ng-select>
+                </app-form-input-wrapper>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <app-form-input-wrapper
+                    [for]="'branch_name'"
+                    [label]="'Tên chi nhánh'"
+                    [isRequired]="true"
+                    [errorMessage]="form.controlErrorMessages.branch_name">
+                    <input
+                        id="branch_name"
+                        type="text"
+                        class="form-control"
+                        placeholder="Tên chi nhánh"
+                        [formControl]="form.controls.branch_name" />
+                </app-form-input-wrapper>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <app-form-input-wrapper
+                    [for]="'account_number'"
+                    [label]="'Số tài khoản'"
+                    [isRequired]="true"
+                    [errorMessage]="form.controlErrorMessages.account_number">
+                    <input
+                        appUpperCaseRemoveUnicode
+                        id="account_number"
+                        type="text"
+                        class="form-control"
+                        placeholder="Số tài khoản"
+                        [maxlength]="validator.ACCOUNT_NUMBER_ML"
+                        [formControl]="form.controls.account_number" />
+                </app-form-input-wrapper>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <app-form-input-wrapper
+                    [for]="'card_owner'"
+                    [label]="'Tên chủ tài khoản'"
+                    [isRequired]="true"
+                    [errorMessage]="form.controlErrorMessages.card_owner">
+                    <input
+                        appUpperCaseRemoveUnicode
+                        id="card_owner"
+                        type="text"
+                        class="form-control"
+                        placeholder="Tên chủ tài khoản"
+                        [formControl]="form.controls.card_owner" />
+                </app-form-input-wrapper>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <app-form-input-wrapper
+                    [for]="'phone'"
+                    [label]="'Số điện thoại'"
+                    [isRequired]="true"
+                    [errorMessage]="form.controlErrorMessages.phone">
+                    <input
+                        appNumericInput
+                        [shouldFormatNumber]="false"
+                        id="phone"
+                        type="text"
+                        class="form-control"
+                        placeholder="Số điện thoại"
+                        [maxlength]="validator.PHONE_ML"
+                        [formControl]="form.controls.phone" />
+                </app-form-input-wrapper>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <app-form-input-wrapper
+                    [for]="'name'"
+                    [label]="'Tên gợi nhớ'"
+                    [errorMessage]="form.controlErrorMessages.name">
+                    <input
+                        id="name"
+                        type="text"
+                        class="form-control"
+                        placeholder="Tên gợi nhớ"
+                        [formControl]="form.controls.name" />
+                </app-form-input-wrapper>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button
+        form="saveForm"
+        type="submit"
+        class="btn btn-primary">
+        <fa-icon [icon]="icons.solid.faSave"></fa-icon>
+        {{ 'label.save' | translate }}
+    </button>
+    <button
+        type="button"
+        class="btn btn-danger"
+        (click)="activeModal.close()">
+        <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
+        {{ 'label.close' | translate }}
+    </button>
+</div>
