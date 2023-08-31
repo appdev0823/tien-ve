@@ -8,8 +8,6 @@ const CONSTANTS = {
         STAG: 'STAG',
         PROD: 'PROD',
     },
-    /** 7 days */
-    ACCESS_TOKEN_EXPIRED_TIME: 604800,
     /** Total items per page  */
     PAGE_SIZE: 20,
     USER_ROLES: {
@@ -31,7 +29,7 @@ const CONSTANTS = {
         PHONE: 2,
     },
     HTTP_REQUEST_TIMEOUT: 10000,
-    SMS_SUCCESS_CODE: '100'
+    SMS_SUCCESS_CODE: '100',
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 
