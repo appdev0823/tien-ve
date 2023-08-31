@@ -31,6 +31,7 @@ const CONSTANTS = {
         PHONE: 2,
     },
     HTTP_REQUEST_TIMEOUT: 10000,
+    SMS_SUCCESS_CODE: '100'
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 

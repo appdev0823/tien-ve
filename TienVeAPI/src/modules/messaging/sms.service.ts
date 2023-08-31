@@ -2,24 +2,32 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
+import { BaseService } from 'src/includes';
+import { CONSTANTS } from 'src/utils';
 
 @Injectable()
-export class SMSService {
-    constructor(private readonly _httpService: HttpService, private readonly _configService: ConfigService) {}
+export class SMSService extends BaseService {
+    constructor(private readonly _httpService: HttpService, private readonly _configService: ConfigService) {
+        super();
+    }
 
     async sendOTP(phone: string, otp: string) {
         const esmsUrl = String(this._configService.get('ESMS_URL'));
         const esmsApiKey = String(this._configService.get('ESMS_API_KEY'));
         const esmsSecretKey = String(this._configService.get('ESMS_SECRET_KEY'));
+        const esmsBrandName = String(this._configService.get('ESMS_BRAND_NAME'));
         const esmsSandBox = this._configService.get('ESMS_SAND_BOX') ? 1 : 0;
 
-        const simpleSMSType = '8';
+        // eSMS chỉ support gửi type này: tin Chăm sóc khách hàng
+        const customerSupportSMSType = '2';
         const params = {
             ApiKey: esmsApiKey,
+            SecretKey: esmsSecretKey,
             Content: `Mã xác nhận của bạn là ${otp}`,
             Phone: phone,
-            SecretKey: esmsSecretKey,
-            SmsType: simpleSMSType,
+            Unicode: 1,
+            Brandname: esmsBrandName,
+            SmsType: customerSupportSMSType,
             SandBox: esmsSandBox,
         };
 
@@ -31,6 +39,10 @@ export class SMSService {
             }>(esmsUrl, params, { headers: { 'Content-Type': 'application/json' } }),
         );
 
-        return String(result.data?.CodeResult) === '100';
+        const isSuccess = String(result.data?.CodeResult) === CONSTANTS.SMS_SUCCESS_CODE;
+        if (!isSuccess) {
+            this._logger.error(this.sendOTP.name, result.data);
+        }
+        return isSuccess;
     }
 }
