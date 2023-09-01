@@ -26,6 +26,7 @@ const CONSTANTS = {
     OTP: {
         LENGTH: 6,
         EXPIRED_SECONDS: 300,
+        RESEND_SECONDS: 10,
     },
 } as const;
 Helpers.deepFreeze(CONSTANTS);

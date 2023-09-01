@@ -31,10 +31,17 @@ export class LoginComponent extends PageComponent {
     /** Countdown interval */
     private _otpCountdownInterval?: NodeJS.Timeout;
     /** Lượng thời gian còn lại để hiển thị cho người dùng */
-    public remainingTime = '';
+    public otpRemainingTime = '';
     /** Thời gian (s) còn lại */
-    private _remainingSeconds = 0;
+    private _otpRemainingSeconds = 0;
     @ViewChild('otpInput', { static: false }) otpInput?: NgOtpInputComponent;
+
+    /** Countdown interval */
+    private _resendOtpCountdownInterval?: NodeJS.Timeout;
+    /** Lượng thời gian còn lại để resend OTP */
+    public resendOtpRemainingTime = '';
+    /** Thời gian (s) còn lại để resend OTP */
+    private _resendOtpRemainingSeconds = this.CONSTANTS.OTP.RESEND_SECONDS;
 
     private _loginUser = new LoginUserDTO();
 
@@ -65,6 +72,7 @@ export class LoginComponent extends PageComponent {
             this.otpInput?.setValue('');
             this.otpForm.reset();
             this.otpForm.clearControlErrorMessages();
+            this._resendOtpRemainingSeconds = this.CONSTANTS.OTP.RESEND_SECONDS;
         }
 
         this.loginForm.clearControlErrorMessages();
@@ -88,17 +96,29 @@ export class LoginComponent extends PageComponent {
 
         const current = dayjs();
         const expiredDate = dayjs(this._createdOtp.expired_date, this.CONSTANTS.MYSQL_DATETIME_FORMAT);
-        this._remainingSeconds = expiredDate.diff(current, 'seconds');
+        this._otpRemainingSeconds = expiredDate.diff(current, 'seconds');
 
         this._otpCountdownInterval = setInterval(() => {
-            const minutes = Math.floor(this._remainingSeconds / 60);
-            const seconds = this._remainingSeconds % 60;
-            this.remainingTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            if (this._remainingSeconds <= 0) {
+            const minutes = Math.floor(this._otpRemainingSeconds / 60);
+            const seconds = this._otpRemainingSeconds % 60;
+            this.otpRemainingTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            if (this._otpRemainingSeconds <= 0) {
                 clearInterval(this._otpCountdownInterval);
                 this._otpCountdownInterval = undefined;
             } else {
-                this._remainingSeconds--;
+                this._otpRemainingSeconds--;
+            }
+        }, 1000);
+
+        this._resendOtpCountdownInterval = setInterval(() => {
+            const minutes = Math.floor(this._resendOtpRemainingSeconds / 60);
+            const seconds = this._resendOtpRemainingSeconds % 60;
+            this.resendOtpRemainingTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            if (this._resendOtpRemainingSeconds <= 0) {
+                clearInterval(this._resendOtpCountdownInterval);
+                this._resendOtpCountdownInterval = undefined;
+            } else {
+                this._resendOtpRemainingSeconds--;
             }
         }, 1000);
     }
@@ -112,8 +132,8 @@ export class LoginComponent extends PageComponent {
 
         this._createdOtp = new OtpDTO();
         this._otpCountdownInterval = undefined;
-        this.remainingTime = '';
-        this._remainingSeconds = 0;
+        this.otpRemainingTime = '';
+        this._otpRemainingSeconds = 0;
     }
 
     public async onOtpFormSubmitted() {

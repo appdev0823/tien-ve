@@ -95,11 +95,11 @@
                             (ngSubmit)="onOtpFormSubmitted()">
                             <div class="row">
                                 <div class="col-12 text-center">
-                                    <p *ngIf="remainingTime !== '00:00'">
-                                        Thời gian mã xác nhận hết hạn:&nbsp;<span class="text-danger">{{ remainingTime }}</span>
+                                    <p *ngIf="otpRemainingTime !== '00:00'">
+                                        Thời gian mã xác nhận hết hạn:&nbsp;<span class="text-danger">{{ otpRemainingTime }}</span>
                                     </p>
                                     <p
-                                        *ngIf="remainingTime === '00:00'"
+                                        *ngIf="otpRemainingTime === '00:00'"
                                         class="text-danger">
                                         Mã xác nhận đã hết hạn
                                     </p>
@@ -119,9 +119,10 @@
                                 <div class="col-12 text-center mt-3">
                                     <a
                                         class="text text-decoration-none cursor-pointer"
-                                        [ngClass]="remainingTime !== '00:00' ? 'text-gray pointer-event-none' : 'text-primary'"
+                                        [ngClass]="resendOtpRemainingTime !== '00:00' ? 'text-gray pointer-event-none' : 'text-primary'"
                                         (click)="sendOtp(true)">
-                                        <fa-icon [icon]="icons.solid.faPaperPlane"></fa-icon>&nbsp;Gửi lại mã xác nhận
+                                        <fa-icon [icon]="icons.solid.faPaperPlane"></fa-icon>
+                                        &nbsp;Gửi lại mã xác nhận&nbsp;{{ resendOtpRemainingTime !== '00:00' ? 'sau ' + resendOtpRemainingTime : '' }}
                                     </a>
                                 </div>
                             </div>
