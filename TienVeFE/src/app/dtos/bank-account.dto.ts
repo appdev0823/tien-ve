@@ -14,6 +14,8 @@ export class BankAccountDTO {
     public bank_brand_name?: string;
     public bank_name?: string;
 
+    public display_name?: string;
+
     static fromJson(json: { [key: string]: unknown }) {
         const instance = new BankAccountDTO();
         instance.id = Number(json['id']) || 0;

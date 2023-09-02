@@ -1,0 +1,63 @@
+<div class="custom-file">
+    <label
+        class="custom-file-label"
+        for="fileUploadInput">
+        {{ 'label.choose_file' | translate }}
+    </label>
+    <input
+        #uploadInput
+        id="fileUploadInput"
+        class="custom-file-input"
+        type="file"
+        [accept]="acceptedTypeListStr"
+        [multiple]="maxSize > 1"
+        [disabled]="disabled"
+        (change)="onFileUploaded($event)" />
+</div>
+<ng-container *ngIf="uploadedFileList.length > 0">
+    <div class="row mt-3">
+        <div class="col-12">
+            <ng-container *ngFor="let file of uploadedFileList; let idx = index">
+                <ng-container *ngIf="file.name.includes('jpg') || file.name.includes('jpeg') || file.name.includes('png')">
+                    <img
+                        class="square-image me-3"
+                        [alt]="file.name"
+                        [src]="file.base64"
+                        [title]="file.name" />
+                </ng-container>
+                <p
+                    *ngIf="file.name.includes('xls') || file.name.includes('xlsx')"
+                    class="text-success a-fs-11 mb-0">
+                    <fa-icon [icon]="icons.regular.faFileExcel"> </fa-icon>
+                    {{ file.name }}
+                    <fa-icon
+                        class="text-danger cursor-pointer"
+                        [icon]="icons.solid.faTimes"
+                        (click)="removeFile(idx)"></fa-icon>
+                </p>
+            </ng-container>
+        </div>
+    </div>
+    <div
+        *ngIf="errorMessageList.length > 0"
+        class="row mt-3">
+        <div class="col-12">
+            <p
+                *ngFor="let msg of errorMessageList"
+                class="text-danger mb-0">
+                {{ msg }}
+            </p>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12 text-center">
+            <button
+                class="btn btn-danger"
+                type="button"
+                [disabled]="disabled"
+                (click)="reset()">
+                <fa-icon [icon]="icons.solid.faEraser"></fa-icon> {{ 'label.delete_all' | translate }}
+            </button>
+        </div>
+    </div>
+</ng-container>

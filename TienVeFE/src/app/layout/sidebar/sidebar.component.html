@@ -61,6 +61,17 @@
                         <p class="ms-3">Quản lý tài khoản nhận tiền</p>
                     </a>
                 </li>
+                <li
+                    class="nav-item"
+                    (click)="collapseSidebar()">
+                    <a
+                        class="nav-link"
+                        [routerLink]="'/' + ROUTES.DEBT.MODULE + '/' + ROUTES.DEBT.IMPORT"
+                        [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 2 && routePathList[0] === ROUTES.DEBT.MODULE && routePathList[1] === ROUTES.DEBT.IMPORT">
+                        <fa-icon [icon]="icons.solid.faFileImport"></fa-icon>
+                        <p class="ms-3">Nhập công nợ</p>
+                    </a>
+                </li>
             </ul>
         </nav>
     </div>

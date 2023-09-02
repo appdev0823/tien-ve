@@ -13,7 +13,7 @@ export class UpperCaseRemoveUnicodeDirective {
      */
     @HostListener('input', ['$event'])
     onInputChange(event: InputEvent): void {
-        this._removeUnicode(event);
+        this._removeUnicodeAndToUpperCase(event);
     }
 
     /**
@@ -21,7 +21,7 @@ export class UpperCaseRemoveUnicodeDirective {
      */
     @HostListener('blur', ['$event'])
     onInputBlur(event: FocusEvent): void {
-        this._removeUnicode(event);
+        this._removeUnicodeAndToUpperCase(event);
     }
 
     /**
@@ -29,7 +29,7 @@ export class UpperCaseRemoveUnicodeDirective {
      */
     @HostListener('focus', ['$event'])
     onInputFocus(event: FocusEvent): void {
-        this._removeUnicode(event);
+        this._removeUnicodeAndToUpperCase(event);
     }
 
     /**
@@ -37,7 +37,6 @@ export class UpperCaseRemoveUnicodeDirective {
      */
     @HostListener('ngModelChange', ['$event'])
     onInputChangedByAngularForm(value: string): void {
-        const element = this._el.nativeElement as HTMLInputElement;
         let str = value;
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
         str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
@@ -54,10 +53,10 @@ export class UpperCaseRemoveUnicodeDirective {
         str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y');
         str = str.replace(/Đ/g, 'D');
 
-        element.value = str.toUpperCase();
+        value = str.toUpperCase();
     }
 
-    private _removeUnicode(event: UIEvent): void {
+    private _removeUnicodeAndToUpperCase(event: UIEvent): void {
         const element = this._el.nativeElement as HTMLInputElement;
         let initialValue = element.value;
         initialValue = initialValue.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
@@ -74,6 +73,7 @@ export class UpperCaseRemoveUnicodeDirective {
         initialValue = initialValue.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, 'U');
         initialValue = initialValue.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, 'Y');
         initialValue = initialValue.replace(/Đ/g, 'D');
+        element.value = initialValue.toUpperCase();
         if (initialValue !== element.value) {
             event.stopPropagation();
         }

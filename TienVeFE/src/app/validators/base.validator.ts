@@ -4,6 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 export class BaseValidator {
     protected _translate$ = inject(TranslateService);
 
-    public readonly DECIMAL_10_MAX = 9999999999;
+    public readonly DECIMAL_15_3_MAX = 999999999999;
     public readonly PHONE_ML = 10;
 }

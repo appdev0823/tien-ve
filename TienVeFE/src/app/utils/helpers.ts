@@ -1,5 +1,6 @@
 import { NgbDate, NgbDateStruct, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import * as dayjs from 'dayjs';
+import * as XLSX from 'xlsx';
 
 export default class Helpers {
     /**
@@ -269,5 +270,83 @@ export default class Helpers {
      */
     static getPhoneNumberRegex() {
         return /^([0-9]{10})$/;
+    }
+
+    /**
+     * Check if the extension of an uploaded file is valid
+     *
+     * @param fileName - File name
+     * @param extList - Valid file extension list
+     * @returns `true` if file extension is in `extList`
+     */
+    static isFileExtensionValid(fileName: string, extList: string[]): boolean {
+        if (!Helpers.isString(fileName)) return false;
+        if (!Helpers.isFilledArray(extList)) return false;
+
+        const lowerFileName = fileName.toLowerCase();
+        const fileExt = lowerFileName.substr(lowerFileName.lastIndexOf('.') + 1);
+        return extList.some((ext) => ext === fileExt);
+    }
+
+    static async convertFileToBase64(file: File) {
+        return new Promise<string>((resolve) => {
+            let base64Str = '';
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                base64Str = String(reader?.result);
+                resolve(base64Str);
+            };
+            reader.onerror = () => {
+                resolve('');
+            };
+        });
+    }
+
+    static async readExcelFile(file: File) {
+        return new Promise<string[][]>((resolve) => {
+            let result: string[][] = [];
+            if (!file) {
+                resolve(result);
+                return;
+            }
+
+            const fileReader = new FileReader();
+            fileReader.readAsArrayBuffer(file);
+
+            const cellSeparator = ',';
+            const rowSeparator = ';';
+            fileReader.onload = (e) => {
+                const bufferArray = e?.target?.result;
+                const wb = XLSX.read(bufferArray, { type: 'buffer' });
+                const wsName = wb.SheetNames[0];
+                const ws = wb.Sheets[wsName];
+                const dataStr = XLSX.utils.sheet_to_csv(ws, {
+                    FS: cellSeparator,
+                    RS: rowSeparator,
+                    strip: true,
+                    blankrows: false,
+                    rawNumbers: true,
+                });
+                if (!this.isString(dataStr)) {
+                    resolve(result);
+                    return;
+                }
+
+                const rowCSVStrList = dataStr.split(rowSeparator);
+                if (!this.isFilledArray(rowCSVStrList)) {
+                    resolve(result);
+                    return;
+                }
+
+                result = rowCSVStrList.filter((csvStr) => Helpers.isString(csvStr)).map((csvStr) => csvStr.split(cellSeparator));
+
+                resolve(result);
+            };
+
+            fileReader.onerror = () => {
+                resolve([]);
+            };
+        });
     }
 }

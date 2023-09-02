@@ -28,6 +28,7 @@ const CONSTANTS = {
         EXPIRED_SECONDS: 300,
         RESEND_SECONDS: 10,
     },
+    IMPORT_DEBT_TEMPLATE_NAME: 'Nhap_Cong_No.xlsx',
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 
@@ -41,6 +42,10 @@ const ROUTES = {
     BANK_ACCOUNT: {
         MODULE: 'bank-account',
         LIST: '',
+    },
+    DEBT: {
+        MODULE: 'debt',
+        IMPORT: 'import',
     },
 } as const;
 Helpers.deepFreeze(ROUTES);
@@ -67,6 +72,9 @@ const API_ROUTES = {
         UPDATE: 'bank-account/:id',
         DETAIL: 'bank-account/:id',
         DELETE: 'bank-account/:id',
+    },
+    DEBT: {
+        CREATE_MULTIPLE: 'debt/multiple',
     },
 } as const;
 Helpers.deepFreeze(API_ROUTES);

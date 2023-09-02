@@ -15,3 +15,9 @@ export type CommonSearchQuery = {
  * ```
  */
 export type ValueOf<T> = T[keyof T];
+
+export type UploadFile = {
+    name: string;
+    file: File;
+    base64?: string;
+};
