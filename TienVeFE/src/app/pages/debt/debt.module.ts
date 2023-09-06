@@ -7,6 +7,8 @@ import { SharedModule } from 'src/app/includes/shared.module';
 import { MainLayoutComponent } from 'src/app/layout/main-layout/main-layout.component';
 import { ROUTES } from 'src/app/utils';
 import { DebtImportComponent } from './debt-import/debt-import.component';
+import { DebtListComponent } from './debt-list/debt-list.component';
+import { DebtDetailComponent } from './debt-detail/debt-detail.component';
 
 const routes: Routes = [
     {
@@ -19,12 +21,17 @@ const routes: Routes = [
                 component: DebtImportComponent,
                 canActivate: [AuthGuard],
             },
+            {
+                path: ROUTES.DEBT.LIST,
+                component: DebtListComponent,
+                canActivate: [AuthGuard],
+            },
         ],
     },
 ];
 
 @NgModule({
-    declarations: [DebtImportComponent],
+    declarations: [DebtImportComponent, DebtListComponent, DebtDetailComponent],
     imports: [RouterModule.forChild(routes), SharedModule, ComponentModule, DirectiveModule],
 })
 export class DebtModule {}

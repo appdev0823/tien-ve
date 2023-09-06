@@ -157,11 +157,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
     final result = await MessageService.create(address, devicePhoneNumber, body, sendTimestamp, receiveTimestamp);
     if (!result.isSuccess) {
-      ToastrService.error(result.message);
+      ToastrService.error(msgKey: result.message);
       return;
     }
 
-    ToastrService.success('success');
+    ToastrService.success();
 
     getList();
   }
@@ -170,7 +170,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     final result = await MessageService.getList();
     final data = result.data;
     if (!result.isSuccess || data == null) {
-      ToastrService.error(result.message);
+      ToastrService.error(msgKey: result.message);
       return;
     }
 

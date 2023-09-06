@@ -9,7 +9,9 @@
     "err_login_failed": "Tên đăng nhập hoặc email hoặc mật khẩu không chính xác.",
     "err_no_login_permission": "Bạn không có quyền đăng nhập vào hệ thống.",
     "timeout": "Hết thời gian xử lý. Vui lòng thử lại.",
-    "auth_false": "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại!"
+    "auth_false": "Phiên đăng nhập của bạn đã hết hạn. Vui lòng đăng nhập lại!",
+    "err_not_bank_sms": "Hệ thống không ghi nhận SMS vì không thuộc ngân hàng.",
+    "err_sms_amount_not_positive": "Hệ thống không ghi nhận SMS vì số tiền giao dịch không phải số tiền dương."
   },
   "validation": {
     "required": "Vui lòng nhập {field}."

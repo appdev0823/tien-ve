@@ -31,13 +31,25 @@ class BaseHTTPClient {
         return http.Response(convert.jsonEncode(timeoutErrRes.toJson()), 200);
       });
 
+      if (shouldShowLoading) Helpers.hideLoading();
+
       final resMap = convert.jsonDecode(response.body);
       if (resMap is! Map<String, dynamic>) {
-        if (shouldShowLoading) Helpers.hideLoading();
         return APIResponse.error();
       }
 
-      if (shouldShowLoading) Helpers.hideLoading();
+      final successStatusCodeList = [
+        HttpStatuses.OK.value,
+        HttpStatuses.CREATED.value,
+        HttpStatuses.ACCEPTED.value,
+        HttpStatuses.NON_AUTHORITATIVE_INFORMATION.value,
+        HttpStatuses.NO_CONTENT.value,
+        HttpStatuses.RESET_CONTENT.value,
+        HttpStatuses.PARTIAL_CONTENT.value
+      ];
+      if (!successStatusCodeList.contains(response.statusCode)) {
+        return APIResponse.error(message: resMap["message"], data: resMap["data"]);
+      }
 
       return APIResponse.success(message: resMap["message"], data: resMap["data"]);
     } catch (e) {
@@ -68,10 +80,24 @@ class BaseHTTPClient {
         return http.Response(convert.jsonEncode(timeoutErrRes.toJson()), 200);
       });
 
+      if (shouldShowLoading) Helpers.hideLoading();
+
       final resMap = convert.jsonDecode(response.body);
       if (resMap is! Map<String, dynamic>) {
-        if (shouldShowLoading) Helpers.hideLoading();
         return APIResponse.error();
+      }
+
+      final successStatusCodeList = [
+        HttpStatuses.OK.value,
+        HttpStatuses.CREATED.value,
+        HttpStatuses.ACCEPTED.value,
+        HttpStatuses.NON_AUTHORITATIVE_INFORMATION.value,
+        HttpStatuses.NO_CONTENT.value,
+        HttpStatuses.RESET_CONTENT.value,
+        HttpStatuses.PARTIAL_CONTENT.value
+      ];
+      if (!successStatusCodeList.contains(response.statusCode)) {
+        return APIResponse.error(message: resMap["message"], data: resMap["data"]);
       }
 
       if (shouldShowLoading) Helpers.hideLoading();

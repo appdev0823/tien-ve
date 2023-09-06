@@ -1,0 +1,214 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title">Công nợ {{ id }}</h4>
+    </div>
+    <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="activeModal.close()"></button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <div class="row">
+                <div class="col-12">
+                    <h5>{{ 'label.general_info' | translate }}</h5>
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">ID công nợ</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.id" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.created_date' | translate }}</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.created_date" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.payer_name' | translate }}</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.payer_name" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.payer_phone' | translate }}</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.payer_phone" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.amount' | translate }}</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.amount | number : '.0-0'" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">Đã trả</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.paid_amount | number : '.0-0'" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.note' | translate }}</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.note" />
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="row">
+                <div class="col-12">
+                    <h5>{{ 'label.receive_money_account' | translate }}</h5>
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">ID tài khoản</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.bank_account_id" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">Ngân hàng</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.bank_brand_name" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">Chi nhánh</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.bank_account_branch_name" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">Tên chủ tài khoản</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.bank_account_card_owner" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">Số tài khoản</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.bank_account_number" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">Số điện thoại</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.bank_account_phone" />
+                </div>
+            </div>
+            <div class="form-group row mt-3">
+                <label class="col-12 col-md-4 col-form-label font-weight-normal">Tên gợi nhớ</label>
+                <div class="col-12 col-md-8">
+                    <input
+                        disabled
+                        class="form-control bg-white"
+                        [value]="data.bank_account_name" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12 col-md-6">
+            <h5>Lịch sử trả tiền</h5>
+        </div>
+        <div class="col-12 col-md-6 text-md-end">
+            <button
+                class="btn btn-primary me-2"
+                (click)="addMessage()">
+                <fa-icon
+                    class="me-2"
+                    [icon]="icons.solid.faPlus">
+                </fa-icon>
+                Thêm tin nhắn
+            </button>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-p-3 mb-0">
+                    <thead>
+                        <tr>
+                            <th class="a-w-100 text-center">Ngày trả</th>
+                            <th class="a-w-100 text-center">Số tiền trả</th>
+                            <th class="a-mw-200 text-center">Nội dung tin nhắn</th>
+                            <th class="a-w-100 text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of messageList; let idx = index">
+                            <td class="text-center">{{ item.send_date }}</td>
+                            <td class="text-center">{{ item.amount | number : '.0-0' }}</td>
+                            <td class="text-justify">{{ item.body }}</td>
+                            <td class="text-center">
+                                <button
+                                    class="btn btn-danger"
+                                    (click)="confirmRemoveMessage(idx)">
+                                    <fa-icon [icon]="icons.solid.faTrash"></fa-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot *ngIf="!helpers.isFilledArray(messageList)">
+                        <tr>
+                            <td [colSpan]="99">{{ 'message.err_no_data' | translate }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+        type="button"
+        class="btn btn-danger"
+        (click)="activeModal.close()">
+        <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
+        {{ 'label.close' | translate }}
+    </button>
+</div>

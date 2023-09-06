@@ -7,7 +7,7 @@ import 'package:tien_ve/utils/http.dart';
 
 class MessageService {
   ///Create a message
-  static Future<APIResponse<MessageEntity>> create(
+  static Future<APIResponse<MessageEntity?>> create(
     String address,
     String phone,
     String body,
@@ -26,7 +26,7 @@ class MessageService {
       };
       final response = await http.post(APIRoutes.MESSAGE_CREATE, reqBody);
       if (!response.isSuccess) {
-        return APIResponse.error(message: response.message);
+        return APIResponse.error(message: response.message, data: null);
       }
       final result = MessageEntity.fromJson(response.data);
       return APIResponse.success(data: result);

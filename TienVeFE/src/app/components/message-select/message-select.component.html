@@ -1,0 +1,82 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title">Chọn tin nhắn gạch nợ</h4>
+    </div>
+    <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="activeModal.close()"></button>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-12">
+            <p class="mb-0">Đây là các tin nhắn mà các số điện thoại nhận tiền của bạn nhận được.</p>
+            <p class="mb-0">
+                Hãy chọn tin nhắn gạch nợ cho công nợ <strong>{{ debtId }}.</strong>
+            </p>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-p-3 mb-0">
+                    <thead>
+                        <tr>
+                            <th class="a-w-50 text-center">STT</th>
+                            <th class="a-w-100 text-center">Ngày trả</th>
+                            <th class="a-w-80 text-center">SDT</th>
+                            <th class="a-w-100 text-center">Số tiền trả</th>
+                            <th class="a-w-220 text-center">Mã công nợ được gán</th>
+                            <th class="a-mw-300 text-center">Nội dung tin nhắn</th>
+                            <th class="a-w-100 text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of dataList; let idx = index">
+                            <td class="text-center">{{ idx + 1 + CONSTANTS.PAGE_SIZE * (currentPage - 1) }}</td>
+                            <td class="text-center">{{ item.send_date }}</td>
+                            <td class="text-center">{{ item.phone }}</td>
+                            <td class="text-center">{{ item.amount | number : '.0-0' }}</td>
+                            <td class="text-center">{{ item.debt_id }}</td>
+                            <td class="text-justify">{{ item.body }}</td>
+                            <td class="text-center">
+                                <button
+                                    class="btn btn-success"
+                                    (click)="confirmSelectMsg(idx)">
+                                    <fa-icon [icon]="icons.solid.faCheck"></fa-icon>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot *ngIf="!helpers.isFilledArray(dataList)">
+                        <tr>
+                            <td [colSpan]="99">{{ 'message.err_no_data' | translate }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12 d-flex justify-content-center">
+            <ngb-pagination
+                [collectionSize]="dataTotal"
+                [pageSize]="CONSTANTS.PAGE_SIZE"
+                [page]="currentPage"
+                [maxSize]="CONSTANTS.MAX_PAGE_COUNT"
+                [rotate]="true"
+                [boundaryLinks]="true"
+                (pageChange)="onPageChanged($event)"></ngb-pagination>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+        type="button"
+        class="btn btn-danger"
+        (click)="activeModal.close()">
+        <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
+        {{ 'label.close' | translate }}
+    </button>
+</div>

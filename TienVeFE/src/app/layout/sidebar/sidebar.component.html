@@ -57,7 +57,7 @@
                         class="nav-link"
                         [routerLink]="'/' + ROUTES.BANK_ACCOUNT.MODULE + '/' + ROUTES.BANK_ACCOUNT.LIST"
                         [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 1 && routePathList[0] === ROUTES.BANK_ACCOUNT.MODULE">
-                        <fa-icon [icon]="icons.solid.faList"></fa-icon>
+                        <fa-icon [icon]="icons.solid.faPiggyBank"></fa-icon>
                         <p class="ms-3">Quản lý tài khoản nhận tiền</p>
                     </a>
                 </li>
@@ -70,6 +70,17 @@
                         [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 2 && routePathList[0] === ROUTES.DEBT.MODULE && routePathList[1] === ROUTES.DEBT.IMPORT">
                         <fa-icon [icon]="icons.solid.faFileImport"></fa-icon>
                         <p class="ms-3">Nhập công nợ</p>
+                    </a>
+                </li>
+                <li
+                    class="nav-item"
+                    (click)="collapseSidebar()">
+                    <a
+                        class="nav-link"
+                        [routerLink]="'/' + ROUTES.DEBT.MODULE + '/' + ROUTES.DEBT.LIST"
+                        [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 1 && routePathList[0] === ROUTES.DEBT.MODULE">
+                        <fa-icon [icon]="icons.solid.faList"></fa-icon>
+                        <p class="ms-3">Quản lý công nợ</p>
                     </a>
                 </li>
             </ul>

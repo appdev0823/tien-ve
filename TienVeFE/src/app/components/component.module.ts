@@ -4,10 +4,11 @@ import { AppToastComponent } from './app-toast/app-toast.component';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { FormInputWrapperComponent } from './form-input-wrapper/form-input-wrapper.component';
 import { UploadComponent } from './upload/upload.component';
+import { MessageSelectComponent } from './message-select/message-select.component';
 
 @NgModule({
-    declarations: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent],
+    declarations: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent, MessageSelectComponent],
     imports: [SharedModule],
-    exports: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent],
+    exports: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent, MessageSelectComponent],
 })
 export class ComponentModule {}

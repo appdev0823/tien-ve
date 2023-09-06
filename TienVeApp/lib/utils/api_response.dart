@@ -45,7 +45,7 @@ class APIResponse<T> {
 
   static error<T>({String message = CONSTANTS.ERR_UNKNOWN_MSG_KEY, T? data, Map<String, String>? errors}) {
     return APIResponse(
-      isSuccess: true,
+      isSuccess: false,
       message: message,
       data: data,
       errors: errors,

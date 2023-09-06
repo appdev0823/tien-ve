@@ -46,6 +46,7 @@ const ROUTES = {
     DEBT: {
         MODULE: 'debt',
         IMPORT: 'import',
+        LIST: '',
     },
 } as const;
 Helpers.deepFreeze(ROUTES);
@@ -75,6 +76,12 @@ const API_ROUTES = {
     },
     DEBT: {
         CREATE_MULTIPLE: 'debt/multiple',
+        LIST: 'debt',
+        DETAIL: 'debt/:id',
+    },
+    MESSAGE: {
+        LIST: 'message',
+        UPDATE_DEBT_ID: 'message/:id/update-debt-id',
     },
 } as const;
 Helpers.deepFreeze(API_ROUTES);
