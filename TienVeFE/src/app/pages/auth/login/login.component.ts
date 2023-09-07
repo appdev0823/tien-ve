@@ -73,6 +73,8 @@ export class LoginComponent extends PageComponent {
             this.otpForm.reset();
             this.otpForm.clearControlErrorMessages();
             this._resendOtpRemainingSeconds = this.CONSTANTS.OTP.RESEND_SECONDS;
+            clearInterval(this._otpCountdownInterval);
+            clearInterval(this._resendOtpCountdownInterval);
         }
 
         this.loginForm.clearControlErrorMessages();
