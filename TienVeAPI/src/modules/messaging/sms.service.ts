@@ -15,7 +15,7 @@ export class SMSService extends BaseService {
         const esmsApiKey = String(this._configService.get('ESMS_API_KEY'));
         const esmsSecretKey = String(this._configService.get('ESMS_SECRET_KEY'));
         const esmsBrandName = String(this._configService.get('ESMS_BRAND_NAME'));
-        const esmsSandBox = this._configService.get('ESMS_SAND_BOX') ? 1 : 0;
+        const esmsSandBox = Number(this._configService.get('ESMS_SAND_BOX')) ? 1 : 0;
 
         // eSMS chỉ support gửi type này: tin Chăm sóc khách hàng
         const customerSupportSMSType = '2';
