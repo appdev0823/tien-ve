@@ -11,7 +11,7 @@ export class OtpService {
     /** Constructor */
     constructor(private _http: BaseHTTPClient) {}
 
-    public async create(emailPhone: string, type: ValueOf<typeof CONSTANTS.LOGIN_TYPES>) {
+    public async create(emailPhone: string, type: ValueOf<typeof CONSTANTS.REGISTER_TYPES>) {
         try {
             const params = { receive_address: emailPhone, type };
             const httpRes = await firstValueFrom(this._http.post(API_ROUTES.OTP.CREATE, params));

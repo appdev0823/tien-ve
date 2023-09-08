@@ -19,7 +19,7 @@ const CONSTANTS = {
         INVOICE_ADDRESS: 'invoice_address',
         INVOICE_PHONE: 'invoice_phone',
     },
-    LOGIN_TYPES: {
+    REGISTER_TYPES: {
         EMAIL: 1,
         PHONE: 2,
     },
@@ -37,6 +37,8 @@ const ROUTES = {
     AUTH: {
         MODULE: 'auth',
         LOGIN: 'login',
+        CHANGE_PASSWORD: 'change-password',
+        REGISTER: 'register',
     },
     DASHBOARD: '',
     BANK_ACCOUNT: {
@@ -54,12 +56,15 @@ Helpers.deepFreeze(ROUTES);
 /** API routes */
 const API_ROUTES = {
     AUTH: {
-        LOGIN_OTP: 'auth/login-otp',
+        REGISTER: 'auth/register',
         SAVE_ACCOUNT: 'auth/save-account',
+        LOGIN: 'auth/login',
+        CHANGE_PASSWORD: 'auth/change-password',
     },
     USER: {
         GET_PROFILE: 'user/profile',
         UPDATE: 'user/:id',
+        GET_BY_EMAIL_PHONE: 'user/by-email-phone/:email_phone',
     },
     OTP: {
         CREATE: 'otp',

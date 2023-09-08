@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, of } from 'rxjs';
 import { API_ROUTES, APIResponse, BaseHTTPClient, CONSTANTS } from '../utils';
 import { UserDTO } from '../dtos';
 
@@ -26,5 +26,22 @@ export class UserService {
                 return of(APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR));
             }),
         );
+    }
+
+    public async getByEmailPhone(emailPhone: string) {
+        try {
+            const route = API_ROUTES.USER.GET_BY_EMAIL_PHONE.replace(':email_phone', String(emailPhone));
+            const httpRes = await firstValueFrom(this._http.get(route));
+            if (!httpRes.body) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+            if (!httpRes.body.data) return APIResponse.error(httpRes.body.message, null);
+
+            const item = UserDTO.fromJson(httpRes.body.data);
+            return APIResponse.success(httpRes.body.message, item);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, null, err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+        }
     }
 }

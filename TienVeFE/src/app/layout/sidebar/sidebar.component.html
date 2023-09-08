@@ -25,6 +25,12 @@
                 <p class="mb-1 text-black fs-5">{{ currentUser.name }}</p>
                 <p class="mb-0 text-black">
                     <a
+                        class="me-2 cursor-pointer"
+                        title="{{ 'label.change_password' | translate }}"
+                        [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.CHANGE_PASSWORD">
+                        <fa-icon [icon]="icons.solid.faKey"></fa-icon>
+                    </a>
+                    <a
                         class="cursor-pointer"
                         title="{{ 'label.logout' | translate }}"
                         (click)="logOut()">
