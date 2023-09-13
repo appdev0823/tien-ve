@@ -1,72 +1,66 @@
-<div class="login-container vh-100 d-flex flex-column justify-content-center align-items-center">
-    <div
-        class="d-flex flex-column justify-content-end align-items mb-5"
-        style="height: 33vh">
-        <img
-            class="login_app-icon"
-            src="assets/img/app-icon.png"
-            alt="" />
-    </div>
-    <div
-        class="container-fluid"
-        style="height: 33vh">
-        <div class="row">
-            <div class="col-md-3 col-lg-4"></div>
-            <div class="col-sm-12 col-md-6 col-lg-4">
-                <div class="card login__form">
-                    <div class="card-body pt-3">
-                        <form
-                            id="loginForm"
-                            [formGroup]="form"
-                            (ngSubmit)="onSubmit()">
-                            <div class="row">
-                                <div class="col-12">
-                                    <app-form-input-wrapper
-                                        [for]="'email_phone'"
-                                        [errorMessage]="form.controlErrorMessages.email_phone">
-                                        <input
-                                            id="email_phone"
-                                            formControlName="email_phone"
-                                            type="text"
-                                            class="form-control"
-                                            placeholder="{{ 'label.email_phone' | translate }}" />
-                                    </app-form-input-wrapper>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-12">
-                                    <app-form-input-wrapper
-                                        [for]="'password'"
-                                        [errorMessage]="form.controlErrorMessages.password">
-                                        <input
-                                            id="password"
-                                            formControlName="password"
-                                            type="password"
-                                            class="form-control"
-                                            placeholder="{{ 'label.password' | translate }}" />
-                                    </app-form-input-wrapper>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-12 text-center">
-                                    <a
-                                        class="btn btn-primary me-3"
-                                        [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.REGISTER">
-                                        {{ 'label.register' | translate }}
-                                    </a>
-                                    <button
-                                        type="submit"
-                                        class="btn btn-primary">
-                                        {{ 'label.login' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+<div class="login-component container-fluid px-0">
+    <div class="main-section">
+        <div class="row mb-3">
+            <h3 class="mb-0">Chào mừng đến với Tiền Về</h3>
+        </div>
+        <form
+            id="loginForm"
+            [formGroup]="form"
+            (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'email_phone'"
+                        [errorMessage]="form.controlErrorMessages.email_phone">
+                        <input
+                            id="email_phone"
+                            formControlName="email_phone"
+                            type="text"
+                            class="form-control"
+                            placeholder="{{ 'label.email_phone' | translate }}" />
+                    </app-form-input-wrapper>
                 </div>
             </div>
-            <div class="col-md-3 col-lg-4"></div>
-        </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'password'"
+                        [errorMessage]="form.controlErrorMessages.password">
+                        <input
+                            id="password"
+                            formControlName="password"
+                            type="password"
+                            class="form-control"
+                            placeholder="{{ 'label.password' | translate }}" />
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <a
+                        class="text text-decoration-none cursor-pointer text-bright-primary"
+                        [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.FORGOT_PASSWORD">
+                        Quên mật khẩu ?
+                    </a>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <button
+                        type="submit"
+                        class="btn btn-gradient-primary w-50 py-2">
+                        {{ 'label.login' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
-    <div style="height: 33vh"></div>
+    <div class="register-bottom-section">
+        Chưa có tài khoản ?
+        <a
+            class="text-bright-primary text-decoration-none"
+            [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.REGISTER">
+            {{ 'label.register' | translate }}
+        </a>
+    </div>
 </div>

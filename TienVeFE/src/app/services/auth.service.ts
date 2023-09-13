@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, firstValueFrom, map, of } from 'rxjs';
 import { LoginUserDTO, SaveAccountDTO, UserDTO } from '../dtos';
-import { APIResponse, API_ROUTES, BaseHTTPClient, CONSTANTS } from '../utils';
+import { APIResponse, API_ROUTES, BaseHTTPClient, CONSTANTS, Helpers } from '../utils';
 import { HTTPOptions } from '../utils/http';
 import { ValueOf } from '../utils/types';
 
@@ -57,12 +57,12 @@ export class AuthService {
         );
     }
 
-    public async register(id: number, otp: string, emailPhone: string, type: ValueOf<typeof CONSTANTS.REGISTER_TYPES>) {
+    public async register(id: number, otp: string, emailPhone: string, type: ValueOf<typeof CONSTANTS.REGISTER_TYPES>, isLongToken: boolean) {
         try {
             const opts = new HTTPOptions();
             opts.useAccessToken = false;
 
-            const params = { id, otp, email_phone: emailPhone, type };
+            const params = { id, otp, email_phone: emailPhone, type, is_long_token: isLongToken };
             const httpRes = await firstValueFrom(this._http.post(API_ROUTES.AUTH.REGISTER, params));
             if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR);
 
@@ -83,6 +83,43 @@ export class AuthService {
 
             const item = UserDTO.fromJson(httpRes.body.data);
             return APIResponse.success(httpRes.body.message, item);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, undefined, err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public async validateForgotPasswordOtp(id: number, otp: string, emailPhone: string) {
+        try {
+            const opts = new HTTPOptions();
+            opts.useAccessToken = false;
+            const params = { id, otp, email_phone: emailPhone };
+            const httpRes = await firstValueFrom(this._http.post(API_ROUTES.AUTH.VALIDATE_FORGOT_PASSWORD_OTP, params, opts));
+            const accessToken = String(httpRes.body?.data?.['access_token'] || '');
+            if (!httpRes.body || !Helpers.isString(accessToken)) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR);
+
+            return APIResponse.success(httpRes.body.message, accessToken);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, undefined, err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public async renewPassword(accessToken: string, password: string) {
+        try {
+            const opts = new HTTPOptions();
+            opts.headers = {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+            };
+
+            const httpRes = await firstValueFrom(this._http.post(API_ROUTES.AUTH.RENEW_PASSWORD, { password }, opts));
+            if (!httpRes.body) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR);
+            return APIResponse.success<void>(httpRes.body.message);
         } catch (err) {
             if (APIResponse.is(err)) {
                 return APIResponse.error(err.message, undefined, err.errors);

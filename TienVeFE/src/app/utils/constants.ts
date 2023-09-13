@@ -25,7 +25,7 @@ const CONSTANTS = {
     },
     OTP: {
         LENGTH: 6,
-        EXPIRED_SECONDS: 300,
+        EXPIRED_SECONDS: 600,
         RESEND_SECONDS: 10,
     },
     IMPORT_DEBT_TEMPLATE_NAME: 'Nhap_Cong_No.xlsx',
@@ -37,8 +37,9 @@ const ROUTES = {
     AUTH: {
         MODULE: 'auth',
         LOGIN: 'login',
-        CHANGE_PASSWORD: 'change-password',
         REGISTER: 'register',
+        FORGOT_PASSWORD: 'forgot-password',
+        CHANGE_PASSWORD: 'change-password',
     },
     DASHBOARD: '',
     BANK_ACCOUNT: {
@@ -60,6 +61,8 @@ const API_ROUTES = {
         SAVE_ACCOUNT: 'auth/save-account',
         LOGIN: 'auth/login',
         CHANGE_PASSWORD: 'auth/change-password',
+        VALIDATE_FORGOT_PASSWORD_OTP: 'auth/validate-forgot-password-otp',
+        RENEW_PASSWORD: 'auth/renew-password',
     },
     USER: {
         GET_PROFILE: 'user/profile',

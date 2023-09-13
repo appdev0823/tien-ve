@@ -1,0 +1,39 @@
+<div class="container-fluid auth-layout">
+    <div class="row h-100">
+        <div class="col-12 col-md-4 col-lg-6 half-left d-none d-md-block">
+            <ngb-carousel
+                class="carousel"
+                data-ride="carousel"
+                [interval]="3000"
+                [pauseOnHover]="true"
+                [pauseOnFocus]="true"
+                [showNavigationArrows]="false">
+                <ng-template
+                    ngbSlide
+                    *ngFor="let bg of bgList; index as i">
+                    <div class="carousel-caption">
+                        <img
+                            src="assets/img/star.png"
+                            class="star"
+                            alt="star" />
+                        <h3>{{ bg.caption }}</h3>
+                    </div>
+                    <div class="carousel-img">
+                        <img
+                            [alt]="bg.img"
+                            [src]="bg.img" />
+                    </div>
+                </ng-template>
+            </ngb-carousel>
+        </div>
+        <div class="col-12 col-md-8 col-lg-6 half-right">
+            <div class="card auth-card">
+                <div class="card-body p-0">
+                    <div class="auth-main">
+                        <router-outlet></router-outlet>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

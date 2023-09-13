@@ -1,0 +1,53 @@
+@import 'src/assets/scss/custom.scss';
+
+.auth-layout {
+    height: 100vh;
+
+    .half-left {
+        padding: 0;
+
+        .carousel {
+            .carousel-caption {
+                bottom: unset !important;
+                top: 20%;
+                text-align: justify;
+
+                img.star {
+                    height: 40px;
+                    width: auto;
+                    margin-bottom: 1rem;
+                }
+            }
+
+            .carousel-img {
+                img {
+                    filter: brightness(0.5) !important;
+                    height: 100vh;
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    .half-right {
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+
+        .auth-card {
+            height: 100%;
+            width: 100%;
+            padding: 3rem;
+            box-shadow: 0px 16px 24px 0px rgba(0, 0, 0, 0.1) !important;
+            border: none;
+            border-radius: 2rem;
+            margin: auto;
+
+            .auth-main {
+                height: 100%;
+            }
+        }
+    }
+}

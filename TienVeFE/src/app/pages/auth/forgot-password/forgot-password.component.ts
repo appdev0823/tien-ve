@@ -5,26 +5,25 @@ import { TranslateService } from '@ngx-translate/core';
 import * as dayjs from 'dayjs';
 import { NgOtpInputComponent } from 'ng-otp-input';
 import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
-import { LoginUserDTO, OtpDTO } from 'src/app/dtos';
+import { OtpDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { AuthService, OtpService, UserService } from 'src/app/services';
-import { saveAuthStateAction } from 'src/app/store/auth/auth.actions';
 import { AuthValidator, CustomValidators } from 'src/app/validators';
 import { Md5 } from 'ts-md5';
 
 @Component({
-    selector: 'app-register',
-    templateUrl: './register.component.html',
-    styleUrls: ['./register.component.scss'],
+    selector: 'app-forgot-password',
+    templateUrl: './forgot-password.component.html',
+    styleUrls: ['./forgot-password.component.scss'],
 })
-export class RegisterComponent extends PageComponent {
+export class ForgotPasswordComponent extends PageComponent {
     public validator = new AuthValidator();
 
-    public registerForm = this.validator.getRegisterForm();
+    public forgotPasswordForm = this.validator.getForgotPasswordForm();
     public otpForm = this.validator.getOtpForm();
-    public saveAccountForm = this.validator.getSaveAccountForm();
+    public renewPasswordForm = this.validator.getRenewPasswordForm();
 
-    /** 1: register, 2: validate otp, 3: save account */
+    /** 1: forgot password, 2: validate otp, 3: renew password */
     public mode: 1 | 2 | 3 = 1;
 
     private _createdOtp = new OtpDTO();
@@ -43,7 +42,7 @@ export class RegisterComponent extends PageComponent {
     /** Thời gian (s) còn lại để resend OTP */
     private _resendOtpRemainingSeconds = this.CONSTANTS.OTP.RESEND_SECONDS;
 
-    private _loginUser = new LoginUserDTO();
+    private _forgotPasswordAccessToken = '';
 
     /** Constructor */
     constructor(private _translate$: TranslateService, private _auth$: AuthService, private _otp$: OtpService, private _user$: UserService, private _toast$: AppToastService, private _router: Router) {
@@ -51,19 +50,19 @@ export class RegisterComponent extends PageComponent {
     }
 
     public onTypeChanged() {
-        this.registerForm.clearControlErrorMessages();
-        this.registerForm.controls.email_phone.reset();
+        this.forgotPasswordForm.clearControlErrorMessages();
+        this.forgotPasswordForm.controls.email_phone.reset();
 
-        const type = this.registerForm.value.type;
+        const type = this.forgotPasswordForm.value.type;
 
         const formatValidator = type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? Validators.email : CustomValidators.phone;
         const errorMsg = this._translate$.instant('validation.required', {
             item: String(this._translate$.instant(`label.${type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'email' : 'phone'}`)).toLowerCase(),
         }) as string;
 
-        this.registerForm.controls.email_phone.setValidators([Validators.required, formatValidator]);
-        if (this.registerForm.controlValidationMessages.email_phone) {
-            this.registerForm.controlValidationMessages.email_phone['required'] = errorMsg;
+        this.forgotPasswordForm.controls.email_phone.setValidators([Validators.required, formatValidator]);
+        if (this.forgotPasswordForm.controlValidationMessages.email_phone) {
+            this.forgotPasswordForm.controlValidationMessages.email_phone['required'] = errorMsg;
         }
     }
 
@@ -77,21 +76,21 @@ export class RegisterComponent extends PageComponent {
             clearInterval(this._resendOtpCountdownInterval);
         }
 
-        this.registerForm.clearControlErrorMessages();
-        if (!this.registerForm.valid || !this.helpers.isString(this.registerForm.value.email_phone) || !this.registerForm.value.type) {
-            this.registerForm.setControlErrorMessages();
+        this.forgotPasswordForm.clearControlErrorMessages();
+        if (!this.forgotPasswordForm.valid || !this.helpers.isString(this.forgotPasswordForm.value.email_phone) || !this.forgotPasswordForm.value.type) {
+            this.forgotPasswordForm.setControlErrorMessages();
             return;
         }
 
-        const existenceResult = await this._user$.getByEmailPhone(this.registerForm.value.email_phone);
-        if (existenceResult.data) {
-            const errMsgKey = this.registerForm.value.type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'err_email_exists' : 'err_phone_exists';
+        const existenceResult = await this._user$.getByEmailPhone(this.forgotPasswordForm.value.email_phone);
+        if (!existenceResult.data) {
+            const errMsgKey = this.forgotPasswordForm.value.type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'err_email_not_exists' : 'err_phone_not_exists';
             const errMsg = String(this._translate$.instant(`message.${errMsgKey}`));
             this._toast$.error(errMsg);
             return;
         }
 
-        const result = await this._otp$.create(this.registerForm.value.email_phone, this.registerForm.value.type);
+        const result = await this._otp$.create(this.forgotPasswordForm.value.email_phone, this.forgotPasswordForm.value.type);
         if (!result.isSuccess || !result.data) {
             const errMsg = String(this._translate$.instant(`message.${result.message}`));
             this._toast$.error(errMsg);
@@ -133,12 +132,12 @@ export class RegisterComponent extends PageComponent {
         }, 1000);
     }
 
-    public viewRegisterMode() {
+    public viewForgotPasswordMode() {
         this.mode = 1;
 
-        this.registerForm.clearControlErrorMessages();
+        this.forgotPasswordForm.clearControlErrorMessages();
         this.otpForm = this.validator.getOtpForm();
-        this.saveAccountForm = this.validator.getSaveAccountForm();
+        this.renewPasswordForm = this.validator.getRenewPasswordForm();
 
         this._createdOtp = new OtpDTO();
         this._otpCountdownInterval = undefined;
@@ -153,61 +152,40 @@ export class RegisterComponent extends PageComponent {
             return;
         }
 
-        const emailPhone = this.registerForm.value.email_phone;
-        const type = this.registerForm.value.type;
-        if (!emailPhone || !type) return;
+        const emailPhone = this.forgotPasswordForm.value.email_phone;
+        if (!emailPhone) return;
 
-        const result = await this._auth$.register(this._createdOtp.id, this.otpForm.value.otp, emailPhone, type, this.registerForm.value.is_long_token ? true : false);
+        const result = await this._auth$.validateForgotPasswordOtp(this._createdOtp.id, this.otpForm.value.otp, emailPhone);
         if (!result.isSuccess || !result.data) {
             const errMsg = this._translate$.instant(`message.${result.message}`) as string;
             this._toast$.error(errMsg);
             return;
         }
 
-        this.store.dispatch(saveAuthStateAction({ payload: result.data }));
-        this._loginUser = result.data;
-
-        // Thông tin user đăng nhập không có name | email | phone thì yêu cầu update
-        if (!this.helpers.isString(result.data.name) || !this.helpers.isString(result.data.email) || !this.helpers.isString(result.data.phone)) {
-            this.mode = 3;
-            if (this.helpers.isString(result.data.name)) this.saveAccountForm.controls.name.setValue(result.data.name);
-            if (this.helpers.isString(result.data.email)) this.saveAccountForm.controls.email.setValue(result.data.email);
-            if (this.helpers.isString(result.data.phone)) this.saveAccountForm.controls.phone.setValue(result.data.phone);
-            return;
-        }
-
-        await this._router.navigate([this.ROUTES.DASHBOARD]);
+        this._forgotPasswordAccessToken = result.data;
+        this.mode = 3;
     }
 
-    public async onUpdateAccount() {
-        this.saveAccountForm.clearControlErrorMessages();
-        if (!this.saveAccountForm.valid) {
-            this.saveAccountForm.setControlErrorMessages();
+    public async onRenewPassword() {
+        this.renewPasswordForm.clearControlErrorMessages();
+        if (!this.renewPasswordForm.valid) {
+            this.renewPasswordForm.setControlErrorMessages();
             return;
         }
 
-        const { email, phone, name, password } = this.saveAccountForm.value;
-        if (!email || !phone || !name || !password) return;
+        const { password } = this.renewPasswordForm.value;
+        if (!password) return;
 
-        const result = await this._auth$.saveAccount({ email, phone, name, password: Md5.hashStr(password) });
-        if (!result.isSuccess || !result.data) {
+        const result = await this._auth$.renewPassword(this._forgotPasswordAccessToken, Md5.hashStr(password));
+        if (!result.isSuccess) {
             const errMsg = this._translate$.instant(`message.${result.message}`) as string;
             this._toast$.error(errMsg);
             return;
         }
 
-        const updatedLoginUser = new LoginUserDTO();
-        updatedLoginUser.id = this._loginUser.id;
-        updatedLoginUser.email = this._loginUser.email;
-        updatedLoginUser.phone = this._loginUser.phone;
-        updatedLoginUser.name = this._loginUser.name;
-        updatedLoginUser.is_active = this._loginUser.is_active;
-        updatedLoginUser.created_date = this._loginUser.created_date;
-        updatedLoginUser.updated_date = this._loginUser.updated_date;
-        updatedLoginUser.access_token = this._loginUser.access_token;
+        const successMsg = String(this._translate$.instant('message.save_successfully'));
+        this._toast$.success(successMsg);
 
-        this.store.dispatch(saveAuthStateAction({ payload: updatedLoginUser }));
-
-        await this._router.navigate([this.ROUTES.DASHBOARD]);
+        await this._router.navigate([`/${this.ROUTES.AUTH.MODULE}/${this.ROUTES.AUTH.LOGIN}`]);
     }
 }

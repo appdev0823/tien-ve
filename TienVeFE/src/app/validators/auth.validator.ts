@@ -77,13 +77,12 @@ export class AuthValidator extends BaseValidator {
         return form;
     }
 
-    /**
-     * Get login form group
-     */
     public getRegisterForm() {
         const form = new AppFormGroup({
             email_phone: new FormControl('', [Validators.required, Validators.email]),
             type: new FormControl<ValueOf<typeof CONSTANTS.REGISTER_TYPES>>(CONSTANTS.REGISTER_TYPES.EMAIL),
+            is_long_token: new FormControl(true),
+            is_policy_accepted: new FormControl(true),
         });
 
         form.controlValidationMessages = {
@@ -150,6 +149,65 @@ export class AuthValidator extends BaseValidator {
                     item: String(this._translate$.instant('label.name')).toLowerCase(),
                 }) as string,
             },
+            password: {
+                required: this._translate$.instant('validation.required', {
+                    item: String(this._translate$.instant('label.password')).toLowerCase(),
+                }) as string,
+                minlength: this._translate$.instant('validation.minlength', {
+                    num: this.PASSWORD_MIN,
+                }) as string,
+                password: this._translate$.instant('validation.password', {
+                    field: String(this._translate$.instant('label.password')),
+                }) as string,
+                match: this._translate$.instant('validation.match', {
+                    name1: this._translate$.instant('label.password') as string,
+                    name2: this._translate$.instant('label.confirm_password') as string,
+                }) as string,
+            },
+            confirm_password: {
+                required: this._translate$.instant('validation.required', {
+                    item: String(this._translate$.instant('label.confirm_password')).toLowerCase(),
+                }) as string,
+                match: this._translate$.instant('validation.match', {
+                    name1: this._translate$.instant('label.password') as string,
+                    name2: this._translate$.instant('label.confirm_password') as string,
+                }) as string,
+            },
+        };
+
+        return form;
+    }
+
+    public getForgotPasswordForm() {
+        const form = new AppFormGroup({
+            email_phone: new FormControl('', [Validators.required, Validators.email]),
+            type: new FormControl<ValueOf<typeof CONSTANTS.REGISTER_TYPES>>(CONSTANTS.REGISTER_TYPES.EMAIL),
+        });
+
+        form.controlValidationMessages = {
+            email_phone: {
+                required: this._translate$.instant('validation.required', {
+                    item: String(this._translate$.instant('label.email')).toLowerCase(),
+                }) as string,
+                email: this._translate$.instant('validation.email', {
+                    item: String(this._translate$.instant('label.email')),
+                }) as string,
+                phone: this._translate$.instant('validation.phone', {
+                    item: String(this._translate$.instant('label.phone')),
+                }) as string,
+            },
+        };
+
+        return form;
+    }
+
+    public getRenewPasswordForm() {
+        const form = new AppFormGroup({
+            password: new FormControl('', [Validators.required, Validators.minLength(this.PASSWORD_MIN), CustomValidators.password, CustomValidators.match('confirm_password')]),
+            confirm_password: new FormControl('', [Validators.required, CustomValidators.match('password')]),
+        });
+
+        form.controlValidationMessages = {
             password: {
                 required: this._translate$.instant('validation.required', {
                     item: String(this._translate$.instant('label.password')).toLowerCase(),
