@@ -33,13 +33,6 @@ export class SidebarComponent extends BaseComponent implements OnInit {
         });
     }
 
-    public async logOut() {
-        this.store.dispatch(saveAuthStateAction({ payload: new LoginUserDTO() }));
-        localStorage.removeItem(this.CONSTANTS.LS_ACCESS_TOKEN_KEY);
-        const loginRoute = `/${this.ROUTES.AUTH.MODULE}/${this.ROUTES.AUTH.LOGIN}`;
-        await this._router.navigate([loginRoute]);
-    }
-
     public collapseSidebar() {
         setTimeout(() => {
             const sidebar = jQuery('.sidebar-mini');

@@ -116,7 +116,7 @@
                     <label
                         for="policy-checkbox"
                         class="form-check-label">
-                        Tôi đã đọc và chấp nhận <span class="text-bright-primary">Điều khoản dịch vụ</span> và <span class="text-bright-primary">Chính sách về Quyền riêng tư</span>
+                        Tôi đã đọc và chấp nhận <span class="text-primary">Điều khoản dịch vụ</span> và <span class="text-primary">Chính sách về Quyền riêng tư</span>
                     </label>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                 <div class="col-12">
                     <a
                         class="text text-decoration-none cursor-pointer"
-                        [ngClass]="resendOtpRemainingTime !== '00:00' ? 'text-gray pointer-event-none' : 'text-bright-primary'"
+                        [ngClass]="resendOtpRemainingTime !== '00:00' ? 'text-gray pointer-event-none' : 'text-primary'"
                         (click)="sendOtp(true)">
                         &nbsp;Gửi lại mã xác nhận&nbsp;{{ resendOtpRemainingTime !== '00:00' ? 'sau ' + resendOtpRemainingTime : '' }}
                     </a>
@@ -265,7 +265,7 @@
         class="login-bottom-section">
         Đã có tài khoản ?
         <a
-            class="text-bright-primary text-decoration-none"
+            class="text-primary text-decoration-none"
             [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.LOGIN">
             {{ 'label.login' | translate }}
         </a>

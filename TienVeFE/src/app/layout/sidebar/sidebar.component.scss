@@ -1,6 +1,35 @@
 @import 'src/assets/scss/custom.scss';
 
+.nav-item .nav-link {
+    display: flex;
+    align-items: center;
+}
+
 .sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
 .sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
     background-color: $primaryColor;
+    background: linear-gradient(92.29deg, rgba(216, 45, 139, 0.92) 20.9%, rgba(216, 45, 139, 0.77) 86.46%);
+    box-shadow: 0px 2px 6px 0px $primaryColor;
+    height: 45px;
+    border-radius: 12px;
+}
+
+.app-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    height: 100px;
+
+    .brand-image {
+        height: 50px;
+        width: auto;
+        margin-right: 5px;
+    }
+
+    .brand-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: black;
+    }
 }

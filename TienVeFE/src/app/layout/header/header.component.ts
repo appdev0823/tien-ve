@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoginUserDTO } from 'src/app/dtos';
 import BaseComponent from 'src/app/includes/base.component';
+import { saveAuthStateAction } from 'src/app/store/auth/auth.actions';
 
 @Component({
     selector: 'app-header',
@@ -8,7 +11,14 @@ import BaseComponent from 'src/app/includes/base.component';
 })
 export class HeaderComponent extends BaseComponent {
     /** Constructor */
-    constructor() {
+    constructor(private readonly _router: Router) {
         super();
+    }
+
+    public async logOut() {
+        this.store.dispatch(saveAuthStateAction({ payload: new LoginUserDTO() }));
+        localStorage.removeItem(this.CONSTANTS.LS_ACCESS_TOKEN_KEY);
+        const loginRoute = `/${this.ROUTES.AUTH.MODULE}/${this.ROUTES.AUTH.LOGIN}`;
+        await this._router.navigate([loginRoute]);
     }
 }

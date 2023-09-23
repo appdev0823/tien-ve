@@ -1,19 +1,22 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar sidebar-light-primary elevation-4">
+<aside class="main-sidebar sidebar-light-primary border-end">
     <!-- Brand Logo -->
     <a
-        class="d-flex align-items-center justify-content-center"
+        class="app-logo-container"
         [routerLink]="'/' + ROUTES.DASHBOARD"
         (click)="collapseSidebar()">
         <img
-            src="assets/img/app-icon.png"
+            src="assets/img/app-icon-transparent.png"
             alt="Logo"
-            class="brand-image mt-3" />
+            class="brand-image" />
+        <div class="brand-name">
+            {{ 'app_name' | translate }}
+        </div>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar mt-0">
-        <div class="user-panel pt-2 pb-2 d-flex align-items-center">
+        <!-- <div class="user-panel pt-2 pb-2 d-flex align-items-center">
             <div class="image">
                 <img
                     src="assets/img/default-user-avatar.png"
@@ -38,7 +41,7 @@
                     </a>
                 </p>
             </div>
-        </div>
+        </div> -->
         <nav class="mt-2">
             <ul
                 class="nav nav-pills nav-sidebar flex-column"
@@ -52,8 +55,8 @@
                         class="nav-link"
                         [routerLink]="'/' + ROUTES.DASHBOARD"
                         [class.active]="helpers.isFilledArray(routePathList) && routePathList[0] === ROUTES.DASHBOARD">
-                        <fa-icon [icon]="icons.solid.faHome"></fa-icon>
-                        <p class="ms-3">Trang chủ</p>
+                        <fa-icon [icon]="icons.solid.faLineChart"></fa-icon>
+                        <p class="ms-3">Báo cáo tổng quan</p>
                     </a>
                 </li>
                 <li
@@ -63,19 +66,8 @@
                         class="nav-link"
                         [routerLink]="'/' + ROUTES.BANK_ACCOUNT.MODULE + '/' + ROUTES.BANK_ACCOUNT.LIST"
                         [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 1 && routePathList[0] === ROUTES.BANK_ACCOUNT.MODULE">
-                        <fa-icon [icon]="icons.solid.faPiggyBank"></fa-icon>
-                        <p class="ms-3">Quản lý tài khoản nhận tiền</p>
-                    </a>
-                </li>
-                <li
-                    class="nav-item"
-                    (click)="collapseSidebar()">
-                    <a
-                        class="nav-link"
-                        [routerLink]="'/' + ROUTES.DEBT.MODULE + '/' + ROUTES.DEBT.IMPORT"
-                        [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 2 && routePathList[0] === ROUTES.DEBT.MODULE && routePathList[1] === ROUTES.DEBT.IMPORT">
-                        <fa-icon [icon]="icons.solid.faFileImport"></fa-icon>
-                        <p class="ms-3">Nhập công nợ</p>
+                        <fa-icon [icon]="icons.regular.faUser"></fa-icon>
+                        <p class="ms-3">Tài khoản</p>
                     </a>
                 </li>
                 <li
@@ -87,6 +79,17 @@
                         [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 1 && routePathList[0] === ROUTES.DEBT.MODULE">
                         <fa-icon [icon]="icons.solid.faList"></fa-icon>
                         <p class="ms-3">Quản lý công nợ</p>
+                    </a>
+                </li>
+                <li
+                    class="nav-item"
+                    (click)="collapseSidebar()">
+                    <a
+                        class="nav-link"
+                        [routerLink]="'/' + ROUTES.DEBT.MODULE + '/' + ROUTES.DEBT.IMPORT"
+                        [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 2 && routePathList[0] === ROUTES.DEBT.MODULE && routePathList[1] === ROUTES.DEBT.IMPORT">
+                        <fa-icon [icon]="icons.solid.faCog"></fa-icon>
+                        <p class="ms-3">Nhập công nợ</p>
                     </a>
                 </li>
             </ul>
