@@ -3,6 +3,8 @@
 .nav-item .nav-link {
     display: flex;
     align-items: center;
+    font-weight: 600;
+    height: 55px;
 }
 
 .sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
@@ -10,7 +12,6 @@
     background-color: $primaryColor;
     background: linear-gradient(92.29deg, rgba(216, 45, 139, 0.92) 20.9%, rgba(216, 45, 139, 0.77) 86.46%);
     box-shadow: 0px 2px 6px 0px $primaryColor;
-    height: 45px;
     border-radius: 12px;
 }
 
