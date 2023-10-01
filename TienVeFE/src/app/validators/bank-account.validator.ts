@@ -1,7 +1,8 @@
 import { FormControl, Validators } from '@angular/forms';
-import { AppFormGroup } from '../utils';
+import { AppFormGroup, CONSTANTS } from '../utils';
 import { BaseValidator } from './base.validator';
 import { CustomValidators } from './custom.validators';
+import { ValueOf } from '../utils/types';
 
 export class BankAccountValidator extends BaseValidator {
     public readonly ACCOUNT_NUMBER_ML = 20;
@@ -18,34 +19,34 @@ export class BankAccountValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             bank_id: {
-                required: this._translate$.instant('validation.required', {
+                required: this.translate$.instant('validation.required', {
                     item: 'ngân hàng',
                 }) as string,
             },
             branch_name: {
-                required: this._translate$.instant('validation.required', {
+                required: this.translate$.instant('validation.required', {
                     item: 'tên chi nhánh',
                 }) as string,
             },
             account_number: {
-                required: this._translate$.instant('validation.required', {
+                required: this.translate$.instant('validation.required', {
                     item: 'số tài khoản',
                 }) as string,
-                maxlength: this._translate$.instant('validation.maxlength', {
+                maxlength: this.translate$.instant('validation.maxlength', {
                     num: this.ACCOUNT_NUMBER_ML,
                 }) as string,
             },
             card_owner: {
-                required: this._translate$.instant('validation.required', {
+                required: this.translate$.instant('validation.required', {
                     item: 'tên chủ tài khoản',
                 }) as string,
             },
             phone: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.phone')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.phone')).toLowerCase(),
                 }) as string,
-                phone: this._translate$.instant('validation.phone', {
-                    item: String(this._translate$.instant('label.phone')),
+                phone: this.translate$.instant('validation.phone', {
+                    item: String(this.translate$.instant('label.phone')),
                 }) as string,
             },
         };

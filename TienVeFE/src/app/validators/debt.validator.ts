@@ -17,21 +17,21 @@ export class DebtValidator extends BaseValidator {
     ) {
         const errorMessageList: string[] = [];
 
-        const payerNameLbl = String(this._translate$.instant('label.payer_name'));
-        const payerPhoneLbl = String(this._translate$.instant('label.payer_phone'));
-        const amountLbl = String(this._translate$.instant('label.amount'));
-        const bankAccountIdLbl = String(this._translate$.instant('label.receive_money_account'));
+        const payerNameLbl = String(this.translate$.instant('label.payer_name'));
+        const payerPhoneLbl = String(this.translate$.instant('label.payer_phone'));
+        const amountLbl = String(this.translate$.instant('label.amount'));
+        const bankAccountIdLbl = String(this.translate$.instant('label.receive_money_account'));
 
-        const errPayerNameRequired = `${payerNameLbl}: ${String(this._translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
-        const errPayerPhoneRequired = `${payerPhoneLbl}: ${String(this._translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
-        const errAmountRequired = `${amountLbl}: ${String(this._translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
-        const errBankAccountIdRequired = `${bankAccountIdLbl}: ${String(this._translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
+        const errPayerNameRequired = `${payerNameLbl}: ${String(this.translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
+        const errPayerPhoneRequired = `${payerPhoneLbl}: ${String(this.translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
+        const errAmountRequired = `${amountLbl}: ${String(this.translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
+        const errBankAccountIdRequired = `${bankAccountIdLbl}: ${String(this.translate$.instant('validation.required', { item: '' })).toLowerCase()}`;
 
-        const errPayerPhoneMaxLength = `${payerPhoneLbl}: ${String(this._translate$.instant('validation.maxlength', { num: this.PHONE_ML })).toLowerCase()}`;
-        const errPayerPhoneFormat = `${payerPhoneLbl}: ${String(this._translate$.instant('validation.phone')).toLowerCase()}`;
+        const errPayerPhoneMaxLength = `${payerPhoneLbl}: ${String(this.translate$.instant('validation.maxlength', { num: this.PHONE_ML })).toLowerCase()}`;
+        const errPayerPhoneFormat = `${payerPhoneLbl}: ${String(this.translate$.instant('validation.phone')).toLowerCase()}`;
 
-        const errAmountMin = `${amountLbl}: ${String(this._translate$.instant('validation.min', { name: '', num: 1 })).toLowerCase()}`;
-        const errAmountMax = `${amountLbl}: ${String(this._translate$.instant('validation.max', { name: '', num: this.DECIMAL_15_3_MAX })).toLowerCase()}`;
+        const errAmountMin = `${amountLbl}: ${String(this.translate$.instant('validation.min', { name: '', num: 1 })).toLowerCase()}`;
+        const errAmountMax = `${amountLbl}: ${String(this.translate$.instant('validation.max', { name: '', num: this.DECIMAL_15_3_MAX })).toLowerCase()}`;
 
         debt.invalid_keys = {};
 

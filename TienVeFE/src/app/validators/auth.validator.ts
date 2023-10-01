@@ -18,13 +18,13 @@ export class AuthValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             email_phone: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.email_phone')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.email_phone')).toLowerCase(),
                 }) as string,
             },
             password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.password')).toLowerCase(),
                 }) as string,
             },
         };
@@ -44,32 +44,32 @@ export class AuthValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             old_password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.old_password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.old_password')).toLowerCase(),
                 }) as string,
             },
             new_password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.new_password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.new_password')).toLowerCase(),
                 }) as string,
-                minlength: this._translate$.instant('validation.minlength', {
+                minlength: this.translate$.instant('validation.minlength', {
                     num: this.PASSWORD_MIN,
                 }) as string,
-                password: this._translate$.instant('validation.password', {
-                    field: String(this._translate$.instant('label.new_password')),
+                password: this.translate$.instant('validation.password', {
+                    field: String(this.translate$.instant('label.new_password')),
                 }) as string,
-                match: this._translate$.instant('validation.match', {
-                    name1: this._translate$.instant('label.new_password') as string,
-                    name2: this._translate$.instant('label.confirm_new_password') as string,
+                match: this.translate$.instant('validation.match', {
+                    name1: this.translate$.instant('label.new_password') as string,
+                    name2: this.translate$.instant('label.confirm_new_password') as string,
                 }) as string,
             },
             confirm_new_password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.confirm_new_password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.confirm_new_password')).toLowerCase(),
                 }) as string,
-                match: this._translate$.instant('validation.match', {
-                    name1: this._translate$.instant('label.new_password') as string,
-                    name2: this._translate$.instant('label.confirm_new_password') as string,
+                match: this.translate$.instant('validation.match', {
+                    name1: this.translate$.instant('label.new_password') as string,
+                    name2: this.translate$.instant('label.confirm_new_password') as string,
                 }) as string,
             },
         };
@@ -87,14 +87,14 @@ export class AuthValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             email_phone: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.email')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.email')).toLowerCase(),
                 }) as string,
-                email: this._translate$.instant('validation.email', {
-                    item: String(this._translate$.instant('label.email')),
+                email: this.translate$.instant('validation.email', {
+                    item: String(this.translate$.instant('label.email')),
                 }) as string,
-                phone: this._translate$.instant('validation.phone', {
-                    item: String(this._translate$.instant('label.phone')),
+                phone: this.translate$.instant('validation.phone', {
+                    item: String(this.translate$.instant('label.phone')),
                 }) as string,
             },
         };
@@ -109,8 +109,8 @@ export class AuthValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             otp: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.otp_code')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.otp_code')).toLowerCase(),
                 }) as string,
             },
         };
@@ -129,48 +129,48 @@ export class AuthValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             email: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.email')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.email')).toLowerCase(),
                 }) as string,
-                email: this._translate$.instant('validation.email', {
-                    item: String(this._translate$.instant('label.email')),
+                email: this.translate$.instant('validation.email', {
+                    item: String(this.translate$.instant('label.email')),
                 }) as string,
             },
             phone: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.phone')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.phone')).toLowerCase(),
                 }) as string,
-                phone: this._translate$.instant('validation.phone', {
-                    item: String(this._translate$.instant('label.phone')),
+                phone: this.translate$.instant('validation.phone', {
+                    item: String(this.translate$.instant('label.phone')),
                 }) as string,
             },
             name: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.name')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.name')).toLowerCase(),
                 }) as string,
             },
             password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.password')).toLowerCase(),
                 }) as string,
-                minlength: this._translate$.instant('validation.minlength', {
+                minlength: this.translate$.instant('validation.minlength', {
                     num: this.PASSWORD_MIN,
                 }) as string,
-                password: this._translate$.instant('validation.password', {
-                    field: String(this._translate$.instant('label.password')),
+                password: this.translate$.instant('validation.password', {
+                    field: String(this.translate$.instant('label.password')),
                 }) as string,
-                match: this._translate$.instant('validation.match', {
-                    name1: this._translate$.instant('label.password') as string,
-                    name2: this._translate$.instant('label.confirm_password') as string,
+                match: this.translate$.instant('validation.match', {
+                    name1: this.translate$.instant('label.password') as string,
+                    name2: this.translate$.instant('label.confirm_password') as string,
                 }) as string,
             },
             confirm_password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.confirm_password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.confirm_password')).toLowerCase(),
                 }) as string,
-                match: this._translate$.instant('validation.match', {
-                    name1: this._translate$.instant('label.password') as string,
-                    name2: this._translate$.instant('label.confirm_password') as string,
+                match: this.translate$.instant('validation.match', {
+                    name1: this.translate$.instant('label.password') as string,
+                    name2: this.translate$.instant('label.confirm_password') as string,
                 }) as string,
             },
         };
@@ -186,14 +186,14 @@ export class AuthValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             email_phone: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.email')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.email')).toLowerCase(),
                 }) as string,
-                email: this._translate$.instant('validation.email', {
-                    item: String(this._translate$.instant('label.email')),
+                email: this.translate$.instant('validation.email', {
+                    item: String(this.translate$.instant('label.email')),
                 }) as string,
-                phone: this._translate$.instant('validation.phone', {
-                    item: String(this._translate$.instant('label.phone')),
+                phone: this.translate$.instant('validation.phone', {
+                    item: String(this.translate$.instant('label.phone')),
                 }) as string,
             },
         };
@@ -209,27 +209,27 @@ export class AuthValidator extends BaseValidator {
 
         form.controlValidationMessages = {
             password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.password')).toLowerCase(),
                 }) as string,
-                minlength: this._translate$.instant('validation.minlength', {
+                minlength: this.translate$.instant('validation.minlength', {
                     num: this.PASSWORD_MIN,
                 }) as string,
-                password: this._translate$.instant('validation.password', {
-                    field: String(this._translate$.instant('label.password')),
+                password: this.translate$.instant('validation.password', {
+                    field: String(this.translate$.instant('label.password')),
                 }) as string,
-                match: this._translate$.instant('validation.match', {
-                    name1: this._translate$.instant('label.password') as string,
-                    name2: this._translate$.instant('label.confirm_password') as string,
+                match: this.translate$.instant('validation.match', {
+                    name1: this.translate$.instant('label.password') as string,
+                    name2: this.translate$.instant('label.confirm_password') as string,
                 }) as string,
             },
             confirm_password: {
-                required: this._translate$.instant('validation.required', {
-                    item: String(this._translate$.instant('label.confirm_password')).toLowerCase(),
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.confirm_password')).toLowerCase(),
                 }) as string,
-                match: this._translate$.instant('validation.match', {
-                    name1: this._translate$.instant('label.password') as string,
-                    name2: this._translate$.instant('label.confirm_password') as string,
+                match: this.translate$.instant('validation.match', {
+                    name1: this.translate$.instant('label.password') as string,
+                    name2: this.translate$.instant('label.confirm_password') as string,
                 }) as string,
             },
         };
