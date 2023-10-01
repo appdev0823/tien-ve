@@ -21,3 +21,13 @@ export type UploadFile = {
     file: File;
     base64?: string;
 };
+
+export type RadioModalItem = {
+    /** HTML element ids */
+    id: string;
+    value: string;
+    label: string;
+    is_checked: boolean;
+};
+
+export type ViewMode = 'VIEW' | 'CREATE' | 'UPDATE';

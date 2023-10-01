@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 import { ComponentModule } from 'src/app/components/component.module';
+import { DirectiveModule } from 'src/app/directives/directive.module';
+import { AuthGuard } from 'src/app/guards';
 import { SharedModule } from 'src/app/includes/shared.module';
+import { MainLayoutComponent } from 'src/app/layout/main-layout/main-layout.component';
+import { PipeModule } from 'src/app/pipes/pipe.module';
+import { ROUTES } from 'src/app/utils';
 import { BankAccountListComponent } from './bank-account-list/bank-account-list.component';
 import { BankAccountSaveComponent } from './bank-account-save/bank-account-save.component';
-import { RouterModule, Routes } from '@angular/router';
-import { ROUTES } from 'src/app/utils';
-import { MainLayoutComponent } from 'src/app/layout/main-layout/main-layout.component';
-import { AuthGuard } from 'src/app/guards';
-import { DirectiveModule } from 'src/app/directives/directive.module';
 
 const routes: Routes = [
     {
@@ -26,6 +27,6 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [BankAccountListComponent, BankAccountSaveComponent],
-    imports: [RouterModule.forChild(routes), SharedModule, ComponentModule, DirectiveModule],
+    imports: [RouterModule.forChild(routes), SharedModule, ComponentModule, DirectiveModule, PipeModule],
 })
 export class BankAccountModule {}

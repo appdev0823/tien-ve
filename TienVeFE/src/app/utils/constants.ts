@@ -29,6 +29,14 @@ const CONSTANTS = {
         RESEND_SECONDS: 10,
     },
     IMPORT_DEBT_TEMPLATE_NAME: 'Nhap_Cong_No.xlsx',
+    BANK_ACCOUNT_STATUSES: {
+        /** Ngừng kích hoạt */
+        DEACTIVATED: -1,
+        /** Chưa kích hoạt */
+        NOT_ACTIVATED: 0,
+        /** Đã kích hoạt */
+        ACTIVATED: 1,
+    },
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 
@@ -80,6 +88,7 @@ const API_ROUTES = {
         CREATE: 'bank-account',
         UPDATE: 'bank-account/:id',
         DETAIL: 'bank-account/:id',
+        DELETE_MULTIPLE: 'bank-account',
         DELETE: 'bank-account/:id',
     },
     DEBT: {

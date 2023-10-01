@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { BankAccountDTO, BankDTO, SaveBankAccountDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { BankAccountService, BankService } from 'src/app/services';
+import { ViewMode } from 'src/app/utils/types';
 import { BankAccountValidator } from 'src/app/validators';
 
 @Component({
@@ -18,23 +17,29 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
 
     @Input() id = 0;
 
+    public viewMode: ViewMode | 'CONFIRM_CREATE' | 'COMPLETE_CREATE' = 'VIEW';
+
     public validator = new BankAccountValidator();
     public form = this.validator.getSaveForm();
 
     public bankList: BankDTO[] = [];
     public data = new BankAccountDTO();
 
+    public selectedBank?: BankDTO;
+
     public resultEvent = new EventEmitter<void>();
 
-    constructor(public activeModal: NgbActiveModal, private _translate$: TranslateService, private _toast$: AppToastService, private _bankAccount$: BankAccountService, private _bank$: BankService) {
+    constructor(public activeModal: NgbActiveModal, private _bankAccount$: BankAccountService, private _bank$: BankService) {
         super();
     }
 
     ngOnInit() {
         this._getBankList();
         if (this.id) {
+            this.viewMode = 'VIEW';
             void this._getDetail();
         } else {
+            this.viewMode = 'CREATE';
             this.form.controls.phone.setValue(this.currentUser.phone);
         }
     }
@@ -54,8 +59,8 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
         const result = await this._bankAccount$.getDetail(this.id);
         this.isPageLoaded = true;
         if (!result.isSuccess || !result.data) {
-            const errMsg = String(this._translate$.instant(`message.${result.message}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
             return;
         }
 
@@ -67,9 +72,55 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
         this.form.controls.card_owner.setValue(this.data.card_owner);
         this.form.controls.phone.setValue(this.data.phone);
         this.form.controls.name.setValue(this.data.name);
+        this.form.controls.status.setValue(this.data.status);
+
+        if (this.viewMode === 'VIEW') {
+            this.form.controls.status.disable();
+        }
     }
 
-    public async onSubmit() {
+    public onBankChanged() {
+        const bankId = this.form.value.bank_id;
+        this.selectedBank = this.bankList.find((item) => item.id === bankId);
+    }
+
+    public onConfirmCreate() {
+        this.form.clearControlErrorMessages();
+        if (!this.form.valid) {
+            this.form.setControlErrorMessages();
+            return;
+        }
+
+        this.switchMode('CONFIRM_CREATE');
+    }
+
+    public async onCreate() {
+        const params = new SaveBankAccountDTO();
+        params.bank_id = this.form.value.bank_id || 0;
+        params.phone = this.form.value.phone || '';
+        params.branch_name = this.form.value.branch_name || '';
+        params.card_owner = this.form.value.card_owner || '';
+        params.account_number = this.form.value.account_number || '';
+        params.name = this.form.value.name || '';
+        params.status = this.form.value.status || this.CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED;
+
+        const result = await this._bankAccount$.create(params);
+        if (!result.isSuccess || !result.data) {
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
+            return;
+        }
+
+        const successMsg = String(this.translate$.instant('message.save_successfully'));
+        this.toast$.success(successMsg);
+
+        this.data = result.data;
+        this.resultEvent.emit();
+        this.switchMode('COMPLETE_CREATE');
+    }
+
+    public async onUpdate() {
+        if (!this.id || !this.data.id) return;
         this.form.clearControlErrorMessages();
         if (!this.form.valid) {
             this.form.setControlErrorMessages();
@@ -77,34 +128,72 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
         }
 
         const params = new SaveBankAccountDTO();
-        if (this.id) params.id = this.id;
+        params.id = this.id;
         params.bank_id = this.form.value.bank_id || 0;
         params.phone = this.form.value.phone || '';
         params.branch_name = this.form.value.branch_name || '';
         params.card_owner = this.form.value.card_owner || '';
         params.account_number = this.form.value.account_number || '';
         params.name = this.form.value.name || '';
+        params.status = this.form.value.status || this.CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED;
 
-        if (this.id && this.data.id) {
-            const result = await this._bankAccount$.update(params);
-            if (!result.isSuccess) {
-                const errMsg = String(this._translate$.instant(`message.${result.message}`));
-                this._toast$.error(errMsg);
-                return;
-            }
-        } else {
-            const result = await this._bankAccount$.create(params);
-            if (!result.isSuccess) {
-                const errMsg = String(this._translate$.instant(`message.${result.message}`));
-                this._toast$.error(errMsg);
-                return;
-            }
+        const result = await this._bankAccount$.update(params);
+        if (!result.isSuccess) {
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
+            return;
         }
 
-        const successMsg = String(this._translate$.instant('message.save_successfully'));
-        this._toast$.success(successMsg);
+        const successMsg = String(this.translate$.instant('message.save_successfully'));
+        this.toast$.success(successMsg);
 
         this.activeModal.close();
         this.resultEvent.emit();
+    }
+
+    public onDelete() {
+        if (!this.data.id) return;
+
+        const confirmDeleteMsg = String(this.translate$.instant('message.confirm_delete'));
+        this.showConfirmModal(confirmDeleteMsg, {
+            confirmEvent: (isConfirmed) => {
+                if (!isConfirmed) return;
+
+                void this._delete();
+            },
+        });
+    }
+
+    private async _delete() {
+        const result = await this._bankAccount$.delete(this.data.id);
+        if (!result.isSuccess) {
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
+            return;
+        }
+
+        const successMsg = String(this.translate$.instant('message.delete_successfully'));
+        this.toast$.success(successMsg);
+
+        this.resultEvent.emit();
+        this.activeModal.close();
+    }
+
+    public switchMode(mode: typeof this.viewMode) {
+        this.viewMode = mode;
+
+        if (this.viewMode !== 'VIEW') {
+            this.form.controls.status.enable();
+        } else {
+            this.form.controls.status.disable();
+        }
+
+        if (this.viewMode === 'CREATE') {
+            this.form.enable();
+        }
+
+        if (this.viewMode === 'CONFIRM_CREATE') {
+            this.form.disable();
+        }
     }
 }

@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title">{{ title }}</h4>
+    </div>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-12">
+            <p class="a-fs-12 mb-0">{{ message }}</p>
+        </div>
+    </div>
+    <div
+        *ngFor="let item of itemList"
+        class="row mt-3">
+        <div class="col-12">
+            <div class="icheck-primary d-inline">
+                <input
+                    id="{{ item.id }}_{{ randomStr }}"
+                    type="radio"
+                    name="radio-modal_{{ randomStr }}"
+                    [value]="item.value"
+                    [(ngModel)]="selectedValue" />
+                <label
+                    for="{{ item.id }}_{{ randomStr }}"
+                    class="font-weight-normal">
+                    {{ item.label }}
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+        type="button"
+        class="btn btn-primary btn-common btn-shadow"
+        (click)="onConfirm()">
+        {{ 'label.apply' | translate }}
+    </button>
+</div>

@@ -14,6 +14,7 @@ export class BankAccountValidator extends BaseValidator {
             account_number: new FormControl('', [Validators.required, Validators.maxLength(this.ACCOUNT_NUMBER_ML)]),
             card_owner: new FormControl('', [Validators.required]),
             phone: new FormControl('', [Validators.required, CustomValidators.phone]),
+            status: new FormControl<ValueOf<typeof CONSTANTS.BANK_ACCOUNT_STATUSES>>(CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED, [Validators.required, CustomValidators.phone]),
             name: new FormControl<string | null>(null),
         });
 

@@ -127,10 +127,12 @@ export class BaseHTTPClient {
      * @param route - API route, `environment.api_url` is prepended to this, first `/` is not needed
      * @param opts - HTTP options
      */
-    public delete<T = { [key: string]: any }>(route: string, opts = new HTTPOptions()) {
+    public delete<T = { [key: string]: any }>(route: string, query = {}, opts = new HTTPOptions()) {
         if (opts.showLoading) Helpers.showLoading();
 
-        const url = `${environment.api_url}/${route}`;
+        const queryString = qs.stringify(query);
+        const queries = Helpers.isString(queryString) ? `?${queryString}` : '';
+        const url = `${environment.api_url}/${route}${queries}`;
 
         return this._httpClient
             .delete<APIResponse<T>>(url, {

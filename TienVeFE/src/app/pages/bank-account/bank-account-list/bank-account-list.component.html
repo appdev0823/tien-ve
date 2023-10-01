@@ -2,12 +2,12 @@
 <div class="content-header py-0">
     <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-12">
+            <div class="col-12 ps-0">
                 <h1>Tài khoản</h1>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
+        <div class="row mt-3">
+            <div class="col-12 ps-0">
                 <p class="a-fs-11 mb-0">Quản lý tài khoản ngân hàng</p>
             </div>
         </div>
@@ -19,59 +19,153 @@
         <div class="row mb-4">
             <div class="col-12 text-end">
                 <button
-                    class="btn btn-shadow-white"
+                    class="btn btn-create-new"
                     (click)="onCreate()">
                     <fa-icon
-                        class="me-2 text-primary shadow-bottom"
+                        class="icon"
                         [icon]="icons.solid.faPlusSquare"
-                        [size]="'2x'"></fa-icon>
+                        [size]="'2xl'"></fa-icon>
                     Thêm tài khoản
                 </button>
             </div>
         </div>
-        <div class="card">
+        <div class="card card-border-gray">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-12">
-                        Tổng số dòng:&nbsp;<strong>{{ dataTotal }}</strong>
+                    <div class="col-12 col-md-6 d-flex">
+                        <div
+                            class="ps-0"
+                            style="flex: 1">
+                            <form [formGroup]="searchForm">
+                                <div class="input-group">
+                                    <div class="input-group-text bg-white border-end-0">
+                                        <fa-icon
+                                            class="text-gray"
+                                            [icon]="icons.solid.faSearch"></fa-icon>
+                                    </div>
+                                    <input
+                                        id="keyword"
+                                        type="text"
+                                        class="form-control border-start-0 ps-0"
+                                        placeholder="Tên ngân hàng hoặc số tài khoản"
+                                        [formControl]="searchForm.controls.keyword" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="d-inline-block px-3">
+                            <button
+                                class="btn btn-white btn-border-dark-gray"
+                                (click)="onFilter()">
+                                <fa-icon
+                                    class="text-gray me-2"
+                                    [icon]="icons.solid.faFilter"></fa-icon>
+                                {{ 'label.filter' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 text-end">
+                        <button
+                            class="btn btn-primary"
+                            (click)="onDeleteMultiple()">
+                            <fa-icon [icon]="icons.solid.faTrash"></fa-icon>
+                        </button>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-12">
+                        Tổng số dòng:&nbsp;<strong>{{ dataTotal }}</strong>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-12 px-0">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped table-p-3 mb-0">
+                            <table class="table table-hover table-p-3 mb-0 table-header-border-none table-header-font-weight-normal">
                                 <thead>
                                     <tr>
-                                        <th class="a-w-50 text-center">ID</th>
-                                        <th class="a-w-150 text-center">Ngân hàng</th>
-                                        <th class="a-w-150 text-center">Tên gợi nhớ</th>
-                                        <th class="a-mw-200 text-center">Tên chi nhánh</th>
-                                        <th class="a-w-100 text-center">Số tài khoản</th>
-                                        <th class="a-w-150 text-center">Tên chủ tài khoản</th>
-                                        <th class="a-w-120 text-center">Số điện thoại</th>
-                                        <th class="a-w-120 text-center">Sửa / Xóa</th>
+                                        <th class="a-w-30 text-center icheck-primary">
+                                            <input
+                                                id="check-all"
+                                                type="checkbox"
+                                                class="cell-checkbox"
+                                                [checked]="isAllChecked"
+                                                (change)="toggleAll()" />
+                                            <label for="check-all"></label>
+                                        </th>
+                                        <th class="a-w-300 text-start">Tài khoản ngân hàng</th>
+                                        <th class="a-w-180 text-start">Tên chủ tài khoản</th>
+                                        <th class="a-mw-200 text-start">Chi nhánh</th>
+                                        <th class="a-w-100 text-center">{{ 'label.status' | translate }}</th>
+                                        <th class="a-w-120 text-end">Tổng số dư</th>
+                                        <th class="a-w-50 text-center"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let item of dataList; let idx = index">
-                                        <td class="text-center">{{ item.id }}</td>
-                                        <td class="text-center">{{ item.bank_brand_name }}</td>
-                                        <td>{{ item.name }}</td>
+                                        <td class="text-center icheck-primary">
+                                            <input
+                                                id="datalist-{{ idx }}"
+                                                type="checkbox"
+                                                class="cursor-pointer"
+                                                [checked]="item.is_checked"
+                                                (change)="item.is_checked = !item.is_checked" />
+                                            <label for="datalist-{{ idx }}"></label>
+                                        </td>
+                                        <td>
+                                            <div class="bank-cell">
+                                                <img
+                                                    src="assets/img/banks/{{ item.bank_brand_name }}.png"
+                                                    alt="{{ item.bank_brand_name }}"
+                                                    class="logo" />
+                                                <div class="bank-account">
+                                                    <span class="brand-name">{{ item.bank_brand_name }}</span>
+                                                    <span>{{ item.account_number | accountNumber }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ item.card_owner | uppercase }}</td>
                                         <td>{{ item.branch_name }}</td>
-                                        <td class="text-center">{{ item.account_number }}</td>
-                                        <td>{{ item.card_owner }}</td>
-                                        <td class="text-center">{{ item.phone }}</td>
                                         <td class="text-center">
-                                            <button
-                                                class="btn btn-primary me-2"
-                                                (click)="onUpdate(idx)">
-                                                <fa-icon [icon]="icons.solid.faEdit"></fa-icon>
-                                            </button>
-                                            <button
-                                                class="btn btn-primary"
-                                                (click)="onDelete(idx)">
-                                                <fa-icon [icon]="icons.solid.faTrash"></fa-icon>
-                                            </button>
+                                            <div class="bank-account-status {{ getBankAccountStatusClass(item.status) }}">
+                                                <div class="dot"></div>
+                                                {{ getBankAccountStatusName(item.status) | lowercase }}
+                                            </div>
+                                        </td>
+                                        <td
+                                            class="text-end"
+                                            [ngClass]="item.last_message_sign ? (item.last_message_sign === 1 ? 'text-success' : 'text-danger') : ''">
+                                            {{ item.last_message_balance | number : '.0-0' }}
+                                        </td>
+                                        <td class="text-center">
+                                            <div
+                                                ngbDropdown
+                                                class="d-inline-block"
+                                                [container]="'body'">
+                                                <button
+                                                    id="ellipsis_{{ idx }}"
+                                                    type="button"
+                                                    class="btn btn-outline-primary fa-rotate-90 dropdown-toggle-no-arrow rounded-circle"
+                                                    ngbDropdownToggle>
+                                                    <fa-icon [icon]="icons.solid.faEllipsis"></fa-icon>
+                                                </button>
+                                                <div
+                                                    ngbDropdownMenu
+                                                    class="px-1 border-0"
+                                                    [attr.aria-labelledby]="'ellipsis_' + idx">
+                                                    <button
+                                                        ngbDropdownItem
+                                                        class="px-1 text-center"
+                                                        (click)="onDelete(idx)">
+                                                        {{ 'label.delete' | translate }}
+                                                    </button>
+                                                    <div class="dropdown-divider"></div>
+                                                    <button
+                                                        ngbDropdownItem
+                                                        class="px-1 text-center text-primary"
+                                                        (click)="onViewDetail(idx)">
+                                                        {{ 'label.view_detail' | translate }}
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>

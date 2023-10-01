@@ -1,137 +1,645 @@
-<div class="modal-header">
-    <div class="w-100 text-center">
-        <h4 class="modal-title">{{ !id ? 'Tạo' : 'Cập nhật' }} tài khoản ngân hàng</h4>
-    </div>
-    <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="activeModal.close()"></button>
-</div>
-<div class="modal-body">
-    <form
-        id="saveForm"
-        [formGroup]="form"
-        (ngSubmit)="onSubmit()">
+<div class="modal-body mt-3 mx-3">
+    <ng-container *ngIf="viewMode === 'CREATE'">
+        <form
+            id="saveForm"
+            [formGroup]="form"
+            (ngSubmit)="onConfirmCreate()">
+            <div class="row">
+                <div class="col-12 col-md-7">
+                    <div class="row">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'bank_id'"
+                                [label]="'Tên Ngân Hàng'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.bank_id">
+                                <ng-select
+                                    id="bank_id"
+                                    bindValue="id"
+                                    bindLabel="name"
+                                    [formControl]="form.controls.bank_id"
+                                    [items]="bankList"
+                                    [clearable]="false"
+                                    [placeholder]="'Chọn ngân hàng'"
+                                    (change)="onBankChanged()">
+                                </ng-select>
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'branch_name'"
+                                [label]="'Tên chi nhánh'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.branch_name">
+                                <input
+                                    id="branch_name"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Tên chi nhánh"
+                                    [formControl]="form.controls.branch_name" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'account_number'"
+                                [label]="'Số tài khoản'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.account_number">
+                                <input
+                                    appUpperCaseRemoveUnicode
+                                    id="account_number"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Số tài khoản"
+                                    [maxlength]="validator.ACCOUNT_NUMBER_ML"
+                                    [formControl]="form.controls.account_number" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'card_owner'"
+                                [label]="'Tên chủ tài khoản'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.card_owner">
+                                <input
+                                    appUpperCaseRemoveUnicode
+                                    id="card_owner"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Tên chủ tài khoản"
+                                    [formControl]="form.controls.card_owner" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-5">
+                    <div class="row mt-3 mt-md-0">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'phone'"
+                                [label]="'Số điện thoại nhận SMS'"
+                                [isRequired]="true"
+                                [className]="'form-label text-primary'"
+                                [errorMessage]="form.controlErrorMessages.phone">
+                                <input
+                                    appNumericInput
+                                    [shouldFormatNumber]="false"
+                                    id="phone"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Số điện thoại nhận SMS"
+                                    [maxlength]="validator.PHONE_ML"
+                                    [formControl]="form.controls.phone" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'name'"
+                                [label]="'Tên gợi nhớ'"
+                                [errorMessage]="form.controlErrorMessages.name">
+                                <input
+                                    id="name"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Tên gợi nhớ"
+                                    [formControl]="form.controls.name" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <button
+                        type="button"
+                        class="btn btn-white btn-common btn-shadow me-3"
+                        (click)="activeModal.close()">
+                        {{ 'label.cancel' | translate }}
+                    </button>
+                    <button
+                        form="saveForm"
+                        type="submit"
+                        class="btn btn-primary btn-common btn-shadow">
+                        {{ 'label.continue' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </ng-container>
+    <ng-container *ngIf="viewMode === 'CONFIRM_CREATE'">
         <div class="row">
             <div class="col-12">
-                <app-form-input-wrapper
-                    [for]="'bank_id'"
-                    [label]="'Ngân hàng'"
-                    [isRequired]="true"
-                    [errorMessage]="form.controlErrorMessages.bank_id">
-                    <ng-select
-                        id="bank_id"
-                        bindValue="id"
-                        bindLabel="name"
-                        [formControl]="form.controls.bank_id"
-                        [items]="bankList"
-                        [clearable]="false"
-                        [placeholder]="'Chọn ngân hàng'">
-                    </ng-select>
-                </app-form-input-wrapper>
+                <p class="font-weight-bold a-fs-12 text-primary">{{ 'label.confirm_entered_info' | translate }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p class="text-justify">
+                    Để <strong>{{ 'app_name' | translate }}</strong> nhận được thông tin giao dịch, vui lòng đăng kí số điện thoại
+                    <span class="text-primary font-weight-bold">{{ form.value.phone }}</span> với ngân hàng <strong>{{ selectedBank?.name }}</strong> để SMS nhận biến động số dư cho tài khoản
+                    <strong>{{ form.value.account_number | accountNumber }}</strong
+                    >.
+                </p>
+                <p class="text-justify">
+                    <i>Lưu ý: Chỉ đăng kí số điện thoại mục biến động số dư, KHÔNG đăng ký nhận OTP hoặc các dịch vụ khác của ngân hàng.</i>
+                </p>
+            </div>
+        </div>
+        <form
+            id="saveForm"
+            [formGroup]="form"
+            (ngSubmit)="onCreate()">
+            <div class="row">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'bank_id'"
+                        [label]="'Tên Ngân Hàng'"
+                        [className]="'form-label col-form-label col-12 col-md-3'"
+                        [formClassName]="'form-group mb-0 row'">
+                        <div class="col-12 col-md-9">
+                            <ng-select
+                                id="bank_id"
+                                bindValue="id"
+                                bindLabel="name"
+                                [formControl]="form.controls.bank_id"
+                                [items]="bankList"
+                                [clearable]="false"
+                                (change)="onBankChanged()">
+                            </ng-select>
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'branch_name'"
+                        [label]="'Tên chi nhánh'"
+                        [className]="'form-label col-form-label col-12 col-md-3'"
+                        [formClassName]="'form-group mb-0 row'">
+                        <div class="col-12 col-md-9">
+                            <input
+                                id="branch_name"
+                                type="text"
+                                class="form-control"
+                                [formControl]="form.controls.branch_name" />
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'account_number'"
+                        [label]="'Số tài khoản'"
+                        [className]="'form-label col-form-label col-12 col-md-3'"
+                        [formClassName]="'form-group mb-0 row'">
+                        <div class="col-12 col-md-9">
+                            <input
+                                appUpperCaseRemoveUnicode
+                                id="account_number"
+                                type="text"
+                                class="form-control"
+                                [maxlength]="validator.ACCOUNT_NUMBER_ML"
+                                [formControl]="form.controls.account_number" />
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'card_owner'"
+                        [label]="'Tên chủ tài khoản'"
+                        [className]="'form-label col-form-label col-12 col-md-3'"
+                        [formClassName]="'form-group mb-0 row'">
+                        <div class="col-12 col-md-9">
+                            <input
+                                appUpperCaseRemoveUnicode
+                                id="card_owner"
+                                type="text"
+                                class="form-control"
+                                [formControl]="form.controls.card_owner" />
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'phone'"
+                        [label]="'Số điện thoại nhận SMS'"
+                        [className]="'form-label text-primary'"
+                        [className]="'form-label col-form-label col-12 col-md-3'"
+                        [formClassName]="'form-group mb-0 row'">
+                        <div class="col-12 col-md-9">
+                            <input
+                                appNumericInput
+                                [shouldFormatNumber]="false"
+                                id="phone"
+                                type="text"
+                                class="form-control"
+                                [maxlength]="validator.PHONE_ML"
+                                [formControl]="form.controls.phone" />
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <app-form-input-wrapper
+                        [for]="'name'"
+                        [label]="'Tên gợi nhớ'"
+                        [className]="'form-label col-form-label col-12 col-md-3'"
+                        [formClassName]="'form-group mb-0 row'">
+                        <div class="col-12 col-md-9">
+                            <input
+                                id="name"
+                                type="text"
+                                class="form-control"
+                                [formControl]="form.controls.name" />
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <button
+                        type="button"
+                        class="btn btn-white btn-common btn-shadow me-3"
+                        (click)="switchMode('CREATE')">
+                        {{ 'label.back' | translate }}
+                    </button>
+                    <button
+                        form="saveForm"
+                        type="submit"
+                        class="btn btn-primary btn-common btn-shadow">
+                        {{ 'label.save' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </ng-container>
+    <ng-container *ngIf="viewMode === 'COMPLETE_CREATE'">
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="font-weight-bold a-fs-20 text-primary">Hướng dẫn kích hoạt tài khoản ngân hàng</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="a-fs-11">
+                    Vui lòng thực hiện một giao dịch bất ký trên tài khoản <strong>{{ data.account_number | accountNumber }}</strong> của ngân hàng
+                    <strong>{{ selectedBank?.name }}</strong> để kịch hoạt tàI ngân hàng.
+                </p>
             </div>
         </div>
         <div class="row mt-3">
+            <div class="col-12 text-center">
+                <button
+                    type="button"
+                    class="btn btn-primary btn-common btn-shadow me-3"
+                    (click)="activeModal.close()">
+                    {{ 'label.complete' | translate }}
+                </button>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="viewMode === 'VIEW'">
+        <div class="row">
             <div class="col-12">
-                <app-form-input-wrapper
-                    [for]="'branch_name'"
-                    [label]="'Tên chi nhánh'"
-                    [isRequired]="true"
-                    [errorMessage]="form.controlErrorMessages.branch_name">
-                    <input
-                        id="branch_name"
-                        type="text"
-                        class="form-control"
-                        placeholder="Tên chi nhánh"
-                        [formControl]="form.controls.branch_name" />
-                </app-form-input-wrapper>
+                <label class="form-label">Số dư tài khoản</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p class="font-weight-bold a-fs-20 text-primary">{{ data.last_message_balance | number : '.0-0' }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-7">
+                <div class="row">
+                    <div class="col-12">
+                        <app-form-input-wrapper [label]="'Tên Ngân Hàng'">
+                            <p class="mb-0 text-gray">{{ data.bank_name }}</p>
+                        </app-form-input-wrapper>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <app-form-input-wrapper [label]="'Tên chi nhánh'">
+                            <p class="mb-0 text-gray">{{ data.branch_name }}</p>
+                        </app-form-input-wrapper>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <app-form-input-wrapper [label]="'Số tài khoản'">
+                            <p class="mb-0 text-gray">
+                                {{ data.account_number | accountNumber }}
+                            </p>
+                        </app-form-input-wrapper>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <app-form-input-wrapper [label]="'Tên chủ tài khoản'">
+                            <p class="mb-0 text-gray">{{ data.card_owner | uppercase }}</p>
+                        </app-form-input-wrapper>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-5">
+                <div class="row mt-3 mt-md-0">
+                    <div class="col-12">
+                        <app-form-input-wrapper
+                            [label]="'Số điện thoại nhận SMS'"
+                            [className]="'form-label text-primary'">
+                            <p class="mb-0 text-gray">{{ data.phone }}</p>
+                        </app-form-input-wrapper>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <app-form-input-wrapper [label]="'Tên gợi nhớ'">
+                            <p
+                                class="mb-0"
+                                [ngClass]="helpers.isString(data.name) ? 'text-gray' : 'text-white'">
+                                {{ helpers.isString(data.name) ? data.name : 'hidden' }}
+                            </p>
+                        </app-form-input-wrapper>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <app-form-input-wrapper [label]="'label.status' | translate">
+                            <ng-container *ngIf="data.status !== CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED">
+                                <br />
+                                <div class="icheck-success d-inline">
+                                    <input
+                                        id="radioActivated"
+                                        type="radio"
+                                        [value]="CONSTANTS.BANK_ACCOUNT_STATUSES.ACTIVATED"
+                                        [formControl]="form.controls.status" />
+                                    <label
+                                        class="mb-2 text-gray font-weight-normal text-success"
+                                        for="radioActivated">
+                                        Đang kích hoạt
+                                    </label>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="data.status === CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED">
+                                <br />
+                                <div class="icheck-warning d-inline">
+                                    <input
+                                        id="radioNotActivated"
+                                        type="radio"
+                                        [value]="CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED"
+                                        [formControl]="form.controls.status" />
+                                    <label
+                                        class="mb-2 text-gray font-weight-normal text-warning"
+                                        for="radioNotActivated">
+                                        Chưa kích hoạt
+                                    </label>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="data.status !== CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED">
+                                <br />
+                                <div class="icheck-danger d-inline">
+                                    <input
+                                        id="radioDeactivated"
+                                        type="radio"
+                                        [value]="CONSTANTS.BANK_ACCOUNT_STATUSES.DEACTIVATED"
+                                        [formControl]="form.controls.status" />
+                                    <label
+                                        class="mb-2 text-gray font-weight-normal text-danger"
+                                        for="radioDeactivated">
+                                        Dừng kích hoạt
+                                    </label>
+                                </div>
+                            </ng-container>
+                        </app-form-input-wrapper>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row mt-3">
-            <div class="col-12">
-                <app-form-input-wrapper
-                    [for]="'account_number'"
-                    [label]="'Số tài khoản'"
-                    [isRequired]="true"
-                    [errorMessage]="form.controlErrorMessages.account_number">
-                    <input
-                        appUpperCaseRemoveUnicode
-                        id="account_number"
-                        type="text"
-                        class="form-control"
-                        placeholder="Số tài khoản"
-                        [maxlength]="validator.ACCOUNT_NUMBER_ML"
-                        [formControl]="form.controls.account_number" />
-                </app-form-input-wrapper>
+            <div class="col-12 text-center">
+                <button
+                    class="btn btn-white btn-common btn-shadow me-3"
+                    (click)="activeModal.close()">
+                    {{ 'label.close' | translate }}
+                </button>
+                <button
+                    class="btn btn-primary btn-common btn-shadow"
+                    (click)="switchMode('UPDATE')">
+                    {{ 'label.edit' | translate }}
+                </button>
             </div>
         </div>
-        <div class="row mt-3">
+    </ng-container>
+    <ng-container *ngIf="viewMode === 'UPDATE'">
+        <div class="row">
             <div class="col-12">
-                <app-form-input-wrapper
-                    [for]="'card_owner'"
-                    [label]="'Tên chủ tài khoản'"
-                    [isRequired]="true"
-                    [errorMessage]="form.controlErrorMessages.card_owner">
-                    <input
-                        appUpperCaseRemoveUnicode
-                        id="card_owner"
-                        type="text"
-                        class="form-control"
-                        placeholder="Tên chủ tài khoản"
-                        [formControl]="form.controls.card_owner" />
-                </app-form-input-wrapper>
+                <label class="form-label">Số dư tài khoản</label>
             </div>
         </div>
-        <div class="row mt-3">
+        <div class="row">
             <div class="col-12">
-                <app-form-input-wrapper
-                    [for]="'phone'"
-                    [label]="'Số điện thoại'"
-                    [isRequired]="true"
-                    [errorMessage]="form.controlErrorMessages.phone">
-                    <input
-                        appNumericInput
-                        [shouldFormatNumber]="false"
-                        id="phone"
-                        type="text"
-                        class="form-control"
-                        placeholder="Số điện thoại"
-                        [maxlength]="validator.PHONE_ML"
-                        [formControl]="form.controls.phone" />
-                </app-form-input-wrapper>
+                <p class="font-weight-bold a-fs-20 text-primary">{{ data.last_message_balance | number : '.0-0' }}</p>
             </div>
         </div>
-        <div class="row mt-3">
-            <div class="col-12">
-                <app-form-input-wrapper
-                    [for]="'name'"
-                    [label]="'Tên gợi nhớ'"
-                    [errorMessage]="form.controlErrorMessages.name">
-                    <input
-                        id="name"
-                        type="text"
-                        class="form-control"
-                        placeholder="Tên gợi nhớ"
-                        [formControl]="form.controls.name" />
-                </app-form-input-wrapper>
+        <form
+            id="saveForm"
+            [formGroup]="form"
+            (ngSubmit)="onUpdate()">
+            <div class="row">
+                <div class="col-12 col-md-7">
+                    <div class="row">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'bank_id'"
+                                [label]="'Tên Ngân Hàng'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.bank_id">
+                                <ng-select
+                                    id="bank_id"
+                                    bindValue="id"
+                                    bindLabel="name"
+                                    [formControl]="form.controls.bank_id"
+                                    [items]="bankList"
+                                    [clearable]="false"
+                                    [placeholder]="'Chọn ngân hàng'"
+                                    (change)="onBankChanged()">
+                                </ng-select>
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'branch_name'"
+                                [label]="'Tên chi nhánh'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.branch_name">
+                                <input
+                                    id="branch_name"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Tên chi nhánh"
+                                    [formControl]="form.controls.branch_name" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'account_number'"
+                                [label]="'Số tài khoản'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.account_number">
+                                <input
+                                    appUpperCaseRemoveUnicode
+                                    id="account_number"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Số tài khoản"
+                                    [maxlength]="validator.ACCOUNT_NUMBER_ML"
+                                    [formControl]="form.controls.account_number" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'card_owner'"
+                                [label]="'Tên chủ tài khoản'"
+                                [isRequired]="true"
+                                [errorMessage]="form.controlErrorMessages.card_owner">
+                                <input
+                                    appUpperCaseRemoveUnicode
+                                    id="card_owner"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Tên chủ tài khoản"
+                                    [formControl]="form.controls.card_owner" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-5">
+                    <div class="row mt-3 mt-md-0">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'phone'"
+                                [label]="'Số điện thoại nhận SMS'"
+                                [isRequired]="true"
+                                [className]="'form-label text-primary'"
+                                [errorMessage]="form.controlErrorMessages.phone">
+                                <input
+                                    appNumericInput
+                                    [shouldFormatNumber]="false"
+                                    id="phone"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Số điện thoại nhận SMS"
+                                    [maxlength]="validator.PHONE_ML"
+                                    [formControl]="form.controls.phone" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper
+                                [for]="'name'"
+                                [label]="'Tên gợi nhớ'"
+                                [errorMessage]="form.controlErrorMessages.name">
+                                <input
+                                    id="name"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Tên gợi nhớ"
+                                    [formControl]="form.controls.name" />
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <app-form-input-wrapper [label]="'label.status' | translate">
+                                <ng-container *ngIf="data.status !== CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED">
+                                    <br />
+                                    <div class="icheck-success d-inline">
+                                        <input
+                                            id="radioActivated"
+                                            type="radio"
+                                            [value]="CONSTANTS.BANK_ACCOUNT_STATUSES.ACTIVATED"
+                                            [formControl]="form.controls.status" />
+                                        <label
+                                            class="mb-2 text-gray font-weight-normal text-success"
+                                            for="radioActivated">
+                                            Đang kích hoạt
+                                        </label>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="data.status === CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED">
+                                    <br />
+                                    <div class="icheck-warning d-inline">
+                                        <input
+                                            id="radioNotActivated"
+                                            type="radio"
+                                            [value]="CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED"
+                                            [formControl]="form.controls.status" />
+                                        <label
+                                            class="mb-2 text-gray font-weight-normal text-warning"
+                                            for="radioNotActivated">
+                                            Chưa kích hoạt
+                                        </label>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="data.status !== CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED">
+                                    <br />
+                                    <div class="icheck-danger d-inline">
+                                        <input
+                                            id="radioDeactivated"
+                                            type="radio"
+                                            [value]="CONSTANTS.BANK_ACCOUNT_STATUSES.DEACTIVATED"
+                                            [formControl]="form.controls.status" />
+                                        <label
+                                            class="mb-2 text-gray font-weight-normal text-danger"
+                                            for="radioDeactivated">
+                                            Dừng kích hoạt
+                                        </label>
+                                    </div>
+                                </ng-container>
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </form>
-</div>
-<div class="modal-footer">
-    <button
-        form="saveForm"
-        type="submit"
-        class="btn btn-primary">
-        <fa-icon [icon]="icons.solid.faSave"></fa-icon>
-        {{ 'label.save' | translate }}
-    </button>
-    <button
-        type="button"
-        class="btn btn-danger"
-        (click)="activeModal.close()">
-        <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
-        {{ 'label.close' | translate }}
-    </button>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <button
+                        type="button"
+                        class="btn btn-white btn-common btn-shadow me-3"
+                        (click)="onDelete()">
+                        {{ 'label.delete' | translate }}
+                    </button>
+                    <button
+                        form="saveForm"
+                        type="submit"
+                        class="btn btn-primary btn-common btn-shadow">
+                        {{ 'label.complete' | translate }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </ng-container>
 </div>

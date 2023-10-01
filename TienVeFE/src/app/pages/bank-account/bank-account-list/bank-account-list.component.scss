@@ -1,0 +1,21 @@
+.bank-cell {
+    display: flex;
+    align-items: center;
+
+    img.logo {
+        width: 70px;
+        height: 40px;
+        margin-right: 1rem;
+    }
+
+    .bank-account {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .brand-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+    }
+}

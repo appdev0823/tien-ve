@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, map, of } from 'rxjs';
-import { BankAccountDTO, SaveBankAccountDTO } from '../dtos';
-import { API_ROUTES, APIResponse, BaseHTTPClient, CONSTANTS, ListResponse } from '../utils';
-import { CommonSearchQuery } from '../utils/types';
+import { BankAccountDTO, BankAccountSearchQuery, SaveBankAccountDTO } from '../dtos';
+import { APIResponse, API_ROUTES, BaseHTTPClient, CONSTANTS, ListResponse } from '../utils';
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +10,7 @@ export class BankAccountService {
     /** Constructor */
     constructor(private _http: BaseHTTPClient) {}
 
-    public getList(queries?: CommonSearchQuery) {
+    public getList(queries?: BankAccountSearchQuery) {
         return this._http.get<ListResponse>(API_ROUTES.BANK_ACCOUNT.LIST, queries).pipe(
             map((httpRes) => {
                 if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, new ListResponse<BankAccountDTO>());
@@ -89,6 +88,22 @@ export class BankAccountService {
                 return APIResponse.error(err.message, null, err.errors);
             }
             return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
+    public async deleteMultiple(idList: number[]) {
+        try {
+            const route = API_ROUTES.BANK_ACCOUNT.DELETE_MULTIPLE;
+            const httpRes = await firstValueFrom(this._http.delete<BankAccountDTO[]>(route, { id_list: idList }));
+            if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+
+            const item = BankAccountDTO.fromList(httpRes.body.data);
+            return APIResponse.success(httpRes.body.message, item);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, [], err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
         }
     }
 }
