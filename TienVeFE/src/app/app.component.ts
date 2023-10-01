@@ -1,27 +1,28 @@
 import { Component, HostListener } from '@angular/core';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
-import { AppToastService } from './components/app-toast/app-toast.service';
 import { MDateParserFormatter } from './components/datepicker/date-parser-formatter';
+import PageComponent from './includes/page.component';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     providers: [{ provide: NgbDateParserFormatter, useClass: MDateParserFormatter }],
 })
-export class AppComponent {
+export class AppComponent extends PageComponent {
     title = 'Tiền Về';
 
     /** Constructor */
-    constructor(private _toast$: AppToastService, private _translate$: TranslateService) {}
+    constructor() {
+        super();
+    }
 
     /**
      * Show error message when user is offline
      */
     @HostListener('window:offline', ['$event'])
     showOfflineMsg() {
-        const msg = String(this._translate$.instant('message.offline'));
-        this._toast$.error(msg);
+        const msg = String(this.translate$.instant('message.offline'));
+        this.toast$.error(msg);
     }
 
     /**
@@ -29,7 +30,7 @@ export class AppComponent {
      */
     @HostListener('window:online', ['$event'])
     showOnLineMsg() {
-        const msg = String(this._translate$.instant('message.online'));
-        this._toast$.info(msg);
+        const msg = String(this.translate$.instant('message.online'));
+        this.toast$.info(msg);
     }
 }

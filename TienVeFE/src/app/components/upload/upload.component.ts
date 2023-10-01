@@ -33,7 +33,7 @@ export class UploadComponent extends BaseComponent {
     }
 
     /** Constructor */
-    constructor(private _translate$: TranslateService) {
+    constructor() {
         super();
     }
 
@@ -49,7 +49,7 @@ export class UploadComponent extends BaseComponent {
 
         // Check maximum file count
         if (fileList.length + this.uploadedFileList.length > this.maxCount) {
-            const errMsg = String(this._translate$.instant('validation.max_file_count', { num: this.maxCount }));
+            const errMsg = String(this.translate$.instant('validation.max_file_count', { num: this.maxCount }));
             this.errorMessageList.push(errMsg);
             element.value = '';
             return;
@@ -66,12 +66,12 @@ export class UploadComponent extends BaseComponent {
                 acceptedFileList.push(file);
             } else {
                 if (!isExtValid) {
-                    const errMsg = String(this._translate$.instant('validation.invalid_file_type', { name: file.name, type: this.acceptedTypeListStr }));
+                    const errMsg = String(this.translate$.instant('validation.invalid_file_type', { name: file.name, type: this.acceptedTypeListStr }));
                     this.errorMessageList.push(errMsg);
                 }
 
                 if (!isSizeValid) {
-                    const errMsg = String(this._translate$.instant('validation.invalid_file_size', { name: file.name, max: this.maxSize }));
+                    const errMsg = String(this.translate$.instant('validation.invalid_file_size', { name: file.name, max: this.maxSize }));
                     this.errorMessageList.push(errMsg);
                 }
             }

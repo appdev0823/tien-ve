@@ -9,6 +9,9 @@ import { ConfirmModalComponent } from '../components/confirm-modal/confirm-modal
 import { LoginUserDTO } from '../dtos';
 import { selectAuthState } from '../store/auth/auth.selectors';
 import { CONSTANTS, Helpers, ROUTES } from '../utils';
+import { ValueOf } from '../utils/types';
+import { TranslateService } from '@ngx-translate/core';
+import { AppToastService } from '../components/app-toast/app-toast.service';
 
 /** Base class of all components */
 export default class BaseComponent {
@@ -30,7 +33,9 @@ export default class BaseComponent {
     public currentUser = new LoginUserDTO();
     // ========== [END] View utilities [END] ==========
 
-    private _baseModal$? = inject(NgbModal);
+    public modal$ = inject(NgbModal);
+    public translate$ = inject(TranslateService);
+    public toast$ = inject(AppToastService);
 
     public store = inject(Store);
 
@@ -59,11 +64,23 @@ export default class BaseComponent {
             confirmEvent: (isConfirmed: boolean) => void;
         },
     ) {
-        if (this._baseModal$) {
-            const modal = this._baseModal$.open(ConfirmModalComponent, { centered: true });
-            const component = modal.componentInstance as ConfirmModalComponent;
-            component.message = msg;
-            component.confirmEvent.subscribe(config.confirmEvent);
-        }
+        const modal = this.modal$.open(ConfirmModalComponent, { centered: true });
+        const component = modal.componentInstance as ConfirmModalComponent;
+        component.message = msg;
+        component.confirmEvent.subscribe(config.confirmEvent);
+    }
+
+    public getBankAccountStatusName(status: ValueOf<typeof CONSTANTS.BANK_ACCOUNT_STATUSES>) {
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.ACTIVATED) return 'Đang kích hoạt';
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED) return 'Chưa kích hoạt';
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.DEACTIVATED) return 'Dừng kích hoạt';
+        return '';
+    }
+
+    public getBankAccountStatusClass(status: ValueOf<typeof CONSTANTS.BANK_ACCOUNT_STATUSES>) {
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.ACTIVATED) return 'activated';
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED) return 'not-activated';
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.DEACTIVATED) return 'deactivated';
+        return '';
     }
 }

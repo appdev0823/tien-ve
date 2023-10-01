@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { MessageDTO, MessageSearchQuery } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { DebtService, MessageService } from 'src/app/services';
@@ -22,7 +20,7 @@ export class MessageSelectComponent extends PageComponent implements OnInit, OnD
     public dataList: MessageDTO[] = [];
     public dataTotal = 0;
 
-    constructor(public activeModal: NgbActiveModal, private _translate$: TranslateService, private _toast$: AppToastService, private _debt$: DebtService, private _message$: MessageService) {
+    constructor(public activeModal: NgbActiveModal, private _debt$: DebtService, private _message$: MessageService) {
         super();
     }
 

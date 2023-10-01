@@ -1,8 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { LoginUserDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { AuthService } from 'src/app/services';
@@ -20,7 +18,7 @@ export class ChangePasswordComponent extends PageComponent implements OnDestroy 
     public validator = new AuthValidator();
     public form = this.validator.getChangePasswordForm();
 
-    constructor(private _translate$: TranslateService, private _toast$: AppToastService, private _auth$: AuthService, private _router: Router) {
+    constructor(private _auth$: AuthService, private _router: Router) {
         super();
     }
 
@@ -45,13 +43,13 @@ export class ChangePasswordComponent extends PageComponent implements OnDestroy 
                     return;
                 }
 
-                const errMsg = this._translate$.instant(`message.${result.message}`) as string;
-                this._toast$.error(errMsg);
+                const errMsg = this.translate$.instant(`message.${result.message}`) as string;
+                this.toast$.error(errMsg);
                 return;
             }
 
-            const successMsg = String(this._translate$.instant('message.save_successfully'));
-            this._toast$.success(successMsg);
+            const successMsg = String(this.translate$.instant('message.save_successfully'));
+            this.toast$.success(successMsg);
 
             this.store.dispatch(saveAuthStateAction({ payload: new LoginUserDTO() }));
             localStorage.removeItem(this.CONSTANTS.LS_ACCESS_TOKEN_KEY);

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import BaseComponent from 'src/app/includes/base.component';
-import { AppToastService } from './app-toast.service';
 
 @Component({
     selector: 'app-toast',
@@ -9,7 +8,7 @@ import { AppToastService } from './app-toast.service';
 })
 export class AppToastComponent extends BaseComponent {
     /** Constructor */
-    constructor(public toast$: AppToastService) {
+    constructor() {
         super();
     }
 

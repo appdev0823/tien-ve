@@ -1,10 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import * as dayjs from 'dayjs';
 import { NgOtpInputComponent } from 'ng-otp-input';
-import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { LoginUserDTO, OtpDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { AuthService, OtpService, UserService } from 'src/app/services';
@@ -46,7 +44,7 @@ export class RegisterComponent extends PageComponent {
     private _loginUser = new LoginUserDTO();
 
     /** Constructor */
-    constructor(private _translate$: TranslateService, private _auth$: AuthService, private _otp$: OtpService, private _user$: UserService, private _toast$: AppToastService, private _router: Router) {
+    constructor(private _auth$: AuthService, private _otp$: OtpService, private _user$: UserService, private _router: Router) {
         super();
     }
 
@@ -57,8 +55,8 @@ export class RegisterComponent extends PageComponent {
         const type = this.registerForm.value.type;
 
         const formatValidator = type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? Validators.email : CustomValidators.phone;
-        const errorMsg = this._translate$.instant('validation.required', {
-            item: String(this._translate$.instant(`label.${type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'email' : 'phone'}`)).toLowerCase(),
+        const errorMsg = this.translate$.instant('validation.required', {
+            item: String(this.translate$.instant(`label.${type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'email' : 'phone'}`)).toLowerCase(),
         }) as string;
 
         this.registerForm.controls.email_phone.setValidators([Validators.required, formatValidator]);
@@ -86,20 +84,20 @@ export class RegisterComponent extends PageComponent {
         const existenceResult = await this._user$.getByEmailPhone(this.registerForm.value.email_phone);
         if (existenceResult.data) {
             const errMsgKey = this.registerForm.value.type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'err_email_exists' : 'err_phone_exists';
-            const errMsg = String(this._translate$.instant(`message.${errMsgKey}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${errMsgKey}`));
+            this.toast$.error(errMsg);
             return;
         }
 
         const result = await this._otp$.create(this.registerForm.value.email_phone, this.registerForm.value.type);
         if (!result.isSuccess || !result.data) {
-            const errMsg = String(this._translate$.instant(`message.${result.message}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
             return;
         }
 
-        const successMsg = String(this._translate$.instant('message.otp_sent_successfully'));
-        this._toast$.success(successMsg);
+        const successMsg = String(this.translate$.instant('message.otp_sent_successfully'));
+        this.toast$.success(successMsg);
 
         this.mode = 2;
         this._createdOtp = result.data;
@@ -159,8 +157,8 @@ export class RegisterComponent extends PageComponent {
 
         const result = await this._auth$.register(this._createdOtp.id, this.otpForm.value.otp, emailPhone, type, this.registerForm.value.is_long_token ? true : false);
         if (!result.isSuccess || !result.data) {
-            const errMsg = this._translate$.instant(`message.${result.message}`) as string;
-            this._toast$.error(errMsg);
+            const errMsg = this.translate$.instant(`message.${result.message}`) as string;
+            this.toast$.error(errMsg);
             return;
         }
 
@@ -191,8 +189,8 @@ export class RegisterComponent extends PageComponent {
 
         const result = await this._auth$.saveAccount({ email, phone, name, password: Md5.hashStr(password) });
         if (!result.isSuccess || !result.data) {
-            const errMsg = this._translate$.instant(`message.${result.message}`) as string;
-            this._toast$.error(errMsg);
+            const errMsg = this.translate$.instant(`message.${result.message}`) as string;
+            this.toast$.error(errMsg);
             return;
         }
 

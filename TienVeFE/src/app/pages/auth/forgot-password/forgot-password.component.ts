@@ -1,10 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import * as dayjs from 'dayjs';
 import { NgOtpInputComponent } from 'ng-otp-input';
-import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { OtpDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { AuthService, OtpService, UserService } from 'src/app/services';
@@ -45,7 +43,7 @@ export class ForgotPasswordComponent extends PageComponent {
     private _forgotPasswordAccessToken = '';
 
     /** Constructor */
-    constructor(private _translate$: TranslateService, private _auth$: AuthService, private _otp$: OtpService, private _user$: UserService, private _toast$: AppToastService, private _router: Router) {
+    constructor(private _auth$: AuthService, private _otp$: OtpService, private _user$: UserService, private _router: Router) {
         super();
     }
 
@@ -56,8 +54,8 @@ export class ForgotPasswordComponent extends PageComponent {
         const type = this.forgotPasswordForm.value.type;
 
         const formatValidator = type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? Validators.email : CustomValidators.phone;
-        const errorMsg = this._translate$.instant('validation.required', {
-            item: String(this._translate$.instant(`label.${type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'email' : 'phone'}`)).toLowerCase(),
+        const errorMsg = this.translate$.instant('validation.required', {
+            item: String(this.translate$.instant(`label.${type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'email' : 'phone'}`)).toLowerCase(),
         }) as string;
 
         this.forgotPasswordForm.controls.email_phone.setValidators([Validators.required, formatValidator]);
@@ -85,20 +83,20 @@ export class ForgotPasswordComponent extends PageComponent {
         const existenceResult = await this._user$.getByEmailPhone(this.forgotPasswordForm.value.email_phone);
         if (!existenceResult.data) {
             const errMsgKey = this.forgotPasswordForm.value.type === this.CONSTANTS.REGISTER_TYPES.EMAIL ? 'err_email_not_exists' : 'err_phone_not_exists';
-            const errMsg = String(this._translate$.instant(`message.${errMsgKey}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${errMsgKey}`));
+            this.toast$.error(errMsg);
             return;
         }
 
         const result = await this._otp$.create(this.forgotPasswordForm.value.email_phone, this.forgotPasswordForm.value.type);
         if (!result.isSuccess || !result.data) {
-            const errMsg = String(this._translate$.instant(`message.${result.message}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
             return;
         }
 
-        const successMsg = String(this._translate$.instant('message.otp_sent_successfully'));
-        this._toast$.success(successMsg);
+        const successMsg = String(this.translate$.instant('message.otp_sent_successfully'));
+        this.toast$.success(successMsg);
 
         this.mode = 2;
         this._createdOtp = result.data;
@@ -157,8 +155,8 @@ export class ForgotPasswordComponent extends PageComponent {
 
         const result = await this._auth$.validateForgotPasswordOtp(this._createdOtp.id, this.otpForm.value.otp, emailPhone);
         if (!result.isSuccess || !result.data) {
-            const errMsg = this._translate$.instant(`message.${result.message}`) as string;
-            this._toast$.error(errMsg);
+            const errMsg = this.translate$.instant(`message.${result.message}`) as string;
+            this.toast$.error(errMsg);
             return;
         }
 
@@ -178,13 +176,13 @@ export class ForgotPasswordComponent extends PageComponent {
 
         const result = await this._auth$.renewPassword(this._forgotPasswordAccessToken, Md5.hashStr(password));
         if (!result.isSuccess) {
-            const errMsg = this._translate$.instant(`message.${result.message}`) as string;
-            this._toast$.error(errMsg);
+            const errMsg = this.translate$.instant(`message.${result.message}`) as string;
+            this.toast$.error(errMsg);
             return;
         }
 
-        const successMsg = String(this._translate$.instant('message.save_successfully'));
-        this._toast$.success(successMsg);
+        const successMsg = String(this.translate$.instant('message.save_successfully'));
+        this.toast$.success(successMsg);
 
         await this._router.navigate([`/${this.ROUTES.AUTH.MODULE}/${this.ROUTES.AUTH.LOGIN}`]);
     }
