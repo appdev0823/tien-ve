@@ -3,6 +3,7 @@
 /* Importing Bootstrap SCSS file. */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 @import 'bootstrap/scss/bootstrap';
+@import 'assets/css/adminlte/icheck-bootstrap/icheck-bootstrap.min.css';
 @import 'assets/css/adminlte/adminlte.min.css';
 @import "~@ng-select/ng-select/themes/default.theme.css";
 @import 'assets/scss/utils.scss';
