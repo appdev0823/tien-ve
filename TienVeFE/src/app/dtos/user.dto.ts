@@ -21,7 +21,7 @@ export class UserDTO {
         return instance;
     }
 
-    static fromList(jsonList: { [key: string]: unknown }[]) {
+    static fromList(jsonList: { [key: string]: any }[]) {
         return jsonList.map((item) => UserDTO.fromJson(item));
     }
 }

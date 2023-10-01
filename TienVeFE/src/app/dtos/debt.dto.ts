@@ -42,7 +42,7 @@ export class DebtDTO {
         return instance;
     }
 
-    static fromList(jsonList: { [key: string]: unknown }[]) {
+    static fromList(jsonList: { [key: string]: any }[]) {
         return jsonList.map((item) => DebtDTO.fromJson(item));
     }
 }

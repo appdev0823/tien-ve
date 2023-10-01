@@ -17,7 +17,7 @@ export class BankDTO {
         return instance;
     }
 
-    static fromList(jsonList: { [key: string]: unknown }[]) {
+    static fromList(jsonList: { [key: string]: any }[]) {
         return jsonList.map((item) => BankDTO.fromJson(item));
     }
 }
