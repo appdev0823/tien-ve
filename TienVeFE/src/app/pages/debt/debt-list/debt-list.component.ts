@@ -27,7 +27,7 @@ export class DebtListComponent extends PageComponent implements OnInit, OnDestro
     public dataList: DebtDTO[] = [];
     public dataTotal = 0;
 
-    constructor(private _debt$: DebtService, private _modal$: NgbModal) {
+    constructor(private _debt$: DebtService) {
         super();
     }
 
@@ -84,7 +84,7 @@ export class DebtListComponent extends PageComponent implements OnInit, OnDestro
     public showDetail(idx: number) {
         if (idx < 0 || idx >= this.dataList.length) return;
 
-        const modal = this._modal$.open(DebtDetailComponent, { centered: true, size: 'lg' });
+        const modal = this.modal$.open(DebtDetailComponent, { centered: true, size: 'lg' });
         const cmpIns = modal.componentInstance as DebtDetailComponent;
         cmpIns.id = this.dataList[idx].id;
         cmpIns.reloadParentList.subscribe(() => this._getList());

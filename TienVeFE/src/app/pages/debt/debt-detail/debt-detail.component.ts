@@ -25,14 +25,7 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
 
     public messageList: MessageDTO[] = [];
 
-    constructor(
-        public activeModal: NgbActiveModal,
-        private _modal$: NgbModal,
-        private _translate$: TranslateService,
-        private _toast$: AppToastService,
-        private _debt$: DebtService,
-        private _message$: MessageService,
-    ) {
+    constructor(public activeModal: NgbActiveModal, private _debt$: DebtService, private _message$: MessageService) {
         super();
     }
 
@@ -49,8 +42,8 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
         const result = await this._debt$.getDetail(this.id);
         this.isPageLoaded = true;
         if (!result.isSuccess || !result.data) {
-            const errMsg = String(this._translate$.instant(`message.${result.message}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
             return;
         }
 
@@ -80,13 +73,13 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
     private async _updateDebtId(messageId: number, debtId?: string) {
         const result = await this._message$.updateDebtId(messageId, debtId);
         if (!result.isSuccess) {
-            const errMsg = String(this._translate$.instant(`message.${result.message}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
             return;
         }
 
-        const successMsg = String(this._translate$.instant('message.save_successfully'));
-        this._toast$.success(successMsg);
+        const successMsg = String(this.translate$.instant('message.save_successfully'));
+        this.toast$.success(successMsg);
 
         this.reloadParentList.emit();
 
@@ -95,7 +88,7 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
     }
 
     public addMessage() {
-        const modal = this._modal$.open(MessageSelectComponent, { centered: true, size: 'lg' });
+        const modal = this.modal$.open(MessageSelectComponent, { centered: true, size: 'lg' });
         const cmpIns = modal.componentInstance as MessageSelectComponent;
         cmpIns.debtId = this.id;
         cmpIns.searchQuery = {

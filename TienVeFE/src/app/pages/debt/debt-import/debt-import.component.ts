@@ -42,7 +42,7 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
 
     @ViewChild('uploadInput') private _uploadInput?: UploadComponent;
 
-    constructor(private _translate$: TranslateService, private _toast$: AppToastService, private _bankAccount$: BankAccountService, private _debt$: DebtService) {
+    constructor(private _bankAccount$: BankAccountService, private _debt$: DebtService) {
         super();
     }
 
@@ -191,13 +191,13 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
 
         const result = await this._debt$.createMultiple(this.excelDebtList);
         if (!result.isSuccess || !this.helpers.isFilledArray(result.data?.list)) {
-            const errMsg = String(this._translate$.instant(`message.${result.message}`));
-            this._toast$.error(errMsg);
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
             return;
         }
 
-        const successMsg = String(this._translate$.instant('message.save_successfully'));
-        this._toast$.success(successMsg);
+        const successMsg = String(this.translate$.instant('message.save_successfully'));
+        this.toast$.success(successMsg);
 
         this.rowMessageListMap.clear();
         this.excelDebtList = [];
