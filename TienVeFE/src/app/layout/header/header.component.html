@@ -14,8 +14,8 @@
             </a>
         </li>
     </ul>
-    <ul class="navbar-nav ml-auto d-flex d-md-none">
-        <li class="nav-item me-2">
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item d-block d-md-none me-2">
             <a
                 class="cursor-pointer text-primary nav-link"
                 title="{{ 'label.change_password' | translate }}"
@@ -25,15 +25,15 @@
                     [size]="'lg'"></fa-icon>
             </a>
         </li>
-        <li class="nav-item me-2">
+        <!-- <li class="nav-item me-2">
             <a class="nav-link">
                 <fa-icon
                     class="text-warning"
                     [icon]="icons.solid.faBell"
                     [size]="'xl'"></fa-icon>
             </a>
-        </li>
-        <li class="nav-item">
+        </li> -->
+        <li class="nav-item d-block d-md-none">
             <a
                 class="cursor-pointer text-gray nav-link"
                 title="{{ 'label.logout' | translate }}"
@@ -43,8 +43,43 @@
                     [size]="'lg'"></fa-icon>
             </a>
         </li>
+        <li class="nav-item dropdown d-none d-md-block">
+            <a
+                class="nav-link profile-card"
+                (click)="toggleActionDropdown()">
+                {{ currentUser.name }}
+                <fa-icon
+                    [icon]="icons.solid.faChevronDown"
+                    [size]="'sm'"></fa-icon>
+            </a>
+            <div
+                id="actionDropdown"
+                class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0"
+                style="margin-right: 1.2rem; border: none;">
+                <a
+                    class="dropdown-item cursor-pointer"
+                    [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.CHANGE_PASSWORD">
+                    <fa-icon
+                        class="me-2 text-warning"
+                        [icon]="icons.solid.faKey"
+                        [size]="'sm'"></fa-icon>
+                    {{ 'label.change_password' | translate }}
+                </a>
+                <div class="dropdown-divider"></div>
+                <a
+                    class="dropdown-item cursor-pointer"
+                    (click)="logOut()">
+                    <fa-icon
+                        class="me-2"
+                        [icon]="icons.solid.faDoorOpen"
+                        [size]="'sm'">
+                    </fa-icon>
+                    {{ 'label.logout' | translate }}
+                </a>
+            </div>
+        </li>
     </ul>
-    <div class="profile-card d-none d-md-flex">
+    <!-- <div class="profile-card d-none d-md-flex">
         <div class="avatar">
             <img
                 src="assets/img/default-user-avatar.png"
@@ -74,6 +109,6 @@
                 [icon]="icons.solid.faBell"
                 [size]="'xl'"></fa-icon>
         </div>
-    </div>
+    </div> -->
 </nav>
 <!-- /.navbar -->
