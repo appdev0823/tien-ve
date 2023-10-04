@@ -31,10 +31,6 @@ export class BankAccountListComponent extends PageComponent implements OnInit, O
         return this.dataList.length > 0 ? this.dataList.every((item) => item.is_checked) : false;
     }
 
-    public get isOneChecked() {
-        return this.dataList.length > 0 ? this.dataList.some((item) => !item.is_checked) : false;
-    }
-
     constructor(private _bankAccount$: BankAccountService) {
         super();
     }

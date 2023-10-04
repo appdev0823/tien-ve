@@ -37,6 +37,14 @@ const CONSTANTS = {
         /** Đã kích hoạt */
         ACTIVATED: 1,
     },
+    DEBT_ID_FORMAT: {
+        PREFIX: 'TV',
+        SEPARATOR: '-',
+        DATE_FORMAT: 'DDMMYY',
+        USER_ID_LENGTH: 5,
+        AUTO_INCREMENT_LENGTH: 5,
+        LENGTH: 21,
+    },
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 
@@ -76,6 +84,7 @@ const API_ROUTES = {
         GET_PROFILE: 'user/profile',
         UPDATE: 'user/:id',
         GET_BY_EMAIL_PHONE: 'user/by-email-phone/:email_phone',
+        GET_TODAY_DEBT_COUNT: 'user/today-debt-count',
     },
     OTP: {
         CREATE: 'otp',

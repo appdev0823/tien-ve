@@ -1,141 +1,248 @@
 <!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid ps-0">
+<div class="content-header py-0">
+    <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-12 d-flex">
-                <h1 class="m-0">Nhập công nợ</h1>
+            <div class="col-12 ps-0">
+                <h1>Nhập công nợ</h1>
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
+        <div class="row mt-3">
+            <div class="col-12 ps-0">
+                <p class="a-fs-11 mb-0">Hỗ trợ nhập liệu và thiết lập gửi tin nhắn tự động</p>
+            </div>
+        </div>
     </div>
-    <!-- /.container-fluid -->
 </div>
 
-<section class="content">
+<section class="content mt-3">
     <div class="container-fluid">
-        <div class="card">
-            <div
-                id="tableContainer"
-                class="card-body">
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <a
-                            class="text-primary text-decoration-none a-fs-12"
-                            href="/assets/download/{{ CONSTANTS.IMPORT_DEBT_TEMPLATE_NAME }}"
-                            download>
-                            <fa-icon [icon]="icons.solid.faDownload"></fa-icon>&nbsp;{{ 'label.download_template_file' | translate }}
-                        </a>
+        <ul
+            ngbNav
+            #nav="ngbNav"
+            class="nav-tabs nav-tabs-underline mb-3">
+            <li
+                ngbNavItem
+                [ngbNavItem]="0">
+                <button ngbNavLink>{{ 'label.input_file' | translate }}</button>
+                <ng-template ngbNavContent>
+                    <div class="row">
+                        <div class="d-sm-none d-md-block col-md-2 col-lg-3"></div>
+                        <div class="col-12 col-md-8 col-lg-6">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="font-weight-bold mb-0">Để hỗ trợ nhập liệu tự động, vui lòng tạo file theo mẫu dưới đây</p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <span class="text-primary a-fw-600">Download template mẫu</span>
+                                            <a
+                                                class="btn btn-gray cursor-pointer ms-3"
+                                                href="/assets/download/{{ CONSTANTS.IMPORT_DEBT_TEMPLATE_NAME }}"
+                                                download>
+                                                {{ 'label.download' | translate }}&nbsp;
+                                                <fa-icon
+                                                    class="text-success"
+                                                    [icon]="icons.solid.faDownload"></fa-icon>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <p class="mb-0">
+                                                Sau khi nhập liệu vào file mẫu, người dùng upload file và chờ hệ thống xử lý. Các trường dữ liệu bị lỗi sẽ hiển thị
+                                                <strong class="text-danger">MÀU ĐỎ</strong> và nổi lên trên.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <strong class="a-fs-11">{{ 'label.input_excel_file' | translate }}</strong>
+                                            <br />
+                                            <i class="text-gray">* File excel có chứa các trường như bên dưới</i>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <app-upload
+                                                #uploadInput
+                                                [acceptedTypeList]="['xlsx', 'xls']"
+                                                (fileListChange)="onExcelFileUploaded($event)"></app-upload>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 text-end">
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary btn-common btn-shadow"
+                                                (click)="nav.select(1)">
+                                                {{ 'label.continue' | translate }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-sm-none d-md-block col-md-2 col-lg-3"></div>
                     </div>
-                </div>
-                <div class="row">
-                    <app-upload
-                        #uploadInput
-                        [acceptedTypeList]="['xlsx', 'xls']"
-                        (fileListChange)="onExcelFileUploaded($event)"></app-upload>
-                </div>
-                <div
-                    *ngIf="errorMessageList.length > 0"
-                    class="row mt-3">
-                    <p
-                        *ngFor="let msg of errorMessageList"
-                        class="text-danger mb-0">
-                        {{ msg }}
-                    </p>
-                </div>
-                <div
-                    *ngIf="excelDebtList.length > 0"
-                    class="row mt-3">
-                    <div class="col-12">
-                        <table class="table table-hover table-striped table-p-3 mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="a-w-50 text-center">STT</th>
-                                    <th class="a-w-200 text-center">{{ 'label.payer_name' | translate }}</th>
-                                    <th class="a-w-180 text-center">{{ 'label.payer_phone' | translate }}</th>
-                                    <th class="a-w-180 text-center">{{ 'label.amount' | translate }}</th>
-                                    <th class="a-w-300 text-center">{{ 'label.receive_money_account' | translate }}</th>
-                                    <th class="a-mw-100 text-center">{{ 'label.note' | translate }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let excelDebt of excelDebtList; let idx = index">
-                                    <td class="text-center">{{ idx + 1 }}</td>
-                                    <td>
-                                        <input
-                                            id="payer_name_{{ idx }}"
-                                            type="text"
-                                            class="form-control {{ excelDebt.invalid_keys?.payer_name && 'border-danger' }}"
-                                            placeholder="{{ 'label.payer_name' | translate }}"
-                                            [value]="excelDebt.payer_name"
-                                            (blur)="onPayerNameChanged($event, idx)" />
-                                    </td>
-                                    <td>
-                                        <input
-                                            appNumericInput
-                                            [shouldFormatNumber]="false"
-                                            id="payer_phone_{{ idx }}"
-                                            type="text"
-                                            class="form-control {{ excelDebt.invalid_keys?.payer_phone && 'border-danger' }}"
-                                            placeholder="{{ 'label.payer_phone' | translate }}"
-                                            [maxLength]="validator.PHONE_ML"
-                                            [value]="excelDebt.payer_phone"
-                                            (blur)="onPayerPhoneChanged($event, idx)" />
-                                    </td>
-                                    <td>
-                                        <input
-                                            appNumericInput
-                                            id="amount_{{ idx }}"
-                                            type="text"
-                                            class="form-control {{ excelDebt.invalid_keys?.amount && 'border-danger' }}"
-                                            placeholder="{{ 'label.amount' | translate }}"
-                                            [value]="excelDebt.amount | number : '.0-0'"
-                                            (blur)="onAmountChanged($event, idx)" />
-                                    </td>
-                                    <td>
-                                        <ng-select
-                                            id="bank_account_id_{{ idx }}"
-                                            bindValue="id"
-                                            bindLabel="display_name"
-                                            [ngClass]="excelDebt.invalid_keys?.bank_account_id ? 'border-danger' : ''"
-                                            [appendTo]="'#tableContainer'"
-                                            [items]="bankAccountList"
-                                            [clearable]="false"
-                                            [placeholder]="'label.receive_money_account' | translate"
-                                            (blur)="onBankAccountChanged(idx)"
-                                            [(ngModel)]="excelDebt.bank_account_id">
-                                        </ng-select>
-                                    </td>
-                                    <td>
-                                        <input
-                                            id="note_{{ idx }}"
-                                            type="text"
-                                            class="form-control {{ excelDebt.invalid_keys?.note && 'border-danger' }}"
-                                            placeholder="{{ 'label.note' | translate }}"
-                                            [value]="excelDebt.note" />
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                </ng-template>
+            </li>
+            <li
+                ngbNavItem
+                [ngbNavItem]="1">
+                <button ngbNavLink>Danh sách công nợ</button>
+                <ng-template ngbNavContent>
+                    <div class="card border-0">
+                        <div
+                            id="tableContainer"
+                            class="card-body p-5">
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong class="a-fs-16">Bảng nhập liệu Excel</strong>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 bg-gray-light py-3">
+                                    <button
+                                        type="button"
+                                        class="btn btn-light text-danger btn-border-dark-gray me-3"
+                                        (click)="showErrorMsgList = !showErrorMsgList">
+                                        Tổng số lỗi ({{ errorCount }})
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-light text-gray btn-border-dark-gray"
+                                        (click)="removeCheckedList()">
+                                        {{ 'label.delete' | translate }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div
+                                *ngIf="rowMessageListMap.size > 0 && showErrorMsgList"
+                                class="row mt-3">
+                                <p
+                                    *ngFor="let msg of errorMessageList"
+                                    class="text-danger mb-0">
+                                    {{ msg }}
+                                </p>
+                            </div>
+                            <div
+                                *ngIf="excelDebtList.length > 0"
+                                class="row">
+                                <div class="col-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-p-3 mb-0 table-header-border-none table-header-font-weight-normal">
+                                            <thead>
+                                                <tr>
+                                                    <th class="a-w-30 text-center icheck-primary">
+                                                        <input
+                                                            id="check-all"
+                                                            type="checkbox"
+                                                            class="cell-checkbox"
+                                                            [checked]="isAllChecked"
+                                                            (change)="toggleAll()" />
+                                                        <label for="check-all"></label>
+                                                    </th>
+                                                    <th class="a-w-200 text-center">ID</th>
+                                                    <th class="a-w-200 text-center">{{ 'label.payer_name' | translate }}</th>
+                                                    <th class="a-w-180 text-center">{{ 'label.payer_phone' | translate }}</th>
+                                                    <th class="a-w-180 text-center">{{ 'label.amount' | translate }}</th>
+                                                    <th class="a-w-300 text-center">{{ 'label.receive_money_account' | translate }}</th>
+                                                    <th class="a-mw-250 text-center">{{ 'label.note' | translate }}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let excelDebt of excelDebtList; let idx = index">
+                                                    <td class="text-center icheck-primary">
+                                                        <input
+                                                            id="datalist-{{ idx }}"
+                                                            type="checkbox"
+                                                            class="cursor-pointer"
+                                                            [checked]="excelDebt.is_checked"
+                                                            (change)="excelDebt.is_checked = !excelDebt.is_checked" />
+                                                        <label for="datalist-{{ idx }}"></label>
+                                                    </td>
+                                                    <td class="text-center">{{ excelDebt.id }}</td>
+                                                    <td>
+                                                        <input
+                                                            id="payer_name_{{ idx }}"
+                                                            type="text"
+                                                            class="form-control {{ excelDebt.invalid_keys?.payer_name && 'border-danger' }}"
+                                                            placeholder="{{ 'label.payer_name' | translate }}"
+                                                            [value]="excelDebt.payer_name"
+                                                            (blur)="onPayerNameChanged($event, idx)" />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            appNumericInput
+                                                            [shouldFormatNumber]="false"
+                                                            id="payer_phone_{{ idx }}"
+                                                            type="text"
+                                                            class="form-control {{ excelDebt.invalid_keys?.payer_phone && 'border-danger' }}"
+                                                            placeholder="{{ 'label.payer_phone' | translate }}"
+                                                            [maxLength]="validator.PHONE_ML"
+                                                            [value]="excelDebt.payer_phone"
+                                                            (blur)="onPayerPhoneChanged($event, idx)" />
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            appNumericInput
+                                                            id="amount_{{ idx }}"
+                                                            type="text"
+                                                            class="form-control {{ excelDebt.invalid_keys?.amount && 'border-danger' }}"
+                                                            placeholder="{{ 'label.amount' | translate }}"
+                                                            [value]="excelDebt.amount | number : '.0-0'"
+                                                            (blur)="onAmountChanged($event, idx)" />
+                                                    </td>
+                                                    <td>
+                                                        <ng-select
+                                                            id="bank_account_id_{{ idx }}"
+                                                            bindValue="id"
+                                                            bindLabel="display_name"
+                                                            [ngClass]="excelDebt.invalid_keys?.bank_account_id ? 'border-danger' : ''"
+                                                            [appendTo]="'#tableContainer'"
+                                                            [items]="bankAccountList"
+                                                            [clearable]="false"
+                                                            [placeholder]="'label.receive_money_account' | translate"
+                                                            (blur)="onBankAccountChanged(idx)"
+                                                            [(ngModel)]="excelDebt.bank_account_id">
+                                                        </ng-select>
+                                                    </td>
+                                                    <td>
+                                                        <input
+                                                            id="note_{{ idx }}"
+                                                            type="text"
+                                                            class="form-control {{ excelDebt.invalid_keys?.note && 'border-danger' }}"
+                                                            placeholder="{{ 'label.note' | translate }}"
+                                                            [value]="excelDebt.note" />
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                *ngIf="excelDebtList.length > 0"
+                                class="row mt-3">
+                                <div class="col-12 text-end">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary btn-common btn-shadow"
+                                        (click)="onSubmit()">
+                                        {{ 'label.complete' | translate }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div
-                    *ngIf="excelDebtList.length > 0"
-                    class="row mt-3">
-                    <div class="col-12 text-end">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            [disabled]="this.errorMessageList.length > 0"
-                            (click)="onSubmit()">
-                            <fa-icon
-                                class="me-2"
-                                [icon]="icons.solid.faSave"></fa-icon>
-                            {{ 'label.save' | translate }}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </ng-template>
+            </li>
+        </ul>
+        <div
+            class="mt-3"
+            [ngbNavOutlet]="nav"></div>
     </div>
 </section>

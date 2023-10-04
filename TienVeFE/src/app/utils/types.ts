@@ -31,3 +31,7 @@ export type RadioModalItem = {
 };
 
 export type ViewMode = 'VIEW' | 'CREATE' | 'UPDATE';
+
+export type CountObject = {
+    count: number;
+};

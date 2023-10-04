@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { UploadComponent } from 'src/app/components/upload/upload.component';
 import { BankAccountDTO } from 'src/app/dtos';
 import { SaveDebtDTO } from 'src/app/dtos/debt.dto';
 import PageComponent from 'src/app/includes/page.component';
-import { BankAccountService, DebtService } from 'src/app/services';
+import { BankAccountService, DebtService, UserService } from 'src/app/services';
 import { UploadFile } from 'src/app/utils/types';
 import { DebtValidator } from 'src/app/validators/debt.validator';
+import * as dayjs from 'dayjs';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-debt-import',
@@ -22,11 +22,14 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
 
     public bankAccountList: BankAccountDTO[] = [];
 
+    public todayDebtCount = 0;
+
     /** Danh sách dòng dữ liệu thu được từ file Excel được upload cùng với các flags đánh dấu dữ liệu có bị lỗi hay không */
     public excelDebtList: (SaveDebtDTO & {
         invalid_keys?: {
             [K in keyof SaveDebtDTO]: boolean;
         };
+        is_checked: boolean;
     })[] = [];
 
     /** `Map<row_index, errorMessage[]>` chứa danh sách validation error message của từng row */
@@ -39,19 +42,39 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
         }
         return [...new Set(result)];
     }
+    public get errorCount() {
+        return Array.from(this.rowMessageListMap.values()).reduce((preVal, curItem) => preVal + curItem.length, 0);
+    }
+    public showErrorMsgList = true;
+
+    public get isAllChecked() {
+        return this.excelDebtList.length > 0 ? this.excelDebtList.every((item) => item.is_checked) : false;
+    }
 
     @ViewChild('uploadInput') private _uploadInput?: UploadComponent;
 
-    constructor(private _bankAccount$: BankAccountService, private _debt$: DebtService) {
+    constructor(private _bankAccount$: BankAccountService, private _debt$: DebtService, private _user$: UserService, private _router: Router) {
         super();
     }
 
     ngOnInit() {
         this._getList();
+        void this._getTodayDebtCount();
     }
 
     ngOnDestroy() {
         this._subscription.unsubscribe();
+    }
+
+    private async _getTodayDebtCount() {
+        const result = await this._user$.getTodayDebtCount();
+        if (!result.isSuccess || !result.data) {
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
+            return;
+        }
+
+        this.todayDebtCount = Number(result.data.count) || 0;
     }
 
     private _getList() {
@@ -109,8 +132,16 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
                     item.note = row[noteColIdx];
                 }
 
-                return item;
+                return { ...item, is_checked: true };
             });
+
+        this._resetDebtIds();
+
+        this._validateExcelDebtList();
+    }
+
+    private _validateExcelDebtList() {
+        this.rowMessageListMap.clear();
 
         for (let idx = 0; idx < this.excelDebtList.length; idx++) {
             const errList = this.validator.validateOne(this.excelDebtList[idx]);
@@ -118,6 +149,17 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
                 this.rowMessageListMap.set(idx, errList);
             }
         }
+    }
+
+    private _resetDebtIds() {
+        const { PREFIX, SEPARATOR, DATE_FORMAT, USER_ID_LENGTH, AUTO_INCREMENT_LENGTH } = this.CONSTANTS.DEBT_ID_FORMAT;
+        const curDateStr = dayjs(new Date()).format(DATE_FORMAT);
+        const paddedUserId = this.helpers.padLeft(this.currentUser.id, USER_ID_LENGTH);
+        const idLeftPartStr = `${PREFIX}${SEPARATOR}${curDateStr}${SEPARATOR}${paddedUserId}${SEPARATOR}`; // TV-DDMMYY-0000X-
+
+        this.excelDebtList.forEach((item, idx) => {
+            item.id = `${idLeftPartStr}${this.helpers.padLeft(idx + this.todayDebtCount + 1, AUTO_INCREMENT_LENGTH)}`;
+        });
     }
 
     public onPayerNameChanged(event: Event, idx: number) {
@@ -179,17 +221,31 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
         this.rowMessageListMap.set(idx, errMsgList);
     }
 
+    public toggleAll() {
+        const isAllChecked = this.isAllChecked;
+        this.excelDebtList = this.excelDebtList.map((item) => ({ ...item, is_checked: !isAllChecked }));
+    }
+
+    public removeCheckedList() {
+        this.excelDebtList = this.excelDebtList.filter((item) => !item.is_checked);
+        this._resetDebtIds();
+        this._validateExcelDebtList();
+    }
+
     public async onSubmit() {
+        const checkedList = this.excelDebtList.filter((item) => item.is_checked);
+        if (checkedList.length <= 0 || this.rowMessageListMap.size > 0) return;
+
         this.rowMessageListMap.clear();
-        for (let idx = 0; idx < this.excelDebtList.length; idx++) {
-            const errList = this.validator.validateOne(this.excelDebtList[idx]);
+        for (let idx = 0; idx < checkedList.length; idx++) {
+            const errList = this.validator.validateOne(checkedList[idx]);
             if (errList.length > 0) {
                 this.rowMessageListMap.set(idx, errList);
             }
         }
         if (this.rowMessageListMap.size > 0) return;
 
-        const result = await this._debt$.createMultiple(this.excelDebtList);
+        const result = await this._debt$.createMultiple(checkedList);
         if (!result.isSuccess || !this.helpers.isFilledArray(result.data?.list)) {
             const errMsg = String(this.translate$.instant(`message.${result.message}`));
             this.toast$.error(errMsg);
@@ -202,5 +258,8 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
         this.rowMessageListMap.clear();
         this.excelDebtList = [];
         this._uploadInput?.reset();
+
+        const debtListRoute = `/${this.ROUTES.DEBT.MODULE}/${this.ROUTES.DEBT.LIST}`;
+        await this._router.navigate([debtListRoute]);
     }
 }

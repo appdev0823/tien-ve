@@ -349,4 +349,15 @@ export default class Helpers {
             };
         });
     }
+
+    /**
+     * Pad left a string
+     * @param str - a string
+     * @param length - padded string length
+     * @param fillString - the string to be filled
+     * @returns padded string
+     */
+    public static padLeft(str: string | number, length: number, fillString = '0') {
+        return String(str).padStart(length, fillString);
+    }
 }
