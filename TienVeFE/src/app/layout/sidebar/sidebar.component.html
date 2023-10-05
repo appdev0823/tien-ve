@@ -15,7 +15,7 @@
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar mt-0">
+    <div class="sidebar">
         <!-- <div class="user-panel pt-2 pb-2 d-flex align-items-center">
             <div class="image">
                 <img
@@ -42,7 +42,7 @@
                 </p>
             </div>
         </div> -->
-        <nav class="mt-2">
+        <nav>
             <ul
                 class="nav nav-pills nav-sidebar flex-column"
                 data-widget="treeview"
@@ -94,6 +94,16 @@
                 </li>
             </ul>
         </nav>
+        <div class="upgrade">
+            <img
+                src="assets/img/upgrade-premium.png"
+                alt="upgrade" />
+            <button
+                class="btn btn-warning"
+                (click)="openUpgradeModal()">
+                Nâng cấp Premium
+            </button>
+        </div>
     </div>
     <!-- /.sidebar -->
 </aside>

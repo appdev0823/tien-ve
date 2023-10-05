@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import BaseComponent from 'src/app/includes/base.component';
-import { saveAuthStateAction } from 'src/app/store/auth/auth.actions';
 import * as jQuery from 'jquery';
-import { LoginUserDTO } from 'src/app/dtos';
+import { UpgradeModalComponent } from 'src/app/components/upgrade-modal/upgrade-modal.component';
+import BaseComponent from 'src/app/includes/base.component';
 
 @Component({
     selector: 'app-sidebar',
@@ -41,5 +40,9 @@ export class SidebarComponent extends BaseComponent implements OnInit {
                 sidebar.addClass('sidebar-closed sidebar-collapse');
             }
         }, 100);
+    }
+
+    public openUpgradeModal() {
+        this.modal$.open(UpgradeModalComponent, { centered: true });
     }
 }

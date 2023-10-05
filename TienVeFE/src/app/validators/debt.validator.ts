@@ -1,4 +1,4 @@
-import { SaveDebtDTO } from '../dtos/debt.dto';
+import { SaveDebtDTO } from '../dtos';
 import { Helpers } from '../utils';
 import { BaseValidator } from './base.validator';
 

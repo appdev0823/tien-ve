@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { NgbDate, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
-import { DebtDTO, DebtSearchQuery } from 'src/app/dtos/debt.dto';
+import { DebtDTO, DebtSearchQuery } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { DebtService } from 'src/app/services';
 import { DebtDetailComponent } from '../debt-detail/debt-detail.component';

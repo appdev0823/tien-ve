@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { UploadComponent } from 'src/app/components/upload/upload.component';
 import { BankAccountDTO } from 'src/app/dtos';
-import { SaveDebtDTO } from 'src/app/dtos/debt.dto';
+import { SaveDebtDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { BankAccountService, DebtService, UserService } from 'src/app/services';
 import { UploadFile } from 'src/app/utils/types';

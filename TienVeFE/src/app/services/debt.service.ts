@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, map, of } from 'rxjs';
-import { DebtDTO, DebtDetailDTO, DebtSearchQuery, SaveDebtDTO } from '../dtos/debt.dto';
+import { DebtDTO, DebtDetailDTO, DebtSearchQuery, SaveDebtDTO } from '../dtos';
 import { APIResponse, API_ROUTES, BaseHTTPClient, CONSTANTS, ListResponse } from '../utils';
 
 @Injectable({

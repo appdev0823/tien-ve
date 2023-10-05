@@ -16,8 +16,7 @@ const CONSTANTS = {
     MYSQL_DATETIME_FORMAT: 'YYYY-MM-DD HH:mm:ss',
     BOOTSTRAP_TYPE_LIST: ['success', 'info', 'warning', 'danger', 'primary', 'secondary', 'dark'],
     SETTING_FIELD_NAMES: {
-        INVOICE_ADDRESS: 'invoice_address',
-        INVOICE_PHONE: 'invoice_phone',
+        UPGRADE_NOTE: 'upgrade_note',
     },
     REGISTER_TYPES: {
         EMAIL: 1,
@@ -108,6 +107,11 @@ const API_ROUTES = {
     MESSAGE: {
         LIST: 'message',
         UPDATE_DEBT_ID: 'message/:id/update-debt-id',
+    },
+    SETTING: {
+        MODULE: 'setting',
+        GET_LIST_BY_FIELD_NAME_LIST: 'setting/list-by-field-name-list',
+        UPDATE_MULTIPLE: 'setting/update-multiple',
     },
 } as const;
 Helpers.deepFreeze(API_ROUTES);

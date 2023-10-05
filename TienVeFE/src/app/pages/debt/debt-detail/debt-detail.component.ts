@@ -1,11 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
-import { AppToastService } from 'src/app/components/app-toast/app-toast.service';
 import { MessageSelectComponent } from 'src/app/components/message-select/message-select.component';
-import { MessageDTO } from 'src/app/dtos';
-import { DebtDetailDTO } from 'src/app/dtos/debt.dto';
+import { DebtDetailDTO, MessageDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { DebtService, MessageService } from 'src/app/services';
 
