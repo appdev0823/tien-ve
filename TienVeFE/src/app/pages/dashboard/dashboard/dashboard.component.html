@@ -1,4 +1,3 @@
-<!-- Content Header (Page header) -->
 <div class="content-header py-0">
     <div class="container-fluid">
         <div class="row mb-3">
@@ -13,3 +12,140 @@
         </div>
     </div>
 </div>
+<section class="content mt-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-7">
+                <div class="card card-border-gray">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 d-flex">
+                                <div
+                                    class="ps-0"
+                                    style="flex: 1">
+                                    <form [formGroup]="bankAccSearchForm">
+                                        <div class="input-group">
+                                            <div class="input-group-text bg-white border-end-0">
+                                                <fa-icon
+                                                    class="text-gray"
+                                                    [icon]="icons.solid.faSearch"></fa-icon>
+                                            </div>
+                                            <input
+                                                id="keyword"
+                                                type="text"
+                                                class="form-control border-start-0 ps-0"
+                                                placeholder="Tên ngân hàng hoặc số tài khoản"
+                                                [formControl]="bankAccSearchForm.controls.keyword" />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="d-inline-block ms-3">
+                                    <button
+                                        class="btn btn-primary"
+                                        (click)="onFilterBankAcc()">
+                                        <fa-icon
+                                            [icon]="icons.solid.faFilter"
+                                            [size]="'xl'"></fa-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12 px-0">
+                                <div
+                                    class="table-responsive"
+                                    style="max-height: 300px">
+                                    <table class="table table-hover table-border-none mb-0">
+                                        <tbody>
+                                            <tr
+                                                *ngFor="let item of bankAccDataList; let idx = index"
+                                                class="cursor-pointer"
+                                                (click)="selectBankAccount(idx)">
+                                                <td class="a-w-200 text-start">
+                                                    <div class="bank-cell">
+                                                        <img
+                                                            src="assets/img/banks/{{ item.bank_brand_name }}.png"
+                                                            alt="{{ item.bank_brand_name }}"
+                                                            class="logo" />
+                                                        <div class="bank-account">
+                                                            <span class="account-number">{{ item.account_number | accountNumber }}</span>
+                                                            <span>{{ item.card_owner | uppercase }}</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="a-w-80 text-start a-fw-500">{{ item.bank_brand_name }}</td>
+                                                <td class="a-w-80 text-center">
+                                                    <div class="status-tag {{ getBankAccountStatusClass(item.status) }}">
+                                                        <div class="dot"></div>
+                                                        {{ getBankAccountStatusName(item.status) | lowercase }}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot *ngIf="!helpers.isFilledArray(bankAccDataList)">
+                                            <tr>
+                                                <td [colSpan]="99">{{ 'message.err_no_data' | translate }}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12 d-flex justify-content-center">
+                                <ngb-pagination
+                                    [collectionSize]="bankAccDataTotal"
+                                    [pageSize]="CONSTANTS.PAGE_SIZE"
+                                    [page]="currentPage"
+                                    [maxSize]="CONSTANTS.MAX_PAGE_COUNT"
+                                    [rotate]="true"
+                                    [boundaryLinks]="true"
+                                    (pageChange)="onBankAccPageChanged($event)"></ngb-pagination>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-5">
+                <div class="card card-border-gray p-3">
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">Số dư tài khoản</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="font-weight-bold a-fs-22 text-primary mb-0">{{ selectedBankAccount.last_message_balance | number : '.0-0' }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mt-3">
+                            <app-form-input-wrapper [label]="'Tên Ngân Hàng'">
+                                <p class="mb-0 text-gray">{{ selectedBankAccount.bank_name }}</p>
+                            </app-form-input-wrapper>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-3">
+                            <app-form-input-wrapper [label]="'Số tài khoản'">
+                                <p class="mb-0 text-gray">{{ selectedBankAccount.account_number | accountNumber }}</p>
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mt-3">
+                            <app-form-input-wrapper
+                                [label]="'Số điện thoại'"
+                                [className]="'form-label text-primary'">
+                                <p class="mb-0 text-gray">{{ selectedBankAccount.phone }}</p>
+                            </app-form-input-wrapper>
+                        </div>
+                        <div class="col-12 col-lg-6 mt-3">
+                            <app-form-input-wrapper [label]="'Tên chủ tài khoản'">
+                                <p class="mb-0 text-gray">{{ selectedBankAccount.card_owner | uppercase }}</p>
+                            </app-form-input-wrapper>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

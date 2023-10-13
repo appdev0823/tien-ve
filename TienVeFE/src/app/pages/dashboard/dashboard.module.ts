@@ -5,6 +5,8 @@ import { ROUTES } from 'src/app/utils';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { MainLayoutComponent } from 'src/app/layout/main-layout/main-layout.component';
 import { AuthGuard } from 'src/app/guards';
+import { PipeModule } from 'src/app/pipes/pipe.module';
+import { ComponentModule } from 'src/app/components/component.module';
 
 const routes: Routes = [
     {
@@ -23,6 +25,6 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [DashboardComponent],
-    imports: [RouterModule.forChild(routes), SharedModule],
+    imports: [RouterModule.forChild(routes), SharedModule, PipeModule, ComponentModule],
 })
 export class DashboardModule {}

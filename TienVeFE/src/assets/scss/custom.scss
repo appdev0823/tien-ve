@@ -186,6 +186,11 @@ table.table-header-border-none thead tr th {
     border-bottom: none !important;
 }
 
+table.table-border-none tr,
+td {
+    border: none !important;
+}
+
 table.table-header-font-weight-normal thead tr th {
     font-weight: normal;
 }
