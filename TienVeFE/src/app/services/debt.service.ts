@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, map, of } from 'rxjs';
-import { DebtDTO, DebtDetailDTO, DebtSearchQuery, SaveDebtDTO } from '../dtos';
+import { DebtDTO, DebtDetailDTO, DebtRemindRequest, DebtSearchQuery, RemindMessageDTO, SaveDebtDTO } from '../dtos';
 import { APIResponse, API_ROUTES, BaseHTTPClient, CONSTANTS, ListResponse } from '../utils';
 
 @Injectable({
@@ -57,6 +57,37 @@ export class DebtService {
                 return APIResponse.error(err.message, null, err.errors);
             }
             return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
+    public async deleteMultiple(idList: string[]) {
+        try {
+            const route = API_ROUTES.DEBT.DELETE_MULTIPLE;
+            const httpRes = await firstValueFrom(this._http.delete<DebtDTO[]>(route, { id_list: idList }));
+            if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+
+            const item = DebtDTO.fromList(httpRes.body.data);
+            return APIResponse.success(httpRes.body.message, item);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, [], err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+        }
+    }
+
+    public async remind(params: DebtRemindRequest) {
+        try {
+            const httpRes = await firstValueFrom(this._http.post<RemindMessageDTO[]>(API_ROUTES.DEBT.REMIND, params));
+            if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+
+            const result = DebtDTO.fromList(httpRes.body?.data);
+            return APIResponse.success(httpRes.body.message, result);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, []);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
         }
     }
 }

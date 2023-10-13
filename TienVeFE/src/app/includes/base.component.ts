@@ -78,9 +78,9 @@ export default class BaseComponent {
     }
 
     public getBankAccountStatusClass(status: ValueOf<typeof CONSTANTS.BANK_ACCOUNT_STATUSES>) {
-        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.ACTIVATED) return 'activated';
-        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED) return 'not-activated';
-        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.DEACTIVATED) return 'deactivated';
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.ACTIVATED) return 'success';
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED) return 'warning';
+        if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.DEACTIVATED) return 'danger';
         return '';
     }
 }

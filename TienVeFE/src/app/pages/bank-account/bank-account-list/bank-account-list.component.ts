@@ -116,7 +116,7 @@ export class BankAccountListComponent extends PageComponent implements OnInit, O
 
     public onFilter() {
         const allStatusId = 2;
-        const modal = this.modal$.open(RadioModalComponent);
+        const modal = this.modal$.open(RadioModalComponent, { centered: true, size: 'sm' });
         const cmpIns = modal.componentInstance as RadioModalComponent;
         cmpIns.itemList = [
             {

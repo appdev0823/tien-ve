@@ -54,12 +54,11 @@
                         </div>
                         <div class="d-inline-block px-3">
                             <button
-                                class="btn btn-white btn-border-dark-gray"
+                                class="btn btn-primary"
                                 (click)="onFilter()">
                                 <fa-icon
-                                    class="text-gray me-2"
-                                    [icon]="icons.solid.faFilter"></fa-icon>
-                                {{ 'label.filter' | translate }}
+                                    [icon]="icons.solid.faFilter"
+                                    [size]="'xl'"></fa-icon>
                             </button>
                         </div>
                     </div>
@@ -125,7 +124,7 @@
                                         <td>{{ item.card_owner | uppercase }}</td>
                                         <td>{{ item.branch_name }}</td>
                                         <td class="text-center">
-                                            <div class="bank-account-status {{ getBankAccountStatusClass(item.status) }}">
+                                            <div class="status-tag {{ getBankAccountStatusClass(item.status) }}">
                                                 <div class="dot"></div>
                                                 {{ getBankAccountStatusName(item.status) | lowercase }}
                                             </div>

@@ -1,0 +1,83 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title">{{ title }}</h4>
+    </div>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <app-form-input-wrapper
+                [for]="'start_date'"
+                [label]="'Từ ngày'">
+                <div class="input-group">
+                    <input
+                        #startDate="ngbDatepicker"
+                        class="form-control control-date-picker"
+                        placeholder="DD/MM/YYYY"
+                        ngbDatepicker
+                        [formControl]="searchForm.controls.start_date" />
+                    <div
+                        *ngIf="!searchForm.value.start_date"
+                        class="input-group-append cursor-pointer"
+                        (click)="startDate.toggle()">
+                        <span class="input-group-text">
+                            <fa-icon [icon]="icons.solid.faCalendar"></fa-icon>
+                        </span>
+                    </div>
+                    <div
+                        *ngIf="searchForm.value.start_date"
+                        class="input-group-append cursor-pointer"
+                        (click)="searchForm.controls.start_date.setValue(null)">
+                        <span class="input-group-text">
+                            <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
+                        </span>
+                    </div>
+                </div>
+            </app-form-input-wrapper>
+        </div>
+        <div class="col-12 col-md-6">
+            <app-form-input-wrapper
+                [for]="'end_date'"
+                [label]="'Đến ngày'">
+                <div class="input-group">
+                    <input
+                        #endDate="ngbDatepicker"
+                        class="form-control control-date-picker"
+                        placeholder="DD/MM/YYYY"
+                        ngbDatepicker
+                        [formControl]="searchForm.controls.end_date" />
+                    <div
+                        *ngIf="!searchForm.value.end_date"
+                        class="input-group-append cursor-pointer"
+                        (click)="endDate.toggle()">
+                        <span class="input-group-text">
+                            <fa-icon [icon]="icons.solid.faCalendar"></fa-icon>
+                        </span>
+                    </div>
+                    <div
+                        *ngIf="searchForm.value.end_date"
+                        class="input-group-append cursor-pointer"
+                        (click)="searchForm.controls.end_date.setValue(null)">
+                        <span class="input-group-text">
+                            <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
+                        </span>
+                    </div>
+                </div>
+            </app-form-input-wrapper>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+        type="button"
+        class="btn btn-white btn-common btn-shadow"
+        (click)="onClear()">
+        {{ 'label.delete' | translate }}
+    </button>
+    <button
+        type="button"
+        class="btn btn-primary btn-common btn-shadow"
+        (click)="onConfirm()">
+        {{ 'label.apply' | translate }}
+    </button>
+</div>

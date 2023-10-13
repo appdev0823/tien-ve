@@ -5,3 +5,4 @@ export * from './bank-account.dto';
 export * from './message.dto';
 export * from './setting.dto';
 export * from './debt.dto';
+export * from './remind-message.dto';

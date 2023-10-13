@@ -9,6 +9,8 @@ import { ROUTES } from 'src/app/utils';
 import { DebtImportComponent } from './debt-import/debt-import.component';
 import { DebtListComponent } from './debt-list/debt-list.component';
 import { DebtDetailComponent } from './debt-detail/debt-detail.component';
+import { PipeModule } from 'src/app/pipes/pipe.module';
+import { SendRemindMessageModalComponent } from './send-remind-message-modal/send-remind-message-modal.component';
 
 const routes: Routes = [
     {
@@ -31,7 +33,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [DebtImportComponent, DebtListComponent, DebtDetailComponent],
-    imports: [RouterModule.forChild(routes), SharedModule, ComponentModule, DirectiveModule],
+    declarations: [DebtImportComponent, DebtListComponent, DebtDetailComponent, SendRemindMessageModalComponent],
+    imports: [RouterModule.forChild(routes), SharedModule, ComponentModule, DirectiveModule, PipeModule],
 })
 export class DebtModule {}

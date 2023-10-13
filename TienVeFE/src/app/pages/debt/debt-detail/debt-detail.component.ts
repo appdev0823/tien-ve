@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
-import { MessageSelectComponent } from 'src/app/components/message-select/message-select.component';
-import { DebtDetailDTO, MessageDTO } from 'src/app/dtos';
+import { FormControl, FormGroup } from '@angular/forms';
+import { NgbActiveModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription, debounceTime } from 'rxjs';
+import { DateRangePickerModalComponent } from 'src/app/components/date-range-picker-modal/date-range-picker-modal.component';
+import { DebtDetailDTO, MessageDTO, MessageSearchQuery } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { DebtService, MessageService } from 'src/app/services';
+import { SendRemindMessageModalComponent } from '../send-remind-message-modal/send-remind-message-modal.component';
 
 @Component({
     selector: 'app-debt-detail',
@@ -14,21 +16,40 @@ import { DebtService, MessageService } from 'src/app/services';
 export class DebtDetailComponent extends PageComponent implements OnInit, OnDestroy {
     private _subscription = new Subscription();
 
-    @Input() id = '';
+    @Input({ required: true }) id = '';
 
     @Output() reloadParentList = new EventEmitter<void>();
 
+    public viewMode: 'DETAIL' | 'MESSAGE_LIST' | 'ADD_MESSAGE' = 'DETAIL';
+
     public data = new DebtDetailDTO();
 
-    public messageList: MessageDTO[] = [];
+    public debtMsgList: MessageDTO[] = [];
 
+    public userMsgSearchForm = new FormGroup({
+        keyword: new FormControl(''),
+    });
+    private _userMsgStartDate: NgbDate | null = null;
+    private _userMsgEndDate: NgbDate | null = null;
+
+    public userMsgList: MessageDTO[] = [];
+
+    public viewingUserMsg?: MessageDTO;
+
+    public get isAllUserMgChecked() {
+        return this.debtMsgList.length > 0 ? this.debtMsgList.every((item) => item.is_checked) : false;
+    }
     constructor(public activeModal: NgbActiveModal, private _debt$: DebtService, private _message$: MessageService) {
         super();
     }
 
     ngOnInit() {
         void this._getDetail();
-        this._getMessageList();
+        this._getDebtMsgList();
+        this._getUserMsgList();
+
+        const sub = this.userMsgSearchForm.controls.keyword.valueChanges.pipe(debounceTime(500)).subscribe(() => this._getUserMsgList());
+        this._subscription.add(sub);
     }
 
     ngOnDestroy() {
@@ -47,22 +68,49 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
         this.data = result.data;
     }
 
-    private _getMessageList() {
-        const sub = this._message$.getList({ page: -1, debt_id: this.id }).subscribe((res) => {
-            this.messageList = res.data?.list || [];
+    public openDateRangePickerModal() {
+        const modal = this.modal$.open(DateRangePickerModalComponent, { centered: true });
+        const cmpIns = modal.componentInstance as DateRangePickerModalComponent;
+        cmpIns.title = 'Ngày nhận tin nhắn';
+        cmpIns.startDate = this._userMsgStartDate;
+        cmpIns.endDate = this._userMsgEndDate;
+        const sub = cmpIns.confirmEvent.subscribe((value) => {
+            this._userMsgStartDate = value.start;
+            this._userMsgEndDate = value.end;
+            this._getUserMsgList();
         });
         this._subscription.add(sub);
     }
 
-    public confirmRemoveMessage(idx: number) {
-        if (idx < 0 || idx >= this.messageList.length) return;
+    private _getDebtMsgList() {
+        const sub = this._message$.getList({ page: -1, debt_id: this.id }).subscribe((res) => {
+            this.debtMsgList = res.data?.list || [];
+        });
+        this._subscription.add(sub);
+    }
+
+    public confirmRemoveMessage(msgIdx: number) {
+        if (msgIdx < 0 || msgIdx >= this.debtMsgList.length) return;
 
         const confirmRemoveMsg = 'Bạn có chắc muốn xóa gạch nợ tin nhắn này ?';
         this.showConfirmModal(confirmRemoveMsg, {
             confirmEvent: (isConfirmed) => {
                 if (!isConfirmed) return;
 
-                void this._updateDebtId(this.messageList[idx].id);
+                void this._updateDebtId(this.debtMsgList[msgIdx].id);
+            },
+        });
+    }
+
+    public confirmAddMessage(userMsgIdx: number) {
+        if (userMsgIdx < 0 || userMsgIdx >= this.userMsgList.length) return;
+
+        const confirmRemoveMsg = 'Bạn có chắc muốn thêm tin nhắn này ?';
+        this.showConfirmModal(confirmRemoveMsg, {
+            confirmEvent: (isConfirmed) => {
+                if (!isConfirmed) return;
+
+                void this._updateDebtId(this.userMsgList[userMsgIdx].id, this.id);
             },
         });
     }
@@ -78,21 +126,57 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
         const successMsg = String(this.translate$.instant('message.save_successfully'));
         this.toast$.success(successMsg);
 
-        this.reloadParentList.emit();
+        this.reloadParentList.next();
 
         await this._getDetail();
-        this._getMessageList();
+        this._getUserMsgList();
+        this._getDebtMsgList();
     }
 
-    public addMessage() {
-        const modal = this.modal$.open(MessageSelectComponent, { centered: true, size: 'lg' });
-        const cmpIns = modal.componentInstance as MessageSelectComponent;
-        cmpIns.debtId = this.id;
-        cmpIns.searchQuery = {
-            receive_user_id: this.currentUser.id,
-        };
-        cmpIns.messageSelected.subscribe((message) => {
-            void this._updateDebtId(message.id, this.id);
+    public openSendMessageModal() {
+        const modal = this.modal$.open(SendRemindMessageModalComponent, { centered: true });
+        const cmpIns = modal.componentInstance as SendRemindMessageModalComponent;
+        cmpIns.shouldShowOptions = false;
+        cmpIns.checkedList = [this.data];
+        const sub = cmpIns.resultEvent.subscribe(() => this.reloadParentList.emit());
+        this._subscription.add(sub);
+    }
+
+    public toggleAllUserMsg() {
+        const isAllChecked = this.isAllUserMgChecked;
+        this.debtMsgList = this.debtMsgList.map((item) => ({ ...item, is_checked: !isAllChecked }));
+    }
+
+    public switchMode(mode: typeof this.viewMode) {
+        this.viewMode = mode;
+
+        if (this.viewMode === 'ADD_MESSAGE') {
+            this._getUserMsgList();
+        }
+    }
+
+    private _getUserMsgList() {
+        const params: MessageSearchQuery = { page: -1, receive_user_id: this.currentUser.id };
+        const formValue = this.userMsgSearchForm.value;
+
+        if (this.helpers.isString(formValue.keyword)) {
+            params.keyword = formValue.keyword;
+        }
+        if (this._userMsgStartDate) {
+            params.start_date = `${this._userMsgStartDate.year}-${this._userMsgStartDate.month < 10 ? `0${this._userMsgStartDate.month}` : this._userMsgStartDate.month}-${this._userMsgStartDate.day}`;
+        }
+        if (this._userMsgEndDate) {
+            params.end_date = `${this._userMsgEndDate.year}-${this._userMsgEndDate.month < 10 ? `0${this._userMsgEndDate.month}` : this._userMsgEndDate.month}-${this._userMsgEndDate.day}`;
+        }
+        const sub = this._message$.getList(params).subscribe((res) => {
+            this.userMsgList = res.data?.list || [];
         });
+        this._subscription.add(sub);
+    }
+
+    public viewUserMsg(idx: number) {
+        if (idx < 0 || idx >= this.userMsgList.length) return;
+
+        this.viewingUserMsg = this.userMsgList[idx];
     }
 }

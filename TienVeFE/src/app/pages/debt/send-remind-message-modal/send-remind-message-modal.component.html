@@ -1,0 +1,83 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title">Gửi tin nhắn</h4>
+    </div>
+</div>
+<div class="modal-body">
+    <ng-container *ngIf="shouldShowOptions">
+        <div class="row mb-3">
+            <div class="col-12">
+                <p class="a-fs-12 mb-0 text-bold">Gửi theo</p>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="icheck-primary d-inline">
+                    <input
+                        id="checkedList"
+                        type="radio"
+                        name="send-remind-message_{{ randomStr }}"
+                        [value]="'CHECKED'"
+                        [disabled]="checkedList.length <= 0"
+                        [(ngModel)]="selectedOption" />
+                    <label
+                        for="checkedList"
+                        class="font-weight-normal">
+                        {{ 'label.checked_list' | translate }}
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="icheck-primary d-inline">
+                    <input
+                        id="notCompletedList"
+                        type="radio"
+                        name="send-remind-message_{{ randomStr }}"
+                        [value]="'NOT_COMPLETED'"
+                        [(ngModel)]="selectedOption" />
+                    <label
+                        for="notCompletedList"
+                        class="font-weight-normal">
+                        {{ 'label.not_completed_list' | translate }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <div class="row">
+        <div class="col-12">
+            <p class="a-fs-12 mb-0 text-bold">Số tin nhắn đã gửi</p>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <p class="mb-0">
+                Bạn đã gửi <strong class="text-primary">{{ currentUser.remind_count }}/{{ currentUser.max_remind_count }}</strong> tin nhắn
+            </p>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <p>
+                <ngb-progressbar
+                    class="linear-progress-bar"
+                    [value]="(currentUser.max_remind_count ? currentUser.remind_count / currentUser.max_remind_count : 0) * 100"></ngb-progressbar>
+            </p>
+            <p
+                *ngIf="currentUser.remind_count >= currentUser.max_remind_count"
+                class="text-danger">
+                Liên hệ hotline để nâng cấp tin nhắn
+            </p>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+        type="button"
+        class="btn btn-primary btn-common btn-shadow"
+        (click)="onSend()">
+        {{ currentUser.remind_count >= currentUser.max_remind_count ? 'Nâng cấp Premium' : 'Gửi tin' }}
+    </button>
+</div>

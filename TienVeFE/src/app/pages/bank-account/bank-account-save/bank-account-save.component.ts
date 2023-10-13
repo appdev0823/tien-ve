@@ -42,6 +42,8 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
             this.viewMode = 'CREATE';
             this.form.controls.phone.setValue(this.currentUser.phone);
         }
+
+    //! @Đỗ Văn Khả oksy thế chốt để default số này nhé, cc @Lưu Tuấn Nguyên
     }
 
     ngOnDestroy() {

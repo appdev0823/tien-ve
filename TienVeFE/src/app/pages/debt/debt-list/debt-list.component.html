@@ -1,207 +1,190 @@
 <!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid ps-0">
+<div class="content-header py-0">
+    <div class="container-fluid">
         <div class="row mb-2">
-            <div class="col-12 d-flex">
-                <h1 class="m-0">Quản lý công nợ</h1>
+            <div class="col-12 ps-0">
+                <h1>Quản lý công nợ</h1>
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
+        <div class="row mt-3">
+            <div class="col-12 ps-0">
+                <p class="a-fs-11 mb-0">Quản lý và cập nhật trạng thái thu tiền theo phòng trọ</p>
+            </div>
+        </div>
     </div>
-    <!-- /.container-fluid -->
 </div>
 
 <section class="content">
     <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12 text-end">
+                <button
+                    class="btn btn-create-new"
+                    [disabled]="dataTotal <= 0"
+                    (click)="onExportExcel()">
+                    <fa-icon
+                        class="me-2"
+                        [icon]="icons.solid.faDownload"></fa-icon>
+                    {{ 'label.download_excel_file' | translate }}
+                </button>
+            </div>
+        </div>
         <div class="card">
             <div class="card-body">
-                <form
-                    [formGroup]="searchForm"
-                    (ngSubmit)="onSearch()">
-                    <div class="row">
-                        <div class="col-12 col-md-4 col-lg-2">
-                            <app-form-input-wrapper
-                                [for]="'min_amount'"
-                                [label]="'Số tiền'">
-                                <input
-                                    appNumericInput
-                                    id="min_amount"
-                                    type="text"
-                                    class="form-control"
-                                    [formControl]="searchForm.controls.min_amount" />
-                            </app-form-input-wrapper>
-                        </div>
-                        <div class="a-w-30 px-0 text-center d-flex flex-column-reverse pb-2">~</div>
-                        <div class="col-12 col-md-4 col-lg-2">
-                            <app-form-input-wrapper
-                                [for]="'max_amount'"
-                                [className]="'text-white d-none d-md-block'"
-                                [label]="'HIDDEN'">
-                                <input
-                                    appNumericInput
-                                    id="max_amount"
-                                    type="text"
-                                    class="form-control"
-                                    [formControl]="searchForm.controls.max_amount" />
-                            </app-form-input-wrapper>
-                        </div>
-                        <div class="col-12 col-md-6 col-lg-3 mt-3 mt-lg-0">
-                            <app-form-input-wrapper
-                                [for]="'start_date'"
-                                [label]="'Từ ngày'">
+                <div class="row">
+                    <div class="col-12 col-md-9 d-flex">
+                        <div
+                            class="ps-0"
+                            style="flex: 1">
+                            <form [formGroup]="searchForm">
                                 <div class="input-group">
+                                    <div class="input-group-text bg-white border-end-0">
+                                        <fa-icon
+                                            class="text-gray"
+                                            [icon]="icons.solid.faSearch"></fa-icon>
+                                    </div>
                                     <input
-                                        #startDate="ngbDatepicker"
-                                        class="form-control control-date-picker"
-                                        placeholder="DD/MM/YYYY"
-                                        ngbDatepicker
-                                        [formControl]="searchForm.controls.start_date" />
-                                    <div
-                                        *ngIf="!searchForm.value.start_date"
-                                        class="input-group-append cursor-pointer"
-                                        (click)="startDate.toggle()">
-                                        <span class="input-group-text">
-                                            <fa-icon [icon]="icons.solid.faCalendar"></fa-icon>
-                                        </span>
-                                    </div>
-                                    <div
-                                        *ngIf="searchForm.value.start_date"
-                                        class="input-group-append cursor-pointer"
-                                        (click)="searchForm.controls.start_date.setValue(null)">
-                                        <span class="input-group-text">
-                                            <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
-                                        </span>
-                                    </div>
+                                        id="keyword"
+                                        type="text"
+                                        class="form-control border-start-0 ps-0"
+                                        placeholder="Mã công nợ, tên người trả, số tài khoản,..."
+                                        [formControl]="searchForm.controls.keyword" />
                                 </div>
-                            </app-form-input-wrapper>
+                            </form>
                         </div>
-                        <div class="col-12 col-md-6 col-lg-3 mt-3 mt-lg-0">
-                            <app-form-input-wrapper
-                                [for]="'end_date'"
-                                [label]="'Đến ngày'">
-                                <div class="input-group">
-                                    <input
-                                        #endDate="ngbDatepicker"
-                                        class="form-control control-date-picker"
-                                        placeholder="DD/MM/YYYY"
-                                        ngbDatepicker
-                                        [formControl]="searchForm.controls.end_date" />
-                                    <div
-                                        *ngIf="!searchForm.value.end_date"
-                                        class="input-group-append cursor-pointer"
-                                        (click)="endDate.toggle()">
-                                        <span class="input-group-text">
-                                            <fa-icon [icon]="icons.solid.faCalendar"></fa-icon>
-                                        </span>
-                                    </div>
-                                    <div
-                                        *ngIf="searchForm.value.end_date"
-                                        class="input-group-append cursor-pointer"
-                                        (click)="searchForm.controls.end_date.setValue(null)">
-                                        <span class="input-group-text">
-                                            <fa-icon [icon]="icons.solid.faTimes"></fa-icon>
-                                        </span>
-                                    </div>
-                                </div>
-                            </app-form-input-wrapper>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-12 col-md-3 col-lg-2">
-                            <div class="custom-control custom-checkbox d-inline me-3">
-                                <input
-                                    id="is_paid"
-                                    class="custom-control-input"
-                                    type="checkbox"
-                                    [formControl]="searchForm.controls.is_paid" />
-                                <label
-                                    for="is_paid"
-                                    class="custom-control-label">
-                                    {{ 'label.completed' | translate }}
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-3 col-lg-2 mt-2 mt-md-0">
-                            <div class="custom-control custom-checkbox d-inline">
-                                <input
-                                    id="is_not_paid"
-                                    class="custom-control-input"
-                                    type="checkbox"
-                                    [formControl]="searchForm.controls.is_not_paid" />
-                                <label
-                                    for="is_not_paid"
-                                    class="custom-control-label">
-                                    {{ 'label.not_completed' | translate }}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-12 text-center">
+                        <div class="d-inline-block px-3">
                             <button
-                                type="submit"
-                                class="btn btn-primary">
+                                class="btn btn-primary me-3"
+                                (click)="openDateRangePickerModal()">
                                 <fa-icon
-                                    class="me-2"
-                                    [icon]="icons.solid.faSearch"></fa-icon>
-                                {{ 'label.search' | translate }}
+                                    [icon]="icons.solid.faCalendarAlt"
+                                    [size]="'xl'"></fa-icon>
+                            </button>
+                            <button
+                                class="btn btn-primary me-3"
+                                (click)="openFilterModal()">
+                                <fa-icon
+                                    [icon]="icons.solid.faFilter"
+                                    [size]="'xl'"></fa-icon>
+                            </button>
+                            <button
+                                class="btn btn-primary me-3"
+                                (click)="openSendMessageModal()">
+                                <fa-icon
+                                    [icon]="icons.solid.faPaperPlane"
+                                    [size]="'xl'"></fa-icon>
+                            </button>
+                            <button
+                                class="btn btn-white btn-primary"
+                                (click)="onDeleteMultiple()">
+                                <fa-icon
+                                    [icon]="icons.solid.faTrash"
+                                    [size]="'xl'"></fa-icon>
                             </button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-        <div class="card mt-3">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12 col-md-6 d-flex align-items-end">
-                        Tổng số dòng:&nbsp;<strong>{{ dataTotal }}</strong>
+                    <div class="col-12 col-md-3 text-end">
+                        <button
+                            class="btn btn-primary px-2"
+                            (click)="onCreate()">
+                            <fa-icon
+                                [icon]="icons.solid.faPlus"
+                                [size]="'xl'"></fa-icon>
+                        </button>
                     </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-12">
+                        Tổng số dòng:&nbsp;<strong>{{ dataTotal }}</strong>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-12 px-0">
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped table-p-3 mb-0">
+                            <table class="table table-hover table-p-3 mb-0 table-header-border-none table-header-font-weight-normal">
                                 <thead>
                                     <tr>
-                                        <th class="a-w-210 text-center">ID</th>
-                                        <th class="a-w-150 text-center">Ngày tạo</th>
-                                        <th class="a-w-150 text-center">Trạng thái</th>
-                                        <th class="a-mw-150 text-center">Người trả tiền</th>
-                                        <th class="a-w-200 text-center">SDT người trả tiền</th>
-                                        <th class="a-w-120 text-center">Số tiền</th>
-                                        <th class="a-w-120 text-center">Đã trả</th>
-                                        <th class="a-w-200 text-center">Tài khoản nhận tiền</th>
-                                        <th class="a-w-150 text-center">Ghi chú</th>
-                                        <th class="a-w-120 text-center">Thao tác</th>
+                                        <th class="a-w-30 text-center icheck-primary">
+                                            <input
+                                                id="check-all_{{ randomStr }}"
+                                                type="checkbox"
+                                                class="cell-checkbox"
+                                                [checked]="isAllChecked"
+                                                (change)="toggleAll()" />
+                                            <label for="check-all_{{ randomStr }}"></label>
+                                        </th>
+                                        <th class="a-w-200 text-center">Mã công nợ</th>
+                                        <th class="a-w-180 text-start">Tên người trả</th>
+                                        <th class="a-w-200 text-start">Số tài khoản</th>
+                                        <th class="a-w-180 text-center">{{ 'label.created_date' | translate }}</th>
+                                        <th class="a-w-120 text-end">Số lần nhắc</th>
+                                        <th class="a-w-150 text-center">{{ 'label.status' | translate }}</th>
+                                        <th class="a-w-50 text-center"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let item of dataList; let idx = index">
+                                        <td class="text-center icheck-primary">
+                                            <input
+                                                id="datalist-{{ idx }}"
+                                                type="checkbox"
+                                                class="cursor-pointer"
+                                                [checked]="item.is_checked"
+                                                (change)="item.is_checked = !item.is_checked" />
+                                            <label for="datalist-{{ idx }}"></label>
+                                        </td>
                                         <td class="text-center">{{ item.id }}</td>
+                                        <td class="text-start">{{ item.payer_name }}</td>
+                                        <td class="text-start">{{ item.bank_account_number | accountNumber }}</td>
                                         <td class="text-center">{{ item.created_date }}</td>
-                                        <td class="text-center {{ item.amount <= (item.paid_amount || 0) ? 'text-success' : 'text-danger' }}">
-                                            {{ (item.amount <= (item.paid_amount || 0) ? 'label.completed' : 'label.not_completed') | translate }}
-                                        </td>
-                                        <td>{{ item.payer_name }}</td>
-                                        <td class="text-center">{{ item.payer_phone }}</td>
-                                        <td class="text-end">{{ item.amount | number : '.0-0' }}</td>
-                                        <td class="text-end">{{ item.paid_amount | number : '.0-0' }}</td>
-                                        <td>
-                                            <p class="mb-0">{{ item.bank_brand_name }}</p>
-                                            <p class="mb-0">{{ item.bank_account_number }}</p>
-                                        </td>
-                                        <td>{{ item.note }}</td>
+                                        <td class="text-end">{{ item.remind_count | number : '.0-0' }}</td>
                                         <td class="text-center">
-                                            <button
-                                                class="btn btn-primary"
-                                                (click)="showDetail(idx)">
-                                                <fa-icon [icon]="icons.solid.faInfoCircle"></fa-icon>
-                                            </button>
+                                            <div
+                                                class="status-tag"
+                                                [ngClass]="(item.paid_amount || 0) >= item.amount ? 'success' : 'danger'">
+                                                <div class="dot"></div>
+                                                {{ ((item.paid_amount || 0) >= item.amount ? 'label.completed' : 'label.not_completed') | translate }}
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div
+                                                ngbDropdown
+                                                class="d-inline-block"
+                                                [container]="'body'">
+                                                <button
+                                                    id="ellipsis_{{ idx }}"
+                                                    type="button"
+                                                    class="btn btn-outline-primary fa-rotate-90 dropdown-toggle-no-arrow rounded-circle"
+                                                    ngbDropdownToggle>
+                                                    <fa-icon [icon]="icons.solid.faEllipsis"></fa-icon>
+                                                </button>
+                                                <div
+                                                    ngbDropdownMenu
+                                                    class="px-1 border-0"
+                                                    [attr.aria-labelledby]="'ellipsis_' + idx">
+                                                    <button
+                                                        ngbDropdownItem
+                                                        class="px-1 text-center"
+                                                        (click)="onDelete(idx)">
+                                                        {{ 'label.delete' | translate }}
+                                                    </button>
+                                                    <div class="dropdown-divider"></div>
+                                                    <button
+                                                        ngbDropdownItem
+                                                        class="px-1 text-center text-primary"
+                                                        (click)="onViewDetail(idx)">
+                                                        {{ 'label.view_detail' | translate }}
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
+                                <tfoot *ngIf="!helpers.isFilledArray(dataList)">
+                                    <tr>
+                                        <td [colSpan]="99">{{ 'message.err_no_data' | translate }}</td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>

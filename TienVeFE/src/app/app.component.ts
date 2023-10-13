@@ -1,12 +1,9 @@
 import { Component, HostListener } from '@angular/core';
-import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { MDateParserFormatter } from './components/datepicker/date-parser-formatter';
 import PageComponent from './includes/page.component';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    providers: [{ provide: NgbDateParserFormatter, useClass: MDateParserFormatter }],
 })
 export class AppComponent extends PageComponent {
     title = 'Tiền Về';

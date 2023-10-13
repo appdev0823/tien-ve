@@ -1,13 +1,15 @@
 import { Helpers } from '../utils';
 import { CommonSearchQuery } from '../utils/types';
+import { BaseDTO } from './base.dto';
 
-export class MessageDTO {
+export class MessageDTO extends BaseDTO {
     public id = 0;
     public address = '';
     public phone = '';
     public body = '';
     public send_date = '';
     public receive_date = '';
+    public sign: -1 | 1 = 1;
     public debt_id?: string;
     public amount = 0;
     public is_deleted: 0 | 1 = 0;
@@ -22,6 +24,7 @@ export class MessageDTO {
         instance.body = String(json['body'] || '');
         instance.send_date = String(json['send_date'] || '');
         instance.receive_date = String(json['receive_date'] || '');
+        instance.sign = Number(json['sign']) > 0 ? 1 : -1;
         if (Helpers.isString(json['debt_id'])) {
             instance.debt_id = json['debt_id'];
         }
@@ -42,4 +45,6 @@ export class MessageDTO {
 export type MessageSearchQuery = CommonSearchQuery & {
     debt_id?: string;
     receive_user_id?: number;
+    start_date?: string;
+    end_date?: string;
 };

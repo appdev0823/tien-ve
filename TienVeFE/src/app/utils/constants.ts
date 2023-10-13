@@ -44,6 +44,17 @@ const CONSTANTS = {
         AUTO_INCREMENT_LENGTH: 5,
         LENGTH: 21,
     },
+    REMIND_MESSAGE: {
+        CHANNEL_TYPE: {
+            ZALO: 1,
+            SMS: 2,
+        },
+        STATUS: {
+            FAIL: -1,
+            SENDING: 0,
+            SUCCESS: 1,
+        },
+    },
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 
@@ -103,6 +114,8 @@ const API_ROUTES = {
         CREATE_MULTIPLE: 'debt/multiple',
         LIST: 'debt',
         DETAIL: 'debt/:id',
+        DELETE_MULTIPLE: 'debt',
+        REMIND: 'debt/remind',
     },
     MESSAGE: {
         LIST: 'message',

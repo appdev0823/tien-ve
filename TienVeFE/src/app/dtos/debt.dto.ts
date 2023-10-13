@@ -1,12 +1,14 @@
 import { CommonSearchQuery } from '../utils/types';
+import { BaseDTO } from './base.dto';
 
-export class DebtDTO {
+export class DebtDTO extends BaseDTO {
     public id = '';
     public user_id = 0;
     public bank_account_id = 0;
     public payer_name = '';
     public payer_phone = '';
     public amount = 0;
+    public remind_count = 0;
     public note = '';
     public is_deleted: 0 | 1 = 0;
     public created_date = '';
@@ -24,6 +26,7 @@ export class DebtDTO {
         instance.payer_name = String(json['payer_name'] || '');
         instance.payer_phone = String(json['payer_phone'] || '');
         instance.amount = Number(json['amount']) || 0;
+        instance.remind_count = Number(json['remind_count']) || 0;
         instance.note = String(json['note'] || '');
         instance.is_deleted = json['is_active'] ? 1 : 0;
         instance.created_date = String(json['created_date'] || '');
@@ -65,6 +68,8 @@ export type DebtSearchQuery = CommonSearchQuery & {
     is_not_paid?: boolean;
 };
 
+export type DebtPaidStatus = 'NOT_PAID' | 'PAID' | 'ALL';
+
 export class DebtDetailDTO extends DebtDTO {
     public bank_account_bank_id = 0;
     public bank_account_user_id = 0;
@@ -99,3 +104,8 @@ export class DebtDetailDTO extends DebtDTO {
         return instance;
     }
 }
+
+export type DebtRemindRequest = {
+    id_list?: string[];
+    is_not_paid?: boolean;
+};

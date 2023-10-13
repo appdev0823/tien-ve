@@ -8,10 +8,20 @@ import { MessageSelectComponent } from './message-select/message-select.componen
 import { RadioModalComponent } from './radio-modal/radio-modal.component';
 import { UpgradeModalComponent } from './upgrade-modal/upgrade-modal.component';
 import { PipeModule } from '../pipes/pipe.module';
+import { DateRangePickerModalComponent } from './date-range-picker-modal/date-range-picker-modal.component';
 
 @NgModule({
-    declarations: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent, MessageSelectComponent, RadioModalComponent, UpgradeModalComponent],
+    declarations: [
+        AppToastComponent,
+        FormInputWrapperComponent,
+        ConfirmModalComponent,
+        UploadComponent,
+        MessageSelectComponent,
+        RadioModalComponent,
+        UpgradeModalComponent,
+        DateRangePickerModalComponent,
+    ],
     imports: [SharedModule, PipeModule],
-    exports: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent, MessageSelectComponent, RadioModalComponent],
+    exports: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent, MessageSelectComponent, RadioModalComponent, DateRangePickerModalComponent],
 })
 export class ComponentModule {}

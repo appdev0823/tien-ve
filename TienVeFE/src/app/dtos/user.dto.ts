@@ -4,6 +4,8 @@ export class UserDTO {
     public phone = '';
     public password = '';
     public name = '';
+    public remind_count = 0;
+    public max_remind_count = 0;
     public is_active: 0 | 1 = 1;
     public created_date = '';
     public updated_date = '';
@@ -15,6 +17,8 @@ export class UserDTO {
         instance.phone = String(json['phone'] || '');
         instance.name = String(json['name'] || '');
         instance.password = String(json['password'] || '');
+        instance.remind_count = Number(json['remind_count']) || 0;
+        instance.max_remind_count = Number(json['max_remind_count']) || 0;
         instance.is_active = json['is_active'] ? 1 : 0;
         instance.created_date = String(json['created_date'] || '');
         instance.updated_date = String(json['updated_date'] || '');
@@ -37,6 +41,8 @@ export class LoginUserDTO extends UserDTO {
         instance.phone = parent.phone;
         instance.name = parent.name;
         instance.password = parent.password;
+        instance.remind_count = Number(json['remind_count']) || 0;
+        instance.max_remind_count = Number(json['max_remind_count']) || 0;
         instance.is_active = parent.is_active;
         instance.created_date = parent.created_date;
         instance.updated_date = parent.updated_date;

@@ -202,6 +202,10 @@ table input.cell-checkbox {
     border-color: $primaryColor !important;
 }
 
+.modal-dialog {
+    overflow-y: initial !important
+}
+
 .modal-header,
 .modal-footer {
     padding-left: 1.5rem;
@@ -254,4 +258,12 @@ table input.cell-checkbox {
 
 .a-fw-900 {
     font-weight: 900;
+}
+
+.box-shadow-none {
+    box-shadow: none !important;
+}
+
+.timeline.primary::before {
+    background-color: $primaryColor !important;
 }
