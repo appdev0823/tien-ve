@@ -32,3 +32,13 @@ export type MessageSearchQuery = CommonSearchQuery & {
     start_date?: string;
     end_date?: string;
 };
+
+export type MessageStatsQuery = {
+    start_date?: string;
+    end_date?: string;
+};
+
+export class MessageAmountStatsDTO {
+    public time = ' ';
+    public total_amount = 0;
+}

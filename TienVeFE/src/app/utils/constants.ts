@@ -57,6 +57,7 @@ const CONSTANTS = {
             SUCCESS: 1,
         },
     },
+    PRIMARY_COLOR: '#D82D8B',
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 
@@ -122,6 +123,8 @@ const API_ROUTES = {
     MESSAGE: {
         LIST: 'message',
         UPDATE_DEBT_ID: 'message/:id/update-debt-id',
+        AMOUNT_MONTHLY_STATS: 'message/amount-monthly-stats',
+        AMOUNT_DAILY_STATS: 'message/amount-daily-stats',
     },
     SETTING: {
         MODULE: 'setting',

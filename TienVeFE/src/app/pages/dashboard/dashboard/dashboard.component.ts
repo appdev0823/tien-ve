@@ -1,10 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { ChartConfiguration } from 'chart.js';
 import { Subscription, debounceTime } from 'rxjs';
+import { DateRangePickerModalComponent } from 'src/app/components/date-range-picker-modal/date-range-picker-modal.component';
 import { RadioModalComponent } from 'src/app/components/radio-modal/radio-modal.component';
-import { BankAccountDTO } from 'src/app/dtos';
+import { BankAccountDTO, MessageAmountStatsDTO, MessageStatsQuery } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
-import { BankAccountService } from 'src/app/services';
+import { BankAccountService, MessageService } from 'src/app/services';
 import { ValueOf } from 'src/app/utils/types';
 
 @Component({
@@ -24,8 +27,83 @@ export class DashboardComponent extends PageComponent implements OnInit, OnDestr
     public bankAccDataTotal = 0;
     public selectedBankAccount = new BankAccountDTO();
 
-    constructor(private _bankAccount$: BankAccountService) {
+    public chartOpts: ChartConfiguration<'bar'>['options'] = {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false,
+            },
+            title: {
+                display: false,
+            },
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+            },
+            y: {
+                grid: {
+                    display: false,
+                },
+            },
+        },
+    };
+
+    private _monthlyStatsStartDate: NgbDate;
+    private _monthlyStatsEndDate: NgbDate;
+    public monthlyAmountStatsList: MessageAmountStatsDTO[] = [];
+    public monthlyAmountStatsData: ChartConfiguration<'bar'>['data'] = {
+        datasets: [
+            {
+                data: [],
+                backgroundColor: this.CONSTANTS.PRIMARY_COLOR,
+                borderWidth: 0,
+                borderRadius: 5,
+                borderSkipped: false,
+            },
+        ],
+        labels: [],
+    };
+    public currentMonthStats = {
+        total_amount: 0,
+        pre_diff: {
+            percent: 0,
+            is_increase: true,
+        },
+    };
+
+    private _dailyStatsStartDate: NgbDate;
+    private _dailyStatsEndDate: NgbDate;
+    public dailyAmountStatsList: MessageAmountStatsDTO[] = [];
+    public dailyAmountStatsData: ChartConfiguration<'bar'>['data'] = {
+        datasets: [
+            {
+                data: [],
+                backgroundColor: this.CONSTANTS.PRIMARY_COLOR,
+                borderWidth: 0,
+                borderRadius: 5,
+                borderSkipped: false,
+            },
+        ],
+        labels: [],
+    };
+    public currentDayStats = {
+        total_amount: 0,
+        pre_diff: {
+            percent: 0,
+            is_increase: true,
+        },
+    };
+
+    constructor(private _bankAccount$: BankAccountService, private _message$: MessageService) {
         super();
+
+        this._monthlyStatsStartDate = new NgbDate(this.curDate.getFullYear(), 1, 1);
+        this._monthlyStatsEndDate = new NgbDate(this.curDate.getFullYear(), 12, 31);
+        this._dailyStatsStartDate = new NgbDate(this.curDate.getFullYear(), this.curDate.getMonth() + 1, 1);
+        this._dailyStatsEndDate = new NgbDate(this.curDate.getFullYear(), this.curDate.getMonth() + 1, 30);
     }
 
     ngOnInit() {
@@ -33,6 +111,9 @@ export class DashboardComponent extends PageComponent implements OnInit, OnDestr
 
         const sub = this.bankAccSearchForm.valueChanges.pipe(debounceTime(500)).subscribe(() => this._getBankAccList());
         this._subscription.add(sub);
+
+        this._getAmountMonthlyStats();
+        this._getAmountDailyStats();
     }
 
     ngOnDestroy() {
@@ -106,5 +187,125 @@ export class DashboardComponent extends PageComponent implements OnInit, OnDestr
     public selectBankAccount(idx: number) {
         if (idx < 0 || idx >= this.bankAccDataList.length) return;
         this.selectedBankAccount = this.bankAccDataList[idx];
+    }
+
+    public openMonthlyStatsDateRangeModal() {
+        const modal = this.modal$.open(DateRangePickerModalComponent, { centered: true });
+        const cmpIns = modal.componentInstance as DateRangePickerModalComponent;
+        cmpIns.title = 'Phát sinh trong tháng';
+        cmpIns.startDate = this._monthlyStatsStartDate;
+        cmpIns.endDate = this._monthlyStatsEndDate;
+        cmpIns.clearable = false;
+        const sub = cmpIns.confirmEvent.subscribe((value) => {
+            if (value.start && value.end) {
+                this._monthlyStatsStartDate = value.start;
+                this._monthlyStatsEndDate = value.end;
+            }
+            this._getAmountMonthlyStats();
+        });
+        this._subscription.add(sub);
+    }
+
+    private _getAmountMonthlyStats() {
+        const params: MessageStatsQuery = {
+            start_date: `${this._monthlyStatsStartDate.year}-${this._monthlyStatsStartDate.month < 10 ? `0${this._monthlyStatsStartDate.month}` : this._monthlyStatsStartDate.month}-${
+                this._monthlyStatsStartDate.day
+            }`,
+            end_date: `${this._monthlyStatsEndDate.year}-${this._monthlyStatsEndDate.month < 10 ? `0${this._monthlyStatsEndDate.month}` : this._monthlyStatsEndDate.month}-${
+                this._monthlyStatsEndDate.day
+            }`,
+        };
+        const sub = this._message$.getAmountMonthlyStats(params).subscribe((res) => {
+            this.monthlyAmountStatsList = res.data || [];
+            this.monthlyAmountStatsData = {
+                datasets: [
+                    {
+                        data: this.monthlyAmountStatsList.map((item) => item.total_amount),
+                        backgroundColor: this.CONSTANTS.PRIMARY_COLOR,
+                        borderWidth: 0,
+                        borderRadius: 5,
+                        borderSkipped: false,
+                    },
+                ],
+                labels: this.monthlyAmountStatsList.map((item) => item.time),
+            };
+            this._setCurrentMonthStats();
+        });
+        this._subscription.add(sub);
+    }
+
+    private _setCurrentMonthStats() {
+        const curMonth = this.helpers.formatDate(this.curDate, 'MM/YYYY');
+        const foundIdx = this.monthlyAmountStatsList.findIndex((item) => item.time === curMonth);
+        if (foundIdx < 0) return;
+
+        const cur = this.monthlyAmountStatsList[foundIdx];
+        const pre = foundIdx > 1 ? this.monthlyAmountStatsList[foundIdx - 1] : null;
+        this.currentMonthStats = {
+            total_amount: cur.total_amount,
+            pre_diff: {
+                percent: pre ? (pre.total_amount || cur.total_amount ? Math.abs((cur.total_amount / pre.total_amount) * 100 - 100) : 0) : 0,
+                is_increase: cur.total_amount > (pre?.total_amount || 0),
+            },
+        };
+    }
+
+    public openDailyStatsDateRangeModal() {
+        const modal = this.modal$.open(DateRangePickerModalComponent, { centered: true });
+        const cmpIns = modal.componentInstance as DateRangePickerModalComponent;
+        cmpIns.title = 'Phát sinh trong ngày';
+        cmpIns.startDate = this._dailyStatsStartDate;
+        cmpIns.endDate = this._dailyStatsEndDate;
+        cmpIns.clearable = false;
+        const sub = cmpIns.confirmEvent.subscribe((value) => {
+            if (value.start && value.end) {
+                this._dailyStatsStartDate = value.start;
+                this._dailyStatsEndDate = value.end;
+            }
+            this._getAmountMonthlyStats();
+        });
+        this._subscription.add(sub);
+    }
+
+    private _getAmountDailyStats() {
+        const params: MessageStatsQuery = {
+            start_date: `${this._dailyStatsStartDate.year}-${this._dailyStatsStartDate.month < 10 ? `0${this._dailyStatsStartDate.month}` : this._dailyStatsStartDate.month}-${
+                this._dailyStatsStartDate.day
+            }`,
+            end_date: `${this._dailyStatsEndDate.year}-${this._dailyStatsEndDate.month < 10 ? `0${this._dailyStatsEndDate.month}` : this._dailyStatsEndDate.month}-${this._dailyStatsEndDate.day}`,
+        };
+        const sub = this._message$.getAmountDailyStats(params).subscribe((res) => {
+            this.dailyAmountStatsList = res.data || [];
+            this.dailyAmountStatsData = {
+                datasets: [
+                    {
+                        data: this.dailyAmountStatsList.map((item) => item.total_amount),
+                        backgroundColor: this.CONSTANTS.PRIMARY_COLOR,
+                        borderWidth: 0,
+                        borderRadius: 5,
+                        borderSkipped: false,
+                    },
+                ],
+                labels: this.dailyAmountStatsList.map((item) => item.time),
+            };
+            this._setCurrentDayStats();
+        });
+        this._subscription.add(sub);
+    }
+
+    private _setCurrentDayStats() {
+        const curDay = this.helpers.formatDate(this.curDate, 'DD/MM/YYYY');
+        const foundIdx = this.dailyAmountStatsList.findIndex((item) => item.time === curDay);
+        if (foundIdx < 0) return;
+
+        const cur = this.dailyAmountStatsList[foundIdx];
+        const pre = foundIdx > 1 ? this.dailyAmountStatsList[foundIdx - 1] : null;
+        this.currentDayStats = {
+            total_amount: cur.total_amount,
+            pre_diff: {
+                percent: pre ? (pre.total_amount || cur.total_amount ? Math.abs((cur.total_amount / pre.total_amount) * 100 - 100) : 0) : 0,
+                is_increase: cur.total_amount > (pre?.total_amount || 0),
+            },
+        };
     }
 }

@@ -10,6 +10,7 @@ import BaseComponent from 'src/app/includes/base.component';
 })
 export class DateRangePickerModalComponent extends BaseComponent implements OnInit {
     @Input({ required: true }) title = '';
+    @Input() clearable = true;
 
     @Input() startDate: NgbDateStruct | null = null;
     @Input() endDate: NgbDateStruct | null = null;

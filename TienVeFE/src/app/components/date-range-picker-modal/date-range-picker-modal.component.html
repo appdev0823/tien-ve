@@ -17,7 +17,7 @@
                         ngbDatepicker
                         [formControl]="searchForm.controls.start_date" />
                     <div
-                        *ngIf="!searchForm.value.start_date"
+                        *ngIf="!searchForm.value.start_date || !clearable"
                         class="input-group-append cursor-pointer"
                         (click)="startDate.toggle()">
                         <span class="input-group-text">
@@ -25,7 +25,7 @@
                         </span>
                     </div>
                     <div
-                        *ngIf="searchForm.value.start_date"
+                        *ngIf="searchForm.value.start_date && clearable"
                         class="input-group-append cursor-pointer"
                         (click)="searchForm.controls.start_date.setValue(null)">
                         <span class="input-group-text">
@@ -47,7 +47,7 @@
                         ngbDatepicker
                         [formControl]="searchForm.controls.end_date" />
                     <div
-                        *ngIf="!searchForm.value.end_date"
+                        *ngIf="!searchForm.value.end_date || !clearable"
                         class="input-group-append cursor-pointer"
                         (click)="endDate.toggle()">
                         <span class="input-group-text">
@@ -55,7 +55,7 @@
                         </span>
                     </div>
                     <div
-                        *ngIf="searchForm.value.end_date"
+                        *ngIf="searchForm.value.end_date && clearable"
                         class="input-group-append cursor-pointer"
                         (click)="searchForm.controls.end_date.setValue(null)">
                         <span class="input-group-text">
@@ -69,6 +69,7 @@
 </div>
 <div class="modal-footer">
     <button
+        *ngIf="clearable"
         type="button"
         class="btn btn-white btn-common btn-shadow"
         (click)="onClear()">

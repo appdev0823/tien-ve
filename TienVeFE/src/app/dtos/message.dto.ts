@@ -48,3 +48,24 @@ export type MessageSearchQuery = CommonSearchQuery & {
     start_date?: string;
     end_date?: string;
 };
+
+export type MessageStatsQuery = {
+    start_date?: string;
+    end_date?: string;
+};
+
+export class MessageAmountStatsDTO {
+    public time = ' ';
+    public total_amount = 0;
+
+    static fromJson(json: { [key: string]: unknown }) {
+        const instance = new MessageAmountStatsDTO();
+        instance.time = String(json['time'] || '');
+        instance.total_amount = Number(json['total_amount']) || 0;
+        return instance;
+    }
+
+    static fromList(jsonList: { [key: string]: any }[]) {
+        return jsonList.map((item) => MessageAmountStatsDTO.fromJson(item));
+    }
+}

@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { MessageDTO, MessageSearchQuery } from 'src/dtos';
+import { MessageAmountStatsDTO, MessageDTO, MessageSearchQuery } from 'src/dtos';
 import { MessageEntity } from 'src/entities';
 import { BaseService } from 'src/includes';
 import { BankAccountRepository, MessageRepository } from 'src/repository';
 import { CONSTANTS, Helpers, mapper } from 'src/utils';
 import { DataSource } from 'typeorm';
+import { MessageStatsQuery } from './../../dtos';
 
 @Injectable()
 export class MessageService extends BaseService {
@@ -141,5 +142,69 @@ export class MessageService extends BaseService {
         await this._messageRepo.save(item);
 
         return mapper.map(item, MessageEntity, MessageDTO);
+    }
+
+    public async getAmountMonthlyStats(params: MessageStatsQuery, userId: number) {
+        if (!userId || !Helpers.isString(params.start_date) || !Helpers.isString(params.end_date)) return [];
+
+        const monthList = Helpers.getDateListInRange(params.start_date, params.end_date, 'MM/YYYY', 'month');
+        if (!Helpers.isFilledArray(monthList)) return [];
+
+        const query = this._messageRepo
+            .createQueryBuilder('message')
+            .select('DATE_FORMAT(message.created_date, \'%m/%Y\') as time')
+            .addSelect('IFNULL(SUM(message.amount * message.sign), 0) as total_amount')
+            .leftJoin('d_debts', 'debt', 'debt.id = message.debt_id')
+            .where('message.is_deleted = 0')
+            .andWhere('debt.user_id = :user_id', { user_id: userId })
+            .andWhere('message.created_date >= :start_date', { start_date: `${params.start_date} 00:00:00` })
+            .andWhere('message.created_date <= :end_date', { end_date: `${params.end_date} 23:59:59` })
+            .groupBy('DATE_FORMAT(message.created_date, \'%m/%Y\')')
+            .orderBy('time', 'DESC');
+
+        const result = await query.getRawMany<MessageAmountStatsDTO>();
+        if (!Helpers.isFilledArray(result)) return [];
+
+        return monthList.map((month) => {
+            const found = result.find((stats) => stats.time === month);
+
+            const item = new MessageAmountStatsDTO();
+            item.time = month;
+            item.total_amount = Number(found?.total_amount) || 0;
+
+            return item;
+        });
+    }
+
+    public async getAmountDailyStats(params: MessageStatsQuery, userId: number) {
+        if (!userId || !Helpers.isString(params.start_date) || !Helpers.isString(params.end_date)) return [];
+
+        const dayList = Helpers.getDateListInRange(params.start_date, params.end_date, 'DD/MM/YYYY', 'day');
+        if (!Helpers.isFilledArray(dayList)) return [];
+
+        const query = this._messageRepo
+            .createQueryBuilder('message')
+            .select('DATE_FORMAT(message.created_date, \'%d/%m/%Y\') as time')
+            .addSelect('IFNULL(SUM(message.amount * message.sign), 0) as total_amount')
+            .leftJoin('d_debts', 'debt', 'debt.id = message.debt_id')
+            .where('message.is_deleted = 0')
+            .andWhere('debt.user_id = :user_id', { user_id: userId })
+            .andWhere('message.created_date >= :start_date', { start_date: `${params.start_date} 00:00:00` })
+            .andWhere('message.created_date <= :end_date', { end_date: `${params.end_date} 23:59:59` })
+            .groupBy('DATE_FORMAT(message.created_date, \'%d/%m/%Y\')')
+            .orderBy('time', 'DESC');
+
+        const result = await query.getRawMany<MessageAmountStatsDTO>();
+        if (!Helpers.isFilledArray(result)) return [];
+
+        return dayList.map((day) => {
+            const found = result.find((stats) => stats.time === day);
+
+            const item = new MessageAmountStatsDTO();
+            item.time = day;
+            item.total_amount = Number(found?.total_amount) || 0;
+
+            return item;
+        });
     }
 }

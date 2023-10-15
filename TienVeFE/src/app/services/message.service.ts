@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, map, of } from 'rxjs';
-import { MessageDTO, MessageSearchQuery } from '../dtos';
+import { MessageAmountStatsDTO, MessageDTO, MessageSearchQuery, MessageStatsQuery } from '../dtos';
 import { API_ROUTES, APIResponse, BaseHTTPClient, CONSTANTS, ListResponse } from '../utils';
 
 @Injectable({
@@ -42,5 +42,39 @@ export class MessageService {
             }
             return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
         }
+    }
+
+    public getAmountMonthlyStats(params?: MessageStatsQuery) {
+        return this._http.get<any[]>(API_ROUTES.MESSAGE.AMOUNT_MONTHLY_STATS, params).pipe(
+            map((httpRes) => {
+                if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+
+                const result = MessageAmountStatsDTO.fromList(httpRes.body?.data);
+                return APIResponse.success(httpRes.body.message, result);
+            }),
+            catchError((err) => {
+                if (APIResponse.is(err)) {
+                    return of(APIResponse.error(err.message, []));
+                }
+                return of(APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []));
+            }),
+        );
+    }
+
+    public getAmountDailyStats(params?: MessageStatsQuery) {
+        return this._http.get<any[]>(API_ROUTES.MESSAGE.AMOUNT_DAILY_STATS, params).pipe(
+            map((httpRes) => {
+                if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+
+                const result = MessageAmountStatsDTO.fromList(httpRes.body?.data);
+                return APIResponse.success(httpRes.body.message, result);
+            }),
+            catchError((err) => {
+                if (APIResponse.is(err)) {
+                    return of(APIResponse.error(err.message, []));
+                }
+                return of(APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []));
+            }),
+        );
     }
 }

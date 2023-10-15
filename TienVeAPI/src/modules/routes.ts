@@ -15,6 +15,8 @@ const ROUTES = {
         CREATE: '',
         LIST: '',
         UPDATE_DEBT_ID: ':id/update-debt-id',
+        AMOUNT_MONTHLY_STATS: 'amount-monthly-stats',
+        AMOUNT_DAILY_STATS: 'amount-daily-stats',
     },
     USER: {
         MODULE: 'user',
