@@ -1,6 +1,8 @@
+import { FormControl, Validators } from '@angular/forms';
 import { SaveDebtDTO } from '../dtos';
-import { Helpers } from '../utils';
+import { AppFormGroup, Helpers } from '../utils';
 import { BaseValidator } from './base.validator';
+import { CustomValidators } from './custom.validators';
 
 export class DebtValidator extends BaseValidator {
     /**
@@ -72,5 +74,57 @@ export class DebtValidator extends BaseValidator {
         }
 
         return errorMessageList;
+    }
+
+    public getSaveForm() {
+        const form = new AppFormGroup({
+            id: new FormControl({ value: '', disabled: true }, [Validators.required]),
+            bank_account_id: new FormControl<number | null>(null, [Validators.required]),
+            payer_name: new FormControl('', [Validators.required]),
+            payer_phone: new FormControl('', [Validators.required, CustomValidators.phone]),
+            amount: new FormControl(0, [Validators.required, Validators.min(1), Validators.max(this.DECIMAL_15_3_MAX)]),
+            note: new FormControl('', []),
+        });
+
+        form.controlValidationMessages = {
+            id: {
+                required: this.translate$.instant('validation.required', {
+                    item: 'mã công nợ',
+                }) as string,
+            },
+            bank_account_id: {
+                required: this.translate$.instant('validation.required', {
+                    item: 'tài khoản ngân hàng',
+                }) as string,
+            },
+            payer_name: {
+                required: this.translate$.instant('validation.required', {
+                    item: 'tên người trả tiền',
+                }) as string,
+            },
+            payer_phone: {
+                required: this.translate$.instant('validation.required', {
+                    item: String(this.translate$.instant('label.phone')),
+                }) as string,
+                phone: this.translate$.instant('validation.phone', {
+                    item: String(this.translate$.instant('label.phone')),
+                }) as string,
+            },
+            amount: {
+                required: this.translate$.instant('validation.required', {
+                    item: 'số tiền',
+                }) as string,
+                min: this.translate$.instant('validation.min', {
+                    name: 'Số tiền',
+                    num: 1,
+                }) as string,
+                max: this.translate$.instant('validation.max', {
+                    name: 'Số tiền',
+                    num: this.DECIMAL_15_3_MAX,
+                }) as string,
+            },
+        };
+
+        return form;
     }
 }

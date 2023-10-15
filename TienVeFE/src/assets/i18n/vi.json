@@ -78,7 +78,8 @@
         "not_completed_list": "Danh sách chưa hoàn tất",
         "see_more": "Xem thêm",
         "download_app": "Tải ứng dụng",
-        "scan_qr_code": "Quét mã QR"
+        "scan_qr_code": "Quét mã QR",
+        "add_new": "Thêm mới"
     },
     "validation": {
         "required": "Vui lòng nhập {{item}}",

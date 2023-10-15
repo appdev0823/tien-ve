@@ -10,6 +10,7 @@ import { DebtDetailComponent } from '../debt-detail/debt-detail.component';
 import { RadioModalComponent } from 'src/app/components/radio-modal/radio-modal.component';
 import { SendRemindMessageModalComponent } from '../send-remind-message-modal/send-remind-message-modal.component';
 import * as XLSX from 'xlsx';
+import { DebtCreateComponent } from '../debt-create/debt-create.component';
 
 @Component({
     selector: 'app-debt-list',
@@ -241,7 +242,12 @@ export class DebtListComponent extends PageComponent implements OnInit, OnDestro
         this._getList();
     }
 
-    public onCreate() {}
+    public onCreate() {
+        const modal = this.modal$.open(DebtCreateComponent, { centered: true, size: 'lg' });
+        const cmpIns = modal.componentInstance as DebtCreateComponent;
+        const sub = cmpIns.resultEvent.subscribe(() => this._getList());
+        this._subscription.add(sub);
+    }
 
     public onDelete(idx: number) {}
 

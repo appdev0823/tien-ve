@@ -1,0 +1,111 @@
+<div class="modal-header">
+    <div class="w-100 text-center position-relative">
+        <h4 class="modal-title text-bold">{{ helpers.isString(form.value.payer_name) ? form.value.payer_name : 'Tên người trả' }}</h4>
+    </div>
+</div>
+<div class="modal-body">
+    <form
+        id="debtCreateForm"
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="row">
+                    <div class="col-12">
+                        <h5>{{ 'label.general_info' | translate }}</h5>
+                    </div>
+                </div>
+                <app-form-input-wrapper
+                    [formClassName]="'form-group row mt-3'"
+                    [errorMessage]="form.controlErrorMessages.id">
+                    <label class="col-12 col-md-4 col-form-label font-weight-normal">Mã công nợ</label>
+                    <div class="col-12 col-md-8">
+                        <input
+                            id="id_{{ randomStr }}"
+                            class="form-control bg-white"
+                            [formControl]="form.controls.id" />
+                    </div>
+                </app-form-input-wrapper>
+                <app-form-input-wrapper
+                    [formClassName]="'form-group row'"
+                    [errorMessage]="form.controlErrorMessages.bank_account_id">
+                    <label class="col-12 col-md-4 col-form-label font-weight-normal">Tài khoản ngân hàng</label>
+                    <div class="col-12 col-md-8">
+                        <ng-select
+                            id="bank_account_id_{{ randomStr }}"
+                            bindValue="id"
+                            bindLabel="display_name"
+                            [items]="bankAccountList"
+                            [clearable]="false"
+                            [placeholder]="'Tài khoàn ngân hàng'"
+                            [formControl]="form.controls.bank_account_id">
+                        </ng-select>
+                    </div>
+                </app-form-input-wrapper>
+                <app-form-input-wrapper
+                    [formClassName]="'form-group row'"
+                    [errorMessage]="form.controlErrorMessages.amount">
+                    <label class="col-12 col-md-4 col-form-label font-weight-normal">Số tiền</label>
+                    <div class="col-12 col-md-8">
+                        <input
+                            appNumericInput
+                            [shouldFormatNumber]="true"
+                            id="amount_{{ randomStr }}"
+                            class="form-control bg-white"
+                            [formControl]="form.controls.amount" />
+                    </div>
+                </app-form-input-wrapper>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Thông tin người nợ</h5>
+                    </div>
+                </div>
+                <app-form-input-wrapper
+                    [formClassName]="'form-group row mt-3'"
+                    [errorMessage]="form.controlErrorMessages.payer_name">
+                    <label class="col-12 col-md-4 col-form-label font-weight-normal">Người trả tiền</label>
+                    <div class="col-12 col-md-8">
+                        <input
+                            id="payer_name_{{ randomStr }}"
+                            class="form-control bg-white"
+                            [formControl]="form.controls.payer_name" />
+                    </div>
+                </app-form-input-wrapper>
+                <app-form-input-wrapper
+                    [formClassName]="'form-group row'"
+                    [errorMessage]="form.controlErrorMessages.payer_phone">
+                    <label class="col-12 col-md-4 col-form-label font-weight-normal">Số điện thoại</label>
+                    <div class="col-12 col-md-8">
+                        <input
+                            appNumericInput
+                            [shouldFormatNumber]="false"
+                            id="payer_phone_{{ randomStr }}"
+                            class="form-control bg-white"
+                            [formControl]="form.controls.payer_phone" />
+                    </div>
+                </app-form-input-wrapper>
+                <app-form-input-wrapper
+                    [formClassName]="'form-group row'"
+                    [errorMessage]="form.controlErrorMessages.note">
+                    <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.note' | translate }}</label>
+                    <div class="col-12 col-md-8">
+                        <input
+                            id="note_{{ randomStr }}"
+                            class="form-control bg-white"
+                            [formControl]="form.controls.note" />
+                    </div>
+                </app-form-input-wrapper>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button
+        type="submit"
+        form="debtCreateForm"
+        class="btn btn-primary btn-common btn-shadow">
+        {{ 'label.add_new' | translate }}
+    </button>
+</div>

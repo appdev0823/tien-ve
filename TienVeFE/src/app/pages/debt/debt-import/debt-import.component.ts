@@ -6,7 +6,7 @@ import { SaveDebtDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { BankAccountService, DebtService, UserService } from 'src/app/services';
 import { UploadFile } from 'src/app/utils/types';
-import { DebtValidator } from 'src/app/validators/debt.validator';
+import { DebtValidator } from 'src/app/validators';
 import * as dayjs from 'dayjs';
 import { Router } from '@angular/router';
 
@@ -58,7 +58,7 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
     }
 
     ngOnInit() {
-        this._getList();
+        this._getBankAccountList();
         void this._getTodayDebtCount();
     }
 
@@ -77,7 +77,7 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
         this.todayDebtCount = Number(result.data.count) || 0;
     }
 
-    private _getList() {
+    private _getBankAccountList() {
         const sub = this._bankAccount$.getList({ page: -1 }).subscribe((res) => {
             this.isPageLoaded = true;
             this.bankAccountList =
