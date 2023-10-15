@@ -80,6 +80,10 @@ const ROUTES = {
         IMPORT: 'import',
         LIST: '',
     },
+    MESSAGE: {
+        MODULE: 'message',
+        LIST: '',
+    },
 } as const;
 Helpers.deepFreeze(ROUTES);
 
@@ -122,7 +126,9 @@ const API_ROUTES = {
     },
     MESSAGE: {
         LIST: 'message',
+        DETAIL: 'message/:id',
         UPDATE_DEBT_ID: 'message/:id/update-debt-id',
+        DELETE_MULTIPLE: 'message',
         AMOUNT_MONTHLY_STATS: 'message/amount-monthly-stats',
         AMOUNT_DAILY_STATS: 'message/amount-daily-stats',
     },

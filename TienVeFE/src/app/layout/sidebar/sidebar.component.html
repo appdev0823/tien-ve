@@ -92,6 +92,17 @@
                         <p class="ms-3">Nhập công nợ</p>
                     </a>
                 </li>
+                <li
+                    class="nav-item"
+                    (click)="collapseSidebar()">
+                    <a
+                        class="nav-link"
+                        [routerLink]="'/' + ROUTES.MESSAGE.MODULE"
+                        [class.active]="helpers.isFilledArray(routePathList) && routePathList[0] === ROUTES.MESSAGE.MODULE">
+                        <fa-icon [icon]="icons.regular.faMessage"></fa-icon>
+                        <p class="ms-3">Quản lý SMS</p>
+                    </a>
+                </li>
             </ul>
         </nav>
         <div class="upgrade">

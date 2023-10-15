@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title text-bold">Thông tin giao dịch</h4>
+    </div>
+</div>
+<div class="modal-body mx-3">
+    <ng-container *ngIf="isPageLoaded">
+        <div class="row mt-3">
+            <div class="col-12 col-md-4 col-lg-3 text-bold">{{ 'label.time' | translate }}:</div>
+            <div class="col-12 col-md-8 col-lg-9">{{ data.created_date }}</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 col-md-4 col-lg-3 text-bold">Ngân hàng:</div>
+            <div class="col-12 col-md-8 col-lg-9">{{ data.bank_brand_name }}</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 col-md-4 col-lg-3 text-bold">Số tài khoản:</div>
+            <div class="col-12 col-md-8 col-lg-9">{{ data.bank_account_number | accountNumber }}</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 col-md-4 col-lg-3 text-bold">Mã công nợ:</div>
+            <div class="col-12 col-md-8 col-lg-9">{{ data.debt_id }}</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-bold">{{ 'label.content' | translate }}</div>
+            <div class="col-12">
+                <p
+                    class="mb-0"
+                    [innerHTML]="data.body | nl2br"></p>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-end">
+                <button
+                    class="btn btn-primary btn-common btn-shadow"
+                    (click)="activeModal.close()">
+                    {{ 'label.close' | translate }}
+                </button>
+            </div>
+        </div>
+    </ng-container>
+</div>

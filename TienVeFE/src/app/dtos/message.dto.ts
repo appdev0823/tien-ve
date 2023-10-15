@@ -16,6 +16,9 @@ export class MessageDTO extends BaseDTO {
     public created_date = '';
     public updated_date = '';
 
+    public bank_account_number?: string;
+    public bank_brand_name?: string;
+
     static fromJson(json: { [key: string]: unknown }) {
         const instance = new MessageDTO();
         instance.id = Number(json['id']) || 0;
@@ -34,6 +37,14 @@ export class MessageDTO extends BaseDTO {
         instance.is_deleted = json['is_deleted'] ? 1 : 0;
         instance.created_date = String(json['created_date'] || '');
         instance.updated_date = String(json['updated_date'] || '');
+
+        if (Helpers.isString(json['bank_account_number'])) {
+            instance.bank_account_number = String(json['bank_account_number'] || '');
+        }
+        if (Helpers.isString(json['bank_brand_name'])) {
+            instance.bank_brand_name = String(json['bank_brand_name'] || '');
+        }
+
         return instance;
     }
 

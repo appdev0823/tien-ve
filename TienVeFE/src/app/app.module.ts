@@ -22,6 +22,7 @@ import { reducers } from './store/app.states';
 import { AuthEffects } from './store/auth/auth.effects';
 import { MDateParserFormatter } from './components/datepicker/date-parser-formatter';
 import { MDateAdapter } from './components/datepicker/date-adapter';
+import { MessageModule } from './pages/message/message.module';
 
 @NgModule({
     declarations: [AppComponent],
@@ -44,6 +45,7 @@ import { MDateAdapter } from './components/datepicker/date-adapter';
         DashboardModule,
         BankAccountModule,
         DebtModule,
+        MessageModule,
         ComponentModule,
         LayoutModule,
         FontAwesomeModule,

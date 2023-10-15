@@ -77,4 +77,36 @@ export class MessageService {
             }),
         );
     }
+
+    public async getDetail(id: number) {
+        try {
+            const route = API_ROUTES.MESSAGE.DETAIL.replace(':id', String(id));
+            const httpRes = await firstValueFrom(this._http.get(route));
+            if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+
+            const item = MessageDTO.fromJson(httpRes.body.data);
+            return APIResponse.success(httpRes.body.message, item);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, null, err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+        }
+    }
+
+    public async deleteMultiple(idList: number[]) {
+        try {
+            const route = API_ROUTES.MESSAGE.DELETE_MULTIPLE;
+            const httpRes = await firstValueFrom(this._http.delete<MessageDTO[]>(route, { id_list: idList }));
+            if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+
+            const item = MessageDTO.fromList(httpRes.body.data);
+            return APIResponse.success(httpRes.body.message, item);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, [], err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
+        }
+    }
 }

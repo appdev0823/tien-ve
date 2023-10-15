@@ -42,3 +42,13 @@ export class MessageAmountStatsDTO {
     public time = ' ';
     public total_amount = 0;
 }
+
+export class MessageListDTO extends MessageDTO {
+    public bank_account_number = '';
+    public bank_brand_name = '';
+}
+
+export class MessageDetailDTO extends MessageDTO {
+    public bank_account_number = '';
+    public bank_brand_name = '';
+}

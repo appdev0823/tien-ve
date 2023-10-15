@@ -1,0 +1,145 @@
+<!-- Content Header (Page header) -->
+<div class="content-header py-0">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-12 ps-0">
+                <h1>Quản lý SMS</h1>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 ps-0">
+                <p class="a-fs-11 mb-0">Quản lý thông báo và tin nhắn giao dịch</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content mt-3">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-8 col-lg-6 d-flex">
+                        <div
+                            class="ps-0"
+                            style="flex: 1">
+                            <form [formGroup]="searchForm">
+                                <div class="input-group">
+                                    <div class="input-group-text bg-white border-end-0">
+                                        <fa-icon
+                                            class="text-gray"
+                                            [icon]="icons.solid.faSearch"></fa-icon>
+                                    </div>
+                                    <input
+                                        id="keyword"
+                                        type="text"
+                                        class="form-control border-start-0 ps-0"
+                                        placeholder="{{ 'label.search' | translate }}"
+                                        [formControl]="searchForm.controls.keyword" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="d-inline-block px-3">
+                            <button
+                                class="btn btn-primary me-3"
+                                (click)="openDateRangePickerModal()">
+                                <fa-icon
+                                    [icon]="icons.solid.faCalendarAlt"
+                                    [size]="'xl'"></fa-icon>
+                            </button>
+                            <button
+                                class="btn btn-white btn-primary"
+                                (click)="onDeleteMultiple()">
+                                <fa-icon
+                                    [icon]="icons.solid.faTrash"
+                                    [size]="'xl'"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        Tổng số dòng:&nbsp;<strong>{{ dataTotal }}</strong>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-12 px-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-p-3 mb-0 table-header-border-none table-header-font-weight-normal">
+                                <thead>
+                                    <tr>
+                                        <th class="a-w-30 text-center icheck-primary">
+                                            <input
+                                                id="check-all_{{ randomStr }}"
+                                                type="checkbox"
+                                                class="cell-checkbox"
+                                                [checked]="isAllChecked"
+                                                (change)="toggleAll()" />
+                                            <label for="check-all_{{ randomStr }}"></label>
+                                        </th>
+                                        <th class="a-w-200 text-center">Ngày giao dịch</th>
+                                        <th class="a-w-150 text-start">Ngân hàng</th>
+                                        <th class="a-w-150 text-start">Số tài khoản</th>
+                                        <th class="a-w-200 text-center">Mã công nợ</th>
+                                        <th class="a-w-150 text-center">Match nội dung</th>
+                                        <th class="a-w-50 text-center"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of dataList; let idx = index">
+                                        <td class="text-center icheck-primary">
+                                            <input
+                                                id="datalist-{{ idx }}"
+                                                type="checkbox"
+                                                class="cursor-pointer"
+                                                [checked]="item.is_checked"
+                                                (change)="item.is_checked = !item.is_checked" />
+                                            <label for="datalist-{{ idx }}"></label>
+                                        </td>
+                                        <td class="text-center">{{ item.created_date }}</td>
+                                        <td class="text-start">{{ item.bank_brand_name }}</td>
+                                        <td class="text-start">{{ item.bank_account_number | accountNumber }}</td>
+                                        <td class="text-center">{{ item.debt_id }}</td>
+                                        <td class="text-center">
+                                            <div
+                                                class="status-tag"
+                                                [ngClass]="helpers.isString(item.debt_id) ? 'success' : 'danger'">
+                                                <div class="dot"></div>
+                                                {{ helpers.isString(item.debt_id) ? 'Hoàn thành' : 'Không tìm thấy ID' }}
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <button
+                                                type="button"
+                                                class="btn"
+                                                (click)="viewDetail(idx)">
+                                                <fa-icon [icon]="icons.solid.faChevronRight"></fa-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot *ngIf="!helpers.isFilledArray(dataList)">
+                                    <tr>
+                                        <td [colSpan]="99">{{ 'message.err_no_data' | translate }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 d-flex justify-content-center">
+                        <ngb-pagination
+                            [collectionSize]="dataTotal"
+                            [pageSize]="CONSTANTS.PAGE_SIZE"
+                            [page]="currentPage"
+                            [maxSize]="CONSTANTS.MAX_PAGE_COUNT"
+                            [rotate]="true"
+                            [boundaryLinks]="true"
+                            (pageChange)="onPageChanged($event)"></ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
