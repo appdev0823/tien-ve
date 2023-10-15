@@ -138,24 +138,6 @@ export class MessageController extends BaseController {
         }
     }
 
-    @Get(ROUTES.MESSAGE.DETAIL)
-    public async getDetail(@Param('id') id: number, @Res() res: Response<APIResponse<MessageDetailDTO | undefined>>) {
-        try {
-            const item = await this._messageService.getDetail(id);
-            if (!item) {
-                const errRes = APIResponse.error(MESSAGES.ERROR.ERR_NOT_FOUND);
-                return res.status(HttpStatus.BAD_REQUEST).json(errRes);
-            }
-
-            const successRes = APIResponse.success(MESSAGES.SUCCESS.SUCCESS, item);
-            return res.status(HttpStatus.OK).json(successRes);
-        } catch (e) {
-            this._logger.error(this.getDetail.name, e);
-            const errRes = APIResponse.error(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR);
-            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
-        }
-    }
-
     @Put(ROUTES.MESSAGE.UPDATE_DEBT_ID)
     public async updateDebtId(
         @Param('id') id: number,
@@ -232,6 +214,24 @@ export class MessageController extends BaseController {
         } catch (e) {
             this._logger.error(this.deleteMultiple.name, e);
             const errRes = APIResponse.error(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR, []);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
+        }
+    }
+
+    @Get(ROUTES.MESSAGE.DETAIL)
+    public async getDetail(@Param('id') id: number, @Res() res: Response<APIResponse<MessageDetailDTO | undefined>>) {
+        try {
+            const item = await this._messageService.getDetail(id);
+            if (!item) {
+                const errRes = APIResponse.error(MESSAGES.ERROR.ERR_NOT_FOUND);
+                return res.status(HttpStatus.BAD_REQUEST).json(errRes);
+            }
+
+            const successRes = APIResponse.success(MESSAGES.SUCCESS.SUCCESS, item);
+            return res.status(HttpStatus.OK).json(successRes);
+        } catch (e) {
+            this._logger.error(this.getDetail.name, e);
+            const errRes = APIResponse.error(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
         }
     }
