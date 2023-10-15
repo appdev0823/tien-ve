@@ -4,6 +4,7 @@ import { LoginUserDTO } from 'src/app/dtos';
 import BaseComponent from 'src/app/includes/base.component';
 import { saveAuthStateAction } from 'src/app/store/auth/auth.actions';
 import * as jQuery from 'jquery';
+import { DownloadAppModalComponent } from 'src/app/components/download-app-modal/download-app-modal.component';
 
 @Component({
     selector: 'app-header',
@@ -33,5 +34,9 @@ export class HeaderComponent extends BaseComponent {
         } else {
             jQuery('#actionDropdown').slideUp(100);
         }
+    }
+
+    public openDownloadAppModal() {
+        this.modal$.open(DownloadAppModalComponent, { centered: true });
     }
 }

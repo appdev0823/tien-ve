@@ -17,6 +17,8 @@ const CONSTANTS = {
     BOOTSTRAP_TYPE_LIST: ['success', 'info', 'warning', 'danger', 'primary', 'secondary', 'dark'],
     SETTING_FIELD_NAMES: {
         UPGRADE_NOTE: 'upgrade_note',
+        REMIND_MESSAGE_TEMPLATE: 'remind_message_template',
+        APP_LINK: 'app_link',
     },
     REGISTER_TYPES: {
         EMAIL: 1,

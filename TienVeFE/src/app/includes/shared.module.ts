@@ -6,6 +6,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule } from '@ngx-translate/core';
+import { QRCodeModule } from 'angularx-qrcode';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { NgChartsModule } from 'ng2-charts';
 import { NgxPrintModule } from 'ngx-print';
@@ -17,7 +18,20 @@ import { NgxPrintModule } from 'ngx-print';
  */
 @NgModule({
     declarations: [],
-    imports: [CommonModule, FormsModule, TranslateModule.forChild(), NgbModule, FontAwesomeModule, NgChartsModule, NgSelectModule, NgxPrintModule, NgOtpInputModule],
-    exports: [CommonModule, FormsModule, TranslateModule, ReactiveFormsModule, NgbModule, RouterModule, FontAwesomeModule, NgChartsModule, NgSelectModule, NgxPrintModule, NgOtpInputModule],
+    imports: [CommonModule, FormsModule, TranslateModule.forChild(), NgbModule, FontAwesomeModule, NgChartsModule, NgSelectModule, NgxPrintModule, NgOtpInputModule, QRCodeModule],
+    exports: [
+        CommonModule,
+        FormsModule,
+        TranslateModule,
+        ReactiveFormsModule,
+        NgbModule,
+        RouterModule,
+        FontAwesomeModule,
+        NgChartsModule,
+        NgSelectModule,
+        NgxPrintModule,
+        NgOtpInputModule,
+        QRCodeModule,
+    ],
 })
 export class SharedModule {}

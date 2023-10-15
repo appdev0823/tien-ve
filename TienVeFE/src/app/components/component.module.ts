@@ -9,6 +9,7 @@ import { RadioModalComponent } from './radio-modal/radio-modal.component';
 import { UpgradeModalComponent } from './upgrade-modal/upgrade-modal.component';
 import { PipeModule } from '../pipes/pipe.module';
 import { DateRangePickerModalComponent } from './date-range-picker-modal/date-range-picker-modal.component';
+import { DownloadAppModalComponent } from './download-app-modal/download-app-modal.component';
 
 @NgModule({
     declarations: [
@@ -20,6 +21,7 @@ import { DateRangePickerModalComponent } from './date-range-picker-modal/date-ra
         RadioModalComponent,
         UpgradeModalComponent,
         DateRangePickerModalComponent,
+        DownloadAppModalComponent,
     ],
     imports: [SharedModule, PipeModule],
     exports: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent, MessageSelectComponent, RadioModalComponent, DateRangePickerModalComponent],

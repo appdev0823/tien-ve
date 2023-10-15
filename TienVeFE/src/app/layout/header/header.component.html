@@ -17,25 +17,27 @@
     <ul class="navbar-nav ml-auto">
         <li class="nav-item d-block d-md-none me-2">
             <a
-                class="cursor-pointer text-primary nav-link"
-                title="{{ 'label.change_password' | translate }}"
-                [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.CHANGE_PASSWORD">
+                class="cursor-pointer nav-link"
+                title="{{ 'label.download_app' | translate }}"
+                (click)="openDownloadAppModal()">
                 <fa-icon
-                    [icon]="icons.solid.faKey"
+                    [icon]="icons.solid.faQrcode"
                     [size]="'lg'"></fa-icon>
             </a>
         </li>
-        <!-- <li class="nav-item me-2">
-            <a class="nav-link">
+        <li class="nav-item d-block d-md-none me-2">
+            <a
+                class="cursor-pointer nav-link"
+                title="{{ 'label.change_password' | translate }}"
+                [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.CHANGE_PASSWORD">
                 <fa-icon
-                    class="text-warning"
-                    [icon]="icons.solid.faBell"
-                    [size]="'xl'"></fa-icon>
+                    [icon]="icons.solid.faLock"
+                    [size]="'lg'"></fa-icon>
             </a>
-        </li> -->
+        </li>
         <li class="nav-item d-block d-md-none">
             <a
-                class="cursor-pointer text-gray nav-link"
+                class="cursor-pointer nav-link"
                 title="{{ 'label.logout' | translate }}"
                 (click)="logOut()">
                 <fa-icon
@@ -54,25 +56,32 @@
             </a>
             <div
                 id="actionDropdown"
-                class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0"
-                style="margin-right: 1.2rem; border: none;">
+                class="dropdown-menu dropdown-menu-lg dropdown-menu-right action-dropdown">
                 <a
-                    class="dropdown-item cursor-pointer"
+                    class="dropdown-item"
+                    (click)="openDownloadAppModal()">
+                    <fa-icon
+                        class="me-4 ms-3"
+                        [icon]="icons.solid.faQrcode"
+                        [size]="'lg'"></fa-icon>
+                    {{ 'label.download_app' | translate }}
+                </a>
+                <a
+                    class="dropdown-item"
                     [routerLink]="'/' + ROUTES.AUTH.MODULE + '/' + ROUTES.AUTH.CHANGE_PASSWORD">
                     <fa-icon
-                        class="me-2 text-warning"
-                        [icon]="icons.solid.faKey"
-                        [size]="'sm'"></fa-icon>
+                        class="me-4 ms-3"
+                        [icon]="icons.solid.faLock"
+                        [size]="'lg'"></fa-icon>
                     {{ 'label.change_password' | translate }}
                 </a>
-                <div class="dropdown-divider"></div>
                 <a
-                    class="dropdown-item cursor-pointer"
+                    class="dropdown-item"
                     (click)="logOut()">
                     <fa-icon
-                        class="me-2"
+                        class="me-4 ms-3"
                         [icon]="icons.solid.faDoorOpen"
-                        [size]="'sm'">
+                        [size]="'lg'">
                     </fa-icon>
                     {{ 'label.logout' | translate }}
                 </a>
