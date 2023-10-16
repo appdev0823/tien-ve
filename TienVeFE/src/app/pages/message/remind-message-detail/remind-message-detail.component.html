@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title text-bold">Nội dung tin nhắn</h4>
+    </div>
+</div>
+<div class="modal-body">
+    <ng-container *ngIf="isPageLoaded">
+        <div class="row">
+            <div class="col-6 d-flex align-items-end a-fw-500">{{ 'label.content' | translate }}</div>
+            <div class="col-6">
+                <div
+                    class="status-tag"
+                    [ngClass]="getRemindMessageStatusClass(data.status)">
+                    <div class="dot"></div>
+                    {{ getRemindMessageStatusName(data.status) }}
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <p
+                    class="border border-1 p-3 text-justify mb-0"
+                    style="border-radius: 20px"
+                    [innerHTML]="data.body | nl2br"></p>
+            </div>
+        </div>
+        <div
+            *ngIf="data.status === CONSTANTS.REMIND_MESSAGE.STATUS.FAIL && helpers.isString(data.fail_reason)"
+            class="row mt-3">
+            <p class="mb-0 text-danger">{{ data.fail_reason }}</p>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 text-end">
+                <button
+                    class="btn btn-primary btn-common btn-shadow"
+                    (click)="activeModal.close()">
+                    {{ 'label.close' | translate }}
+                </button>
+            </div>
+        </div>
+    </ng-container>
+</div>

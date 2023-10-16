@@ -83,4 +83,18 @@ export default class BaseComponent {
         if (status === this.CONSTANTS.BANK_ACCOUNT_STATUSES.DEACTIVATED) return 'danger';
         return '';
     }
+
+    public getRemindMessageStatusName(status: ValueOf<typeof CONSTANTS.REMIND_MESSAGE.STATUS>) {
+        if (status === this.CONSTANTS.REMIND_MESSAGE.STATUS.FAIL) return 'Gửi thất bại';
+        if (status === this.CONSTANTS.REMIND_MESSAGE.STATUS.SENDING) return 'Đang gửi';
+        if (status === this.CONSTANTS.REMIND_MESSAGE.STATUS.SUCCESS) return 'Gửi thành công';
+        return '';
+    }
+
+    public getRemindMessageStatusClass(status: ValueOf<typeof CONSTANTS.REMIND_MESSAGE.STATUS>) {
+        if (status === this.CONSTANTS.REMIND_MESSAGE.STATUS.FAIL) return 'danger';
+        if (status === this.CONSTANTS.REMIND_MESSAGE.STATUS.SENDING) return 'warning';
+        if (status === this.CONSTANTS.REMIND_MESSAGE.STATUS.SUCCESS) return 'success';
+        return '';
+    }
 }

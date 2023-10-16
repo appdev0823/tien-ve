@@ -1,0 +1,43 @@
+<!-- Content Header (Page header) -->
+<div class="content-header py-0">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-12 ps-0">
+                <h1>Quản lý SMS</h1>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 ps-0">
+                <p class="a-fs-11 mb-0">Quản lý thông báo và tin nhắn giao dịch</p>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content mt-3">
+    <div class="container-fluid">
+        <ul
+            ngbNav
+            #nav="ngbNav"
+            class="nav-tabs nav-tabs-underline mb-3">
+            <li
+                ngbNavItem
+                [ngbNavItem]="0">
+                <button ngbNavLink>Tin nhắn giao dịch</button>
+                <ng-template ngbNavContent>
+                    <app-message-list></app-message-list>
+                </ng-template>
+            </li>
+            <li
+                ngbNavItem
+                [ngbNavItem]="1">
+                <button ngbNavLink>Tin nhắn nhắc nợ</button>
+                <ng-template ngbNavContent>
+                    <app-remind-message-list></app-remind-message-list>
+                </ng-template>
+            </li>
+        </ul>
+        <div
+            class="mt-3"
+            [ngbNavOutlet]="nav"></div>
+    </div>
+</section>

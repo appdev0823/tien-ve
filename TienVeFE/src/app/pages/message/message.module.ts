@@ -6,8 +6,11 @@ import { SharedModule } from 'src/app/includes/shared.module';
 import { MainLayoutComponent } from 'src/app/layout/main-layout/main-layout.component';
 import { PipeModule } from 'src/app/pipes/pipe.module';
 import { ROUTES } from 'src/app/utils';
-import { MessageListComponent } from './message-list/message-list.component';
 import { MessageDetailComponent } from './message-detail/message-detail.component';
+import { MessageListComponent } from './message-list/message-list.component';
+import { MessageTabComponent } from './message-tab/message-tab.component';
+import { RemindMessageListComponent } from './remind-message-list/remind-message-list.component';
+import { RemindMessageDetailComponent } from './remind-message-detail/remind-message-detail.component';
 
 const routes: Routes = [
     {
@@ -17,7 +20,7 @@ const routes: Routes = [
         children: [
             {
                 path: ROUTES.MESSAGE.LIST,
-                component: MessageListComponent,
+                component: MessageTabComponent,
                 canActivate: [AuthGuard],
             },
         ],
@@ -25,7 +28,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [MessageListComponent, MessageDetailComponent],
+    declarations: [MessageListComponent, MessageDetailComponent, MessageTabComponent, RemindMessageListComponent, RemindMessageDetailComponent],
     imports: [RouterModule.forChild(routes), SharedModule, ComponentModule, PipeModule],
 })
 export class MessageModule {}

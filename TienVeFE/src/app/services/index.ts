@@ -6,3 +6,4 @@ export * from './bank.service';
 export * from './debt.service';
 export * from './message.service';
 export * from './setting.service';
+export * from './remind-message.service';

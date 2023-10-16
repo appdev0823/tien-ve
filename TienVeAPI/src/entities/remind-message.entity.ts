@@ -32,6 +32,10 @@ export class RemindMessageEntity extends BaseEntity {
     @AutoMap()
         status: number;
 
+    @Column({ type: 'varchar', length: 255 })
+    @AutoMap()
+        fail_reason: string;
+
     @Column({ type: 'tinyint', default: 0 })
     @AutoMap()
         is_deleted: 0 | 1;

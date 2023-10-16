@@ -132,6 +132,11 @@ const API_ROUTES = {
         AMOUNT_MONTHLY_STATS: 'message/amount-monthly-stats',
         AMOUNT_DAILY_STATS: 'message/amount-daily-stats',
     },
+    REMIND_MESSAGE: {
+        LIST: 'remind-message',
+        DETAIL: 'remind-message/:id',
+        DELETE_MULTIPLE: 'remind-message',
+    },
     SETTING: {
         MODULE: 'setting',
         GET_LIST_BY_FIELD_NAME_LIST: 'setting/list-by-field-name-list',

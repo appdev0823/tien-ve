@@ -28,6 +28,7 @@ import { RepositoryModule } from './repository/repository.module';
 import { CONSTANTS } from './utils';
 import { RemindMessageModule } from './modules/remind-message/remind-message.module';
 import { MessageController } from './modules/message/message.controller';
+import { RemindMessageController } from './modules/remind-message/remind-message.controller';
 
 @Module({
     imports: [
@@ -99,6 +100,6 @@ export class AppModule {
             .exclude(...messageExcludeRouteList.map((route) => `/${ROUTES.MESSAGE.MODULE}/${route}`))
             .forRoutes(UserController);
 
-        consumer.apply(AuthMiddleware).forRoutes(BankController, BankAccountController, DebtController, MessageController);
+        consumer.apply(AuthMiddleware).forRoutes(BankController, BankAccountController, DebtController, MessageController, RemindMessageController);
     }
 }

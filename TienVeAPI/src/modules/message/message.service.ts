@@ -117,7 +117,7 @@ export class MessageService extends BaseService {
     }
 
     public async getTotal(params: MessageSearchQuery) {
-        const query = this._messageRepo.createQueryBuilder('message').where('message.is_deleted = 0').groupBy('message.id');
+        const query = this._messageRepo.createQueryBuilder('message').where('message.is_deleted = 0');
 
         if (Helpers.isString(params.debt_id)) {
             query.andWhere('message.debt_id = :debt_id', { debt_id: params.debt_id });
