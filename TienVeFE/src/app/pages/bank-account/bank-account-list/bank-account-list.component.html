@@ -95,6 +95,7 @@
                                         <th class="a-mw-200 text-start">Chi nhánh</th>
                                         <th class="a-w-100 text-center">{{ 'label.status' | translate }}</th>
                                         <th class="a-w-120 text-end">Tổng số dư</th>
+                                        <th class="a-w-150 text-start">Tên gợi nhớ</th>
                                         <th class="a-w-50 text-center"></th>
                                     </tr>
                                 </thead>
@@ -134,6 +135,7 @@
                                             [ngClass]="item.last_message_sign ? (item.last_message_sign === 1 ? 'text-success' : 'text-danger') : ''">
                                             {{ item.last_message_balance | number : '.0-0' }}
                                         </td>
+                                        <td>{{ item.name }}</td>
                                         <td class="text-center">
                                             <div
                                                 ngbDropdown
