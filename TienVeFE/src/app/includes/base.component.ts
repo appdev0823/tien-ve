@@ -52,8 +52,6 @@ export default class BaseComponent {
 
     /**
      * Show confirm modal
-     *
-     *
      * @param confirmMessage - confirm message of modal
      * @param config - other configurations applied to modal
      */

@@ -249,7 +249,33 @@ export class DebtListComponent extends PageComponent implements OnInit, OnDestro
         this._subscription.add(sub);
     }
 
-    public onDelete(idx: number) {}
+    public onDelete(idx: number) {
+        if (idx < 0 || idx >= this.dataList.length) return;
+
+        this.showConfirmModal(String(this.translate$.instant('message.confirm_delete')), {
+            confirmEvent: (isConfirmed) => {
+                if (!isConfirmed) return;
+
+                void this._delete(idx);
+            },
+        });
+    }
+
+    private async _delete(idx: number) {
+        if (idx < 0 || idx >= this.dataList.length) return;
+
+        const result = await this._debt$.deleteMultiple([this.dataList[idx].id]);
+        if (!result.isSuccess) {
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
+            return;
+        }
+
+        const successMsg = String(this.translate$.instant('message.delete_successfully'));
+        this.toast$.success(successMsg);
+
+        this._getList();
+    }
 
     public onViewDetail(idx: number) {
         if (idx < 0 || idx >= this.dataList.length) return;
