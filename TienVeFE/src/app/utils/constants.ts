@@ -19,6 +19,7 @@ const CONSTANTS = {
         UPGRADE_NOTE: 'upgrade_note',
         REMIND_MESSAGE_TEMPLATE: 'remind_message_template',
         APP_LINK: 'app_link',
+        DEFAULT_SMS_RECEIVE_PHONE: 'default_sms_receive_phone',
     },
     REGISTER_TYPES: {
         EMAIL: 1,

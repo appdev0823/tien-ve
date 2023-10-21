@@ -3,7 +3,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { BankAccountDTO, BankDTO, SaveBankAccountDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
-import { BankAccountService, BankService } from 'src/app/services';
+import { BankAccountService, BankService, SettingService } from 'src/app/services';
 import { ViewMode } from 'src/app/utils/types';
 import { BankAccountValidator } from 'src/app/validators';
 
@@ -29,12 +29,13 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
 
     public resultEvent = new EventEmitter<void>();
 
-    constructor(public activeModal: NgbActiveModal, private _bankAccount$: BankAccountService, private _bank$: BankService) {
+    constructor(public activeModal: NgbActiveModal, private _bankAccount$: BankAccountService, private _bank$: BankService, private _setting$: SettingService) {
         super();
     }
 
     ngOnInit() {
         this._getBankList();
+        this._getDefaultSMSReceivePhone();
         if (this.id) {
             this.viewMode = 'VIEW';
             void this._getDetail();
@@ -42,8 +43,6 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
             this.viewMode = 'CREATE';
             this.form.controls.phone.setValue(this.currentUser.phone);
         }
-
-    //! @Đỗ Văn Khả oksy thế chốt để default số này nhé, cc @Lưu Tuấn Nguyên
     }
 
     ngOnDestroy() {
@@ -53,6 +52,15 @@ export class BankAccountSaveComponent extends PageComponent implements OnInit, O
     private _getBankList() {
         const sub = this._bank$.getList().subscribe((res) => {
             this.bankList = res.data?.list.map((bank) => ({ ...bank, name: `${bank.brand_name} - ${bank.name}` })) || [];
+        });
+        this._subscription.add(sub);
+    }
+
+    private _getDefaultSMSReceivePhone() {
+        const sub = this._setting$.getListByFieldNameList([this.CONSTANTS.SETTING_FIELD_NAMES.DEFAULT_SMS_RECEIVE_PHONE]).subscribe((result) => {
+            if (result.isSuccess && result.data && this.helpers.isFilledArray(result.data.list)) {
+                this.form.controls.phone.setValue(result.data.list[0].value);
+            }
         });
         this._subscription.add(sub);
     }
