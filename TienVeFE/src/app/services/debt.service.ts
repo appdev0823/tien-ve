@@ -90,4 +90,20 @@ export class DebtService {
             return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, []);
         }
     }
+
+    public async update(params: SaveDebtDTO) {
+        try {
+            const route = API_ROUTES.DEBT.UPDATE.replace(':id', String(params.id));
+            const httpRes = await firstValueFrom(this._http.put(route, params));
+            if (!httpRes.body?.data) return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+
+            const item = DebtDTO.fromJson(httpRes.body.data);
+            return APIResponse.success(httpRes.body.message, item);
+        } catch (err) {
+            if (APIResponse.is(err)) {
+                return APIResponse.error(err.message, null, err.errors);
+            }
+            return APIResponse.error(CONSTANTS.ERR_INTERNAL_SERVER_ERROR, null);
+        }
+    }
 }

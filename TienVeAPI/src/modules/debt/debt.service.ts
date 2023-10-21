@@ -54,6 +54,32 @@ export class DebtService extends BaseService {
         return entityList.map((entity) => mapper.map(entity, DebtEntity, DebtDTO));
     }
 
+    public async getById(id: string) {
+        if (!Helpers.isString(id)) return null;
+
+        const item = await this._debtRepo.findOneBy({ id });
+        if (!item) return null;
+
+        return mapper.map(item, DebtEntity, DebtDTO);
+    }
+
+    public async update(data: SaveDebtDTO) {
+        if (Helpers.isEmptyObject(data) || !Helpers.isString(data.id)) return null;
+
+        const old = await this._debtRepo.findOneBy({ id: data.id });
+        if (!old) return null;
+
+        old.bank_account_id = data.bank_account_id;
+        old.payer_name = data.payer_name;
+        old.payer_phone = data.payer_phone;
+        old.amount = data.amount;
+        old.note = data.note;
+
+        await this._debtRepo.save(old);
+
+        return mapper.map(old, DebtEntity, DebtDTO);
+    }
+
     public async getList(params: DebtSearchQuery, userId: number) {
         const query = this._debtRepo
             .createQueryBuilder('debt')

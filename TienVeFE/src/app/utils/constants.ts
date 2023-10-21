@@ -123,6 +123,7 @@ const API_ROUTES = {
         LIST: 'debt',
         DETAIL: 'debt/:id',
         DELETE_MULTIPLE: 'debt',
+        UPDATE: 'debt/:id',
         REMIND: 'debt/remind',
     },
     MESSAGE: {

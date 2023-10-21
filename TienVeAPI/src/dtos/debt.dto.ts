@@ -16,6 +16,7 @@ export class DebtDTO {
 }
 
 export class SaveDebtDTO {
+    public id?: string;
     public bank_account_id = 0;
     public payer_name = '';
     public payer_phone = '';

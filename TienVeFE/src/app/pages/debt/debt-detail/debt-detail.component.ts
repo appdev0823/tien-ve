@@ -3,9 +3,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { NgbActiveModal, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription, debounceTime } from 'rxjs';
 import { DateRangePickerModalComponent } from 'src/app/components/date-range-picker-modal/date-range-picker-modal.component';
-import { DebtDetailDTO, MessageDTO, MessageSearchQuery } from 'src/app/dtos';
+import { BankAccountDTO, DebtDetailDTO, MessageDTO, MessageSearchQuery, SaveDebtDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
-import { DebtService, MessageService } from 'src/app/services';
+import { BankAccountService, DebtService, MessageService } from 'src/app/services';
+import { DebtValidator } from 'src/app/validators';
 import { SendRemindMessageModalComponent } from '../send-remind-message-modal/send-remind-message-modal.component';
 
 @Component({
@@ -20,7 +21,12 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
 
     @Output() reloadParentList = new EventEmitter<void>();
 
-    public viewMode: 'DETAIL' | 'MESSAGE_LIST' | 'ADD_MESSAGE' = 'DETAIL';
+    public viewMode: 'DETAIL' | 'UPDATE' | 'MESSAGE_LIST' | 'ADD_MESSAGE' = 'DETAIL';
+
+    public validator = new DebtValidator();
+    public updateForm = this.validator.getSaveForm();
+
+    public bankAccountList: BankAccountDTO[] = [];
 
     public data = new DebtDetailDTO();
 
@@ -39,14 +45,15 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
     public get isAllUserMgChecked() {
         return this.debtMsgList.length > 0 ? this.debtMsgList.every((item) => item.is_checked) : false;
     }
-    constructor(public activeModal: NgbActiveModal, private _debt$: DebtService, private _message$: MessageService) {
+
+    constructor(public activeModal: NgbActiveModal, private _debt$: DebtService, private _message$: MessageService, private _bankAccount$: BankAccountService) {
         super();
     }
 
     ngOnInit() {
-        void this._getDetail();
         this._getDebtMsgList();
         this._getUserMsgList();
+        this._getBankAccountList();
 
         const sub = this.userMsgSearchForm.controls.keyword.valueChanges.pipe(debounceTime(500)).subscribe(() => this._getUserMsgList());
         this._subscription.add(sub);
@@ -66,6 +73,14 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
         }
 
         this.data = result.data;
+
+        this.updateForm.controls.id.setValue(this.data.id);
+        this.updateForm.controls.bank_account_id.setValue(this.data.bank_account_id);
+        this.updateForm.controls.payer_name.setValue(this.data.payer_name);
+        this.updateForm.controls.payer_phone.setValue(this.data.payer_phone);
+        this.updateForm.controls.amount.setValue(this.data.amount);
+        this.updateForm.controls.note.setValue(this.data.note);
+        this.updateForm.disable();
     }
 
     public openDateRangePickerModal() {
@@ -85,6 +100,19 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
     private _getDebtMsgList() {
         const sub = this._message$.getList({ page: -1, debt_id: this.id }).subscribe((res) => {
             this.debtMsgList = res.data?.list || [];
+        });
+        this._subscription.add(sub);
+    }
+
+    private _getBankAccountList() {
+        const sub = this._bankAccount$.getList({ page: -1 }).subscribe((res) => {
+            this.bankAccountList =
+                res.data?.list.map((acc) => {
+                    acc.display_name = `${acc.bank_brand_name || ''} - ${acc.account_number}`;
+                    return acc;
+                }) || [];
+
+            void this._getDetail();
         });
         this._subscription.add(sub);
     }
@@ -150,6 +178,16 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
     public switchMode(mode: typeof this.viewMode) {
         this.viewMode = mode;
 
+        if (this.viewMode === 'UPDATE') {
+            this.updateForm.controls.bank_account_id.enable();
+            this.updateForm.controls.payer_name.enable();
+            this.updateForm.controls.payer_phone.enable();
+            this.updateForm.controls.amount.enable();
+            this.updateForm.controls.note.enable();
+        } else {
+            this.updateForm.disable();
+        }
+
         if (this.viewMode === 'ADD_MESSAGE') {
             this._getUserMsgList();
         }
@@ -178,5 +216,38 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
         if (idx < 0 || idx >= this.userMsgList.length) return;
 
         this.viewingUserMsg = this.userMsgList[idx];
+    }
+
+    public async onSubmitUpdate() {
+        this.updateForm.clearControlErrorMessages();
+        if (!this.updateForm.valid) {
+            this.updateForm.setControlErrorMessages();
+            return;
+        }
+
+        const formValue = this.updateForm.value;
+        const data = new SaveDebtDTO();
+        data.id = this.data.id || '';
+        data.bank_account_id = formValue.bank_account_id || 0;
+        data.payer_name = formValue.payer_name || '';
+        data.payer_phone = formValue.payer_phone || '';
+        data.amount = formValue.amount || 0;
+        data.note = formValue.note || '';
+
+        const result = await this._debt$.update(data);
+        if (!result.isSuccess || !result.data) {
+            const errMsg = String(this.translate$.instant(`message.${result.message}`));
+            this.toast$.error(errMsg);
+            return;
+        }
+
+        const successMsg = String(this.translate$.instant('message.save_successfully'));
+        this.toast$.success(successMsg);
+
+        this.reloadParentList.emit();
+
+        await this._getDetail();
+
+        this.switchMode('DETAIL');
     }
 }

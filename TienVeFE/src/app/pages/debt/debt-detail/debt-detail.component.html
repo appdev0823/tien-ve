@@ -51,12 +51,12 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.note' | translate }}</label>
+                    <label class="col-12 col-md-4 col-form-label font-weight-normal">Tài khoản ngân hàng</label>
                     <div class="col-12 col-md-8">
                         <input
                             disabled
                             class="form-control bg-white"
-                            [value]="data.note" />
+                            [value]="data.bank_brand_name + ' - ' + data.bank_account_number" />
                     </div>
                 </div>
             </div>
@@ -91,6 +91,19 @@
                             disabled
                             class="form-control bg-white"
                             [value]="data.amount | number : '.0-0'" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group row">
+                    <label class="col-12 col-md-2 col-form-label font-weight-normal">{{ 'label.note' | translate }}</label>
+                    <div class="col-12 col-md-10">
+                        <input
+                            disabled
+                            class="form-control bg-white"
+                            [value]="data.note" />
                     </div>
                 </div>
             </div>
@@ -141,6 +154,104 @@
                 </div>
             </div>
         </div>
+    </ng-container>
+    <ng-container *ngIf="isPageLoaded && viewMode === 'UPDATE'">
+        <form
+            id="debtUpdateForm"
+            [formGroup]="updateForm"
+            (ngSubmit)="onSubmitUpdate()">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>{{ 'label.general_info' | translate }}</h5>
+                        </div>
+                    </div>
+                    <app-form-input-wrapper
+                        [formClassName]="'form-group row mt-3'"
+                        [errorMessage]="updateForm.controlErrorMessages.id">
+                        <label class="col-12 col-md-4 col-form-label font-weight-normal">Mã công nợ</label>
+                        <div class="col-12 col-md-8">
+                            <input
+                                id="id_{{ randomStr }}"
+                                class="form-control bg-white"
+                                [formControl]="updateForm.controls.id" />
+                        </div>
+                    </app-form-input-wrapper>
+                    <app-form-input-wrapper
+                        [formClassName]="'form-group row'"
+                        [errorMessage]="updateForm.controlErrorMessages.bank_account_id">
+                        <label class="col-12 col-md-4 col-form-label font-weight-normal">Tài khoản ngân hàng</label>
+                        <div class="col-12 col-md-8">
+                            <ng-select
+                                id="bank_account_id_{{ randomStr }}"
+                                bindValue="id"
+                                bindLabel="display_name"
+                                [items]="bankAccountList"
+                                [clearable]="false"
+                                [placeholder]="'Tài khoàn ngân hàng'"
+                                [formControl]="updateForm.controls.bank_account_id">
+                            </ng-select>
+                        </div>
+                    </app-form-input-wrapper>
+                    <app-form-input-wrapper
+                        [formClassName]="'form-group row'"
+                        [errorMessage]="updateForm.controlErrorMessages.amount">
+                        <label class="col-12 col-md-4 col-form-label font-weight-normal">Số tiền</label>
+                        <div class="col-12 col-md-8">
+                            <input
+                                appNumericInput
+                                [shouldFormatNumber]="true"
+                                id="amount_{{ randomStr }}"
+                                class="form-control bg-white"
+                                [formControl]="updateForm.controls.amount" />
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Thông tin người nợ</h5>
+                        </div>
+                    </div>
+                    <app-form-input-wrapper
+                        [formClassName]="'form-group row mt-3'"
+                        [errorMessage]="updateForm.controlErrorMessages.payer_name">
+                        <label class="col-12 col-md-4 col-form-label font-weight-normal">Người trả tiền</label>
+                        <div class="col-12 col-md-8">
+                            <input
+                                id="payer_name_{{ randomStr }}"
+                                class="form-control bg-white"
+                                [formControl]="updateForm.controls.payer_name" />
+                        </div>
+                    </app-form-input-wrapper>
+                    <app-form-input-wrapper
+                        [formClassName]="'form-group row'"
+                        [errorMessage]="updateForm.controlErrorMessages.payer_phone">
+                        <label class="col-12 col-md-4 col-form-label font-weight-normal">Số điện thoại</label>
+                        <div class="col-12 col-md-8">
+                            <input
+                                appNumericInput
+                                [shouldFormatNumber]="false"
+                                id="payer_phone_{{ randomStr }}"
+                                class="form-control bg-white"
+                                [formControl]="updateForm.controls.payer_phone" />
+                        </div>
+                    </app-form-input-wrapper>
+                    <app-form-input-wrapper
+                        [formClassName]="'form-group row'"
+                        [errorMessage]="updateForm.controlErrorMessages.note">
+                        <label class="col-12 col-md-4 col-form-label font-weight-normal">{{ 'label.note' | translate }}</label>
+                        <div class="col-12 col-md-8">
+                            <input
+                                id="note_{{ randomStr }}"
+                                class="form-control bg-white"
+                                [formControl]="updateForm.controls.note" />
+                        </div>
+                    </app-form-input-wrapper>
+                </div>
+            </div>
+        </form>
     </ng-container>
     <ng-container *ngIf="isPageLoaded && viewMode === 'MESSAGE_LIST'">
         <div class="row">
@@ -309,9 +420,26 @@
     </ng-container>
 </div>
 <div
-    *ngIf="viewMode === 'DETAIL' && (data.paid_amount || 0) < data.amount"
+    *ngIf="viewMode === 'UPDATE'"
     class="modal-footer">
     <button
+        type="submit"
+        form="debtUpdateForm"
+        class="btn btn-primary btn-common btn-shadow me-3">
+        {{ 'label.save' | translate }}
+    </button>
+</div>
+<div
+    *ngIf="viewMode === 'DETAIL'"
+    class="modal-footer">
+    <button
+        type="button"
+        class="btn btn-primary btn-common btn-shadow me-3"
+        (click)="switchMode('UPDATE')">
+        {{ 'label.edit' | translate }}
+    </button>
+    <button
+        *ngIf="(data.paid_amount || 0) < data.amount"
         type="button"
         class="btn btn-primary btn-common btn-shadow"
         (click)="openSendMessageModal()">

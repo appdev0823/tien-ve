@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { DebtDTO, DebtDetailDTO, DebtListDTO, DebtRemindRequest, DebtSearchQuery, RemindMessageDTO, SaveDebtDTO } from 'src/dtos';
 import { BaseController } from 'src/includes';
@@ -160,6 +160,43 @@ export class DebtController extends BaseController {
         } catch (e) {
             this._logger.error(this.createMultiple.name, e);
             const errRes = APIListResponse.error(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR, []);
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
+        }
+    }
+
+    @Put(ROUTES.DEBT.UPDATE)
+    public async update(@Res() res: Response<APIResponse<DebtDTO | undefined>>, @Body() body: SaveDebtDTO, @Param('id') id: string) {
+        try {
+            if (!Helpers.isString(id)) {
+                const errRes = APIResponse.error(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR);
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
+            }
+
+            const ins = await this._debtService.getById(id);
+            if (!ins) {
+                const errRes = APIResponse.error(MESSAGES.ERROR.ERR_NO_DATA);
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
+            }
+
+            const debt = new SaveDebtDTO();
+            debt.id = id;
+            debt.bank_account_id = body.bank_account_id;
+            debt.payer_name = body.payer_name;
+            debt.payer_phone = body.payer_phone;
+            debt.amount = body.amount;
+            debt.note = body.note;
+
+            const result = await this._debtService.update(debt);
+            if (!result) {
+                const errRes = APIResponse.error(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR);
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
+            }
+
+            const successRes = APIResponse.success(MESSAGES.SUCCESS.SUCCESS, result);
+            return res.status(HttpStatus.OK).json(successRes);
+        } catch (e) {
+            this._logger.error(this.update.name, e);
+            const errRes = APIResponse.error(MESSAGES.ERROR.ERR_INTERNAL_SERVER_ERROR);
             return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
         }
     }
