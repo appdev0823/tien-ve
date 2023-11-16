@@ -52,7 +52,7 @@ class AppSizes {
 
 class CONSTANTS {
   // static const API_URL = 'http://192.168.1.7:3000';
-  static const API_URL = 'https://tien-ve-api.miketuannguyen.com';
+  static const API_URL = 'https://api.tienve.cloud';
 
   /// Thời gian (s) timeout cho một POST request
   static const POST_TIMEOUT = 20;
