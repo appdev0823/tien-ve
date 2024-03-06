@@ -217,6 +217,7 @@ img.square-image {
     align-items: center;
     justify-content: center;
     padding: 0.25rem 0.5rem;
+    white-space: nowrap;
 
     .dot {
         width: 8px;
