@@ -18,6 +18,7 @@ export class BankAccountService extends BaseService {
             .createQueryBuilder('bank_account')
             .select('bank_account.*')
             .addSelect('bank.brand_name as bank_brand_name')
+            .addSelect('bank.img_path as bank_img_path')
             .addSelect('bank.name as bank_name')
             .addSelect('last_message.balance as last_message_balance')
             .addSelect('last_message.sign as last_message_sign')

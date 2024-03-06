@@ -21,6 +21,7 @@ export class BankAccountDTO extends BaseDTO {
     public last_message_sign?: -1 | 1;
     public bank_brand_name?: string;
     public bank_name?: string;
+    public bank_img_path?: string;
 
     public display_name?: string;
 
@@ -42,6 +43,7 @@ export class BankAccountDTO extends BaseDTO {
 
         instance.bank_brand_name = String(json['bank_brand_name'] || '');
         instance.bank_name = String(json['bank_name'] || '');
+        instance.bank_img_path = String(json['bank_img_path'] || '');
         instance.last_message_balance = Number(json['last_message_balance']) || 0;
         if (json['last_message_sign']) {
             instance.last_message_sign = Number(json['last_message_sign']) === 1 ? 1 : -1;
