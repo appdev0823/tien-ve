@@ -484,11 +484,9 @@ packages:
   telephony:
     dependency: "direct main"
     description:
-      path: "."
-      ref: develop
-      resolved-ref: b0495407c43574ae39650cbbae680f29b9d4e9fb
-      url: "https://github.com/definev/Telephony.git"
-    source: git
+      name: telephony
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.2.0"
   term_glyph:
     dependency: transitive
