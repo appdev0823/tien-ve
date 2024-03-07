@@ -74,9 +74,7 @@ export class MessageService extends BaseService {
             .addSelect('bank.brand_name as bank_brand_name')
             .addSelect('DATE_FORMAT(message.send_date, \'%d/%m/%Y %H:%i:%s\') as send_date')
             .addSelect('DATE_FORMAT(message.created_date, \'%d/%m/%Y %H:%i:%s\') as created_date')
-            .innerJoin('d_bank_accounts', 'bank_account', 'bank_account.id = message.bank_account_id AND bank_account.user_id = :user_id', {
-                user_id: params.receive_user_id,
-            })
+            .leftJoin('d_bank_accounts', 'bank_account', 'bank_account.id = message.bank_account_id')
             .leftJoin('m_banks', 'bank', 'bank_account.bank_id = bank.id')
             .where('message.is_deleted = 0')
             .groupBy('message.id')
@@ -84,6 +82,10 @@ export class MessageService extends BaseService {
 
         if (Helpers.isString(params.debt_id)) {
             query.andWhere('message.debt_id = :debt_id', { debt_id: params.debt_id });
+        }
+
+        if (params.receive_user_id) {
+            query.andWhere('bank_account.user_id = :user_id', { user_id: params.receive_user_id });
         }
 
         if (Helpers.isString(params.keyword)) {

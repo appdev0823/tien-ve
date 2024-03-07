@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -94,12 +94,20 @@ export class AppModule {
             .exclude(...userExcludeRouteList.map((route) => `/${ROUTES.USER.MODULE}/${route}`))
             .forRoutes(UserController);
 
-        const messageExcludeRouteList = [ROUTES.MESSAGE.CREATE];
         consumer
             .apply(AuthMiddleware)
-            .exclude(...messageExcludeRouteList.map((route) => `/${ROUTES.MESSAGE.MODULE}/${route}`))
-            .forRoutes(UserController);
+            .exclude(
+                {
+                    path: `/${ROUTES.MESSAGE.MODULE}`,
+                    method: RequestMethod.GET,
+                },
+                {
+                    path: `/${ROUTES.MESSAGE.MODULE}`,
+                    method: RequestMethod.POST,
+                },
+            )
+            .forRoutes(MessageController);
 
-        consumer.apply(AuthMiddleware).forRoutes(BankController, BankAccountController, DebtController, MessageController, RemindMessageController);
+        consumer.apply(AuthMiddleware).forRoutes(BankController, BankAccountController, DebtController, RemindMessageController);
     }
 }

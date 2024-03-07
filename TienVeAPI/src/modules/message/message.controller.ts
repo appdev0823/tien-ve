@@ -118,7 +118,7 @@ export class MessageController extends BaseController {
     @Get(ROUTES.MESSAGE.LIST)
     public async getList(@Req() req: AuthenticatedRequest, @Res() res: Response<APIListResponse<MessageDTO>>, @Query() query: MessageSearchQuery) {
         try {
-            query.receive_user_id = req.userPayload.id;
+            query.receive_user_id = req.userPayload?.id;
             const total = await this._messageService.getTotal(query);
             let list: MessageDTO[] = [];
             if (total > 0) {
