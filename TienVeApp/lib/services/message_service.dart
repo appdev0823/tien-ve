@@ -28,8 +28,7 @@ class MessageService {
       if (!response.isSuccess) {
         return APIResponse.error(message: response.message, data: null);
       }
-      final result = MessageEntity.fromJson(response.data);
-      return APIResponse.success(data: result);
+      return APIResponse.success(data: null);
     } catch (e) {
       return APIResponse.error();
     }
