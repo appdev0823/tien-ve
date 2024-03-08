@@ -96,7 +96,7 @@ export class MessageController extends BaseController {
             message.balance = balance;
             message.sign = sign;
             message.bank_account_id = bankAccount?.id ?? 0;
-            if (debt && debt.bank_account_phone === replacedCodeReceivePhone && sign > 0) {
+            if (debt && sign > 0) {
                 message.debt_id = debt.id;
             }
 
