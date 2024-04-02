@@ -34,7 +34,9 @@ class Helpers {
   static Future<String> getDevicePhoneNumber() async {
     try {
       final hasPermission = await MobileNumber.hasPhonePermission;
-      if (!hasPermission) return '';
+      if (!hasPermission) {
+        await MobileNumber.requestPhonePermission;
+      }
       return await MobileNumber.mobileNumber ?? '';
     } catch (e) {
       print(e);

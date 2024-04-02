@@ -9,7 +9,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:telephony/telephony.dart';
+import 'package:sms_advanced/sms_advanced.dart';
+// import 'package:telephony/telephony.dart';
 import 'package:tien_ve/entities/global_entity.dart';
 import 'package:tien_ve/entities/message_entity.dart';
 import 'package:tien_ve/services/message_service.dart';
@@ -22,23 +23,23 @@ import 'package:tien_ve/utils/theme_provider.dart';
 
 /// Has to leave it here for working in release mode
 @pragma('vm:entry-point')
-void backgroundMessageHandler(SmsMessage message) async {
-  final address = Helpers.isString(message.address) ? message.address.toString() : '';
-  final body = Helpers.isString(message.body) ? message.body.toString() : '';
-  final sendTimestamp = message.date ?? 0;
+// void backgroundMessageHandler(SmsMessage message) async {
+//   final address = Helpers.isString(message.address) ? message.address.toString() : '';
+//   final body = Helpers.isString(message.body) ? message.body.toString() : '';
+//   final sendTimestamp = message.date ?? 0;
 
-  print("====== Listen in background:");
-  print("====== Listen in background: ${address}");
-  print("====== Listen in background: ${body}");
-  print("====== Listen in background: ${sendTimestamp}");
-  final receiveTimestamp = DateTime.now().millisecondsSinceEpoch;
-  print("====== Listen in background: ${receiveTimestamp}");
-  final prefs = await SharedPreferences.getInstance();
-  final devicePhoneNumber = prefs.getString(DeviceStorageKeys.DEVICE_PHONE.value) ?? '';
-  print("====== Listen in background: ${devicePhoneNumber}");
+//   print("====== Listen in background:");
+//   print("====== Listen in background: ${address}");
+//   print("====== Listen in background: ${body}");
+//   print("====== Listen in background: ${sendTimestamp}");
+//   final receiveTimestamp = DateTime.now().millisecondsSinceEpoch;
+//   print("====== Listen in background: ${receiveTimestamp}");
+//   final prefs = await SharedPreferences.getInstance();
+//   final devicePhoneNumber = prefs.getString(DeviceStorageKeys.DEVICE_PHONE.value) ?? '';
+//   print("====== Listen in background: ${devicePhoneNumber}");
 
-  await MessageService.create(address, devicePhoneNumber, body, sendTimestamp, receiveTimestamp);
-}
+//   await MessageService.create(address, devicePhoneNumber, body, sendTimestamp, receiveTimestamp);
+// }
 
 @pragma('vm:entry-point')
 void main() async {
@@ -92,7 +93,8 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> with WidgetsBindingObserver {
   List<MessageEntity> smsList = [];
 
-  Telephony telephony = Telephony.instance;
+  // Telephony telephony = Telephony.instance;
+  SmsReceiver receiver = SmsReceiver();
 
   ScrollController scrollController = ScrollController();
 
@@ -144,7 +146,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   void messageHandler(SmsMessage message) async {
     final address = Helpers.isString(message.address) ? message.address.toString() : '';
     final body = Helpers.isString(message.body) ? message.body.toString() : '';
-    final sendTimestamp = message.date ?? 0;
+    int sendTimestamp = 0;
+    DateTime? dateSent = message.dateSent;
+    if (dateSent != null) {
+      sendTimestamp = dateSent.millisecondsSinceEpoch;
+    }
 
     print("====== Listen in foreground:");
     print("====== Listen in foreground: ${address}");
@@ -208,7 +214,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Future<void> setPhoneToStorage() async {
-    await telephony.requestPhoneAndSmsPermissions;
+    // await telephony.requestPhoneAndSmsPermissions;
     final devicePhoneNumber = await Helpers.getDevicePhoneNumber();
     print("=========== devicePhoneNumber: ${devicePhoneNumber}");
 
@@ -217,17 +223,20 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void startListeningSMS() async {
-    telephony.listenIncomingSms(
-      onNewMessage: messageHandler,
-      onBackgroundMessage: backgroundMessageHandler,
-      listenInBackground: true,
-    );
+    print("startListeningSMS");
+    // telephony.listenIncomingSms(
+    //   onNewMessage: messageHandler,
+    //   onBackgroundMessage: backgroundMessageHandler,
+    //   listenInBackground: true,
+    // );
+
+    receiver.onSmsReceived?.listen(messageHandler);
 
     showListeningNotification();
   }
 
   void stopListeningSMS() async {
-    telephony.listenIncomingSms(onNewMessage: (SmsMessage message) {}, listenInBackground: false);
+    // telephony.listenIncomingSms(onNewMessage: (SmsMessage message) {}, listenInBackground: false);
 
     cancelListeningNotification();
   }

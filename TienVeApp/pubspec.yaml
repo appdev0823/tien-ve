@@ -46,10 +46,11 @@ dependencies:
   collection: ^1.16.0
   easy_localization: ^3.0.1
   # This work in release mode
-  telephony:
-    git:
-      url: https://github.com/definev/Telephony.git
-      ref: develop
+  # telephony:
+  #   git:
+  #     url: https://github.com/definev/Telephony.git
+  #     ref: develop
+  sms_advanced: ^1.0.1
   flutter_local_notifications: ^15.1.0+1
   mobile_number: ^2.1.1
 
