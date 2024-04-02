@@ -56,7 +56,7 @@ export class MessageController extends BaseController {
                 return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
             }
 
-            const accountNumber = Helpers.getSubstringBetweenStartEnd(body.body, `${bank.account_number_start} `, ' ');
+            const accountNumber = Helpers.getSubstringBetweenStartEnd(body.body, bank.account_number_start, ' ');
             let bankAccount: BankAccountDTO | null = null;
             if (Helpers.isString(accountNumber)) {
                 const accountNumberEnd = accountNumber.substring(accountNumber.length - 4, accountNumber.length);
@@ -73,7 +73,7 @@ export class MessageController extends BaseController {
             const amount = Helpers.extractNumberFromString(amountStr);
 
             // Bóc tách số dư tài khoản của tin nhắn
-            const balanceStr = Helpers.getSubstringBetweenStartEnd(body.body, 'SD', 'VND');
+            const balanceStr = Helpers.getSubstringBetweenStartEnd(body.body, bank.balance_start, 'VND');
             const balance = Helpers.extractNumberFromString(balanceStr);
 
             const debtId = Helpers.getSubstringFromStart(
