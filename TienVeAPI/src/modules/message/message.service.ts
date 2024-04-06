@@ -74,6 +74,7 @@ export class MessageService extends BaseService {
             .addSelect('bank_account.account_number as bank_account_number')
             .addSelect('bank.brand_name as bank_brand_name')
             .addSelect('DATE_FORMAT(message.send_date, \'%d/%m/%Y %H:%i:%s\') as send_date')
+            .addSelect('DATE_FORMAT(message.receive_date, \'%d/%m/%Y %H:%i:%s\') as receive_date')
             .addSelect('DATE_FORMAT(message.created_date, \'%d/%m/%Y %H:%i:%s\') as created_date')
             .leftJoin('d_bank_accounts', 'bank_account', 'bank_account.id = message.bank_account_id')
             .leftJoin('m_banks', 'bank', 'bank_account.bank_id = bank.id')

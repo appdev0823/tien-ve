@@ -130,7 +130,7 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
   void _getList() async {
     final result = await MessageService.getList();
     final data = result.data;
-    if (!result.isSuccess || data == null) {
+    if (!result.isSuccess || data == null || !Helpers.isFilledList(data.list)) {
       ToastrService.error(msgKey: result.message);
       return;
     }
@@ -200,18 +200,22 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
 
   /// Show "Listening to SMS" local notification
   void showListeningNotification() async {
-    AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-      'tien_ve',
-      tr('app_name'),
-      channelDescription: tr('label.listening_to_sms'),
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-      ongoing: true,
-      autoCancel: false,
-    );
-    NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(0, tr('app_name'), tr('label.listening_to_sms'), notificationDetails);
+    try {
+      AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+        'tien_ve',
+        tr('app_name'),
+        channelDescription: tr('label.listening_to_sms'),
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+        ongoing: true,
+        autoCancel: false,
+      );
+      NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, tr('app_name'), tr('label.listening_to_sms'), notificationDetails);
+    } catch (e) {
+      print(e);
+    }
   }
 
   /// Cancel listening notification

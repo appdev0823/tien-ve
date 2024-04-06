@@ -6,7 +6,17 @@
     "email_phone": "Email hoặc SĐT",
     "password": "Mật khẩu",
     "listening_to_sms": "Đang lắng nghe SMS",
-    "stop_listening_to_sms": "Dừng lắng nghe SMS"
+    "stop_listening_to_sms": "Dừng lắng nghe SMS",
+    "sms_id": "Mã tin nhắn",
+    "sms_address": "Địa chỉ gửi",
+    "sms_body": "Nội dung tin nhắn",
+    "sms_send_date": "Thời gian gửi",
+    "sms_receive_date": "Thời gian nhận",
+    "sms_amount": "Số tiền giao dịch",
+    "sms_balance": "Số dư tài khoản",
+    "sms_debt_id": "Mã công nợ",
+    "sms_bank_account_number": "Số tài khoản",
+    "sms_bank_brand_name": "Ngân hàng"
   },
   "message": {
     "success": "Thành công",
