@@ -61,11 +61,13 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
   Future<void> askPermissions() async {
     bool isSuccessAll = true;
 
+    // For retrieving phone number
     PermissionStatus phoneStatus = await Permission.phone.request();
     if (!phoneStatus.isGranted) {
       isSuccessAll = false;
     }
 
+    // For capturing SMS
     PermissionStatus smsStatus = await Permission.sms.request();
     if (!smsStatus.isGranted) {
       isSuccessAll = false;
