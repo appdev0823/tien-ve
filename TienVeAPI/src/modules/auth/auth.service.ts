@@ -40,7 +40,7 @@ export class AuthService extends BaseService {
         const expiredTime = Number(this._configService.get('ACCESS_TOKEN_EXPIRED_TIME')) || 0;
         const accessToken = jwt.sign({ ...userDTO }, secret, { expiresIn: expiredTime });
 
-        return { ...userDTO, access_token: accessToken };
+        return { ...userDTO, id: Number(userDTO.id) || 0, access_token: accessToken };
     }
 
     public async changePassword(id: number, oldPassword: string, newPassword: string) {

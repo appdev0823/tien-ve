@@ -3,6 +3,7 @@ import { CommonSearchQuery } from 'src/utils/types';
 
 export class MessageDTO {
     @AutoMap() id: number;
+    @AutoMap() user_id: number;
     @AutoMap() address: string;
     @AutoMap() phone: string;
     @AutoMap() body: string;
@@ -28,7 +29,7 @@ export class CreateMessageDTO {
 
 export type MessageSearchQuery = CommonSearchQuery & {
     debt_id?: string;
-    receive_user_id?: number;
+    user_id: number;
     start_date?: string;
     end_date?: string;
 };

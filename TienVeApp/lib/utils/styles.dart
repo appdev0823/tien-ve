@@ -12,7 +12,7 @@ extension MTextStyle on TextStyle {
   }) {
     return TextStyle(
       color: color ?? Colors.black,
-      fontFamily: 'assets/fonts/Roboto.ttf',
+      fontFamily: 'assets/fonts/Quicksand.ttf',
       fontSize: fontSize ?? AppSizes.FS_CONTENT.sp,
       fontWeight: fontWeight,
       fontStyle: fontStyle,
@@ -27,7 +27,7 @@ extension MTextStyle on TextStyle {
   }) {
     return TextStyle(
       color: color ?? Colors.black,
-      fontFamily: 'assets/fonts/Roboto.ttf',
+      fontFamily: 'assets/fonts/Quicksand.ttf',
       fontWeight: fontWeight,
       fontSize: fontSize ?? AppSizes.FS_TITLE.sp,
     );
@@ -37,7 +37,7 @@ extension MTextStyle on TextStyle {
   TextStyle placeholder() {
     return TextStyle(
       color: AppColors.TEXT_GRAY,
-      fontFamily: 'assets/fonts/Roboto.ttf',
+      fontFamily: 'assets/fonts/Quicksand.ttf',
       fontSize: AppSizes.FS_CONTENT.sp,
     );
   }

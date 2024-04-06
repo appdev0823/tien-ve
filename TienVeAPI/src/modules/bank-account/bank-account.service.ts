@@ -171,13 +171,27 @@ export class BankAccountService extends BaseService {
         return itemList.map((item) => mapper.map(item, BankAccountEntity, BankAccountDTO));
     }
 
-    public async getByAccountNumberAndBankId(accountNumber: string, bankId: number) {
+    /**
+     * Find bank account of user by SMS data
+     * @param accountNumber - Bank account number got from SMS data
+     * @param userId - ID of user
+     * @param bankId - ID of bank
+     * @returns bank account
+     */
+    public async findBySMSMessage(accountNumber: string, userId: number, bankId: number) {
+        if (!Helpers.isString(accountNumber) || !userId || !bankId) return null;
+
+        // Account number of some bank's SMS having X characters in the middle
+        const lowercased = accountNumber.toLowerCase();
+        const findAccNumber = lowercased.includes('x') ? lowercased.replace(/x+/g, '%') : accountNumber;
+
         const query = this._bankAccountRepo
             .createQueryBuilder('bank_account')
             .select('bank_account.*')
             .where('bank_account.is_deleted = 0')
             .where('bank_account.bank_id = :bank_id', { bank_id: bankId })
-            .andWhere('bank_account.account_number LIKE :account_number', { account_number: `%${accountNumber}` });
+            .andWhere('bank_account.user_id = :user_id', { user_id: userId })
+            .andWhere('bank_account.account_number LIKE :account_number', { account_number: `%${findAccNumber}%` });
 
         const item = await query.getRawOne<BankAccountDTO>();
         return item ?? null;

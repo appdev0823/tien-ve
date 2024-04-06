@@ -29,11 +29,12 @@ class AppSizes {
   static const SPACING_MEDIUM = 10.0;
   static const SPACING_LARGE = 15.0;
   static const SPACING_X_LARGE = 20.0;
+  static const SPACING_XX_LARGE = 25.0;
 
-  static const FS_LG_TITLE = 20.0;
-  static const FS_TITLE = 16.0;
-  static const FS_CONTENT = 14.0;
-  static const FS_SM = 12.0;
+  static const FS_LG_TITLE = 22.0;
+  static const FS_TITLE = 18.0;
+  static const FS_CONTENT = 16.0;
+  static const FS_SM = 14.0;
 
   static const ICON_SIZE_MD = 15.0;
   static const ICON_SIZE_LG = 20.0;
@@ -46,18 +47,18 @@ class AppSizes {
 
   static const INPUT_BORDER_WIDTH = 1.0;
 
-  ///Quy định độ bóng mờ (box shadow) chung cho các widget sử dụng `elevation`
+  ///Common shadow level for items using `elevation`
   static const ELEVATION_COMMON = 5.0;
 }
 
 class CONSTANTS {
-  // static const API_URL = 'http://192.168.1.7:3000';
-  static const API_URL = 'https://api.tienve.cloud';
+  static const API_URL = 'http://192.168.1.9:3000';
+  // static const API_URL = 'https://api.tienve.cloud';
 
-  /// Thời gian (s) timeout cho một POST request
+  /// Timeout(s) for a POST API request
   static const POST_TIMEOUT = 20;
 
-  /// Thời `gian (s) timeout cho một Multipart POST request
+  /// Timeout(s) for a multipart POST API request
   static const MULTIPART_POST_TIMEOUT = 60;
 
   static const SUCCESS_MSG_KEY = 'success';
@@ -82,7 +83,8 @@ enum APIRoutes {
 ///Keys of values stored in device storage
 enum DeviceStorageKeys {
   ///Device phone number
-  DEVICE_PHONE('phone');
+  DEVICE_PHONE('phone'),
+  LOGIN_USER('login_user');
 
   const DeviceStorageKeys(this.value);
   final String value;

@@ -34,33 +34,28 @@ export class MessageController extends BaseController {
     }
 
     /**
-     * Tạo message và gach nợ tương ứng
-     *
-     * Hệ thống sẽ dựa trên nội dung của các SMS từ ngân hàng để tiến hành gạch nợ. Hệ thống sẽ xử lý như sau:
-     *
-     * - Tìm kiếm đoạn text đầu tiên có dấu "+" và kết thúc bằng "VND" trong nội dung tin nhắn. Phần ở giữa đoạn này sẽ là số tiền dùng để tính toán gạch nợ.
-     * - Tìm kiếm trong nội dung SMS có đoạn text nào là ID công nợ thuộc về users sỡ hữu số điện thoại này hay không
-     * - Số điện thoại nhận tin nhắn cũng sẽ được đối chiếu xem có đúng với tài khoản ngân hàng của công nợ hay không.
-     *
-     * Đáp ứng được 3 điều kiện trên thì hệ thống mới xử lý gạch nợ cho công nợ.
+     * Tạo message và phân tích data trong SMS data của table d_messages
      */
     @Post(ROUTES.MESSAGE.CREATE)
     @UsePipes(new ValidationPipe(MessageSchemas.createSchema))
-    public async create(@Res() res: Response<APIResponse<MessageDTO | undefined>>, @Body() body: CreateMessageDTO) {
+    public async create(@Res() res: Response<APIResponse<MessageDTO | undefined>>, @Body() body: CreateMessageDTO, @Req() req: AuthenticatedRequest) {
         try {
-            // Khi address của message nằm trong danh sách brand_name của các banks thì mới xử lý típ
+            // Khi address của message nằm trong danh sách brand_name của các banks thì mới xử lý tiếp
             // Tránh ghi log các SMS cá nhân của users
-            const bank = await this._bankService.getByBrandName(body.address.toLowerCase());
+            const bank = await this._bankService.getByBrandName(body.address);
             if (!bank) {
                 const errRes = APIResponse.error(MESSAGES.ERROR.ERR_NOT_BANK_SMS);
                 return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
             }
 
-            const accountNumber = Helpers.getSubstringBetweenStartEnd(body.body, bank.account_number_start, ' ');
+            // Bóc tách số tài khoàn trong tin nhắn
+            let accountNumber = Helpers.getSubstringBetweenStartEnd(body.body, bank.account_number_start, ' ');
+            if (accountNumber?.includes('\n')) {
+                accountNumber = Helpers.getSubstringBetweenStartEnd(body.body, bank.account_number_start, '\n');
+            }
             let bankAccount: BankAccountDTO | null = null;
             if (Helpers.isString(accountNumber)) {
-                const accountNumberEnd = accountNumber.substring(accountNumber.length - 4, accountNumber.length);
-                bankAccount = await this._bankAccountService.getByAccountNumberAndBankId(accountNumberEnd, bank.id);
+                bankAccount = await this._bankAccountService.findBySMSMessage(accountNumber, req.userPayload.id, bank.id);
             }
 
             // Bóc tách số tiền của tin nhắn
@@ -76,6 +71,7 @@ export class MessageController extends BaseController {
             const balanceStr = Helpers.getSubstringBetweenStartEnd(body.body, bank.balance_start, 'VND');
             const balance = Helpers.extractNumberFromString(balanceStr);
 
+            // Bóc tách mã công nợ trong tin nhắn
             const debtId = Helpers.getSubstringFromStart(
                 body.body,
                 `${CONSTANTS.DEBT_ID_FORMAT.PREFIX}${CONSTANTS.DEBT_ID_FORMAT.SEPARATOR}`,
@@ -87,6 +83,7 @@ export class MessageController extends BaseController {
             const replacedCodeReceivePhone = body.phone.replace(CONSTANTS.VN_PHONE_CODE, '0') || '';
 
             const message = new MessageDTO();
+            message.user_id = req.userPayload.id;
             message.address = body.address || '';
             message.phone = replacedCodeReceivePhone;
             message.body = body.body || '';
@@ -118,7 +115,7 @@ export class MessageController extends BaseController {
     @Get(ROUTES.MESSAGE.LIST)
     public async getList(@Req() req: AuthenticatedRequest, @Res() res: Response<APIListResponse<MessageDTO>>, @Query() query: MessageSearchQuery) {
         try {
-            query.receive_user_id = req.userPayload?.id;
+            query.user_id = req.userPayload.id;
             const total = await this._messageService.getTotal(query);
             let list: MessageDTO[] = [];
             if (total > 0) {

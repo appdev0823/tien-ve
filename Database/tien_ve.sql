@@ -11,7 +11,7 @@
  Target Server Version : 50735
  File Encoding         : 65001
 
- Date: 02/04/2024 21:52:46
+ Date: 06/04/2024 22:44:07
 */
 
 SET NAMES utf8mb4;
@@ -36,7 +36,7 @@ CREATE TABLE `d_bank_accounts` (
   `created_date` datetime NOT NULL,
   `updated_date` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for d_debts
@@ -63,6 +63,7 @@ CREATE TABLE `d_debts` (
 DROP TABLE IF EXISTS `d_messages`;
 CREATE TABLE `d_messages` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL COMMENT 'Mã users',
   `address` varchar(255) NOT NULL COMMENT 'Địa chỉ gửi SMS, thường là brandname của các banks',
   `phone` varchar(20) NOT NULL COMMENT 'SDT nhận SMS',
   `body` text NOT NULL COMMENT 'Nội dung tin nhắn',
@@ -77,7 +78,7 @@ CREATE TABLE `d_messages` (
   `created_date` datetime NOT NULL,
   `updated_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for d_otps
@@ -94,7 +95,7 @@ CREATE TABLE `d_otps` (
   `updated_date` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `otp` (`otp`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for d_remind_messages
@@ -113,7 +114,7 @@ CREATE TABLE `d_remind_messages` (
   `created_date` datetime NOT NULL,
   `updated_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for m_banks
@@ -130,7 +131,7 @@ CREATE TABLE `m_banks` (
   `created_date` datetime NOT NULL,
   `updated_date` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of m_banks
@@ -140,7 +141,7 @@ INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `bala
 INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (2, 'BIDV', 'Ngân hàng Đầu tư và Phát triển Việt Nam', 'TK: ', 'SD:', 'BIDV.png', 0, '2023-08-30 00:00:00', '2024-03-15 23:05:35');
 INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (3, 'VietinBank', 'Ngân hàng Công thương Việt Nam', 'TK: ', 'SD:', 'VietinBank.png', 0, '2023-08-30 00:00:00', '2024-03-15 23:05:35');
 INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (4, 'Vietcombank', 'Ngân hàng Ngoại Thương Việt Nam', 'TK: ', 'SD:', 'Vietcombank.png', 0, '2023-08-30 00:00:00', '2024-03-15 23:05:35');
-INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (5, 'MBBANK', 'Ngân hàng Quân Đội', 'TK: ', 'SD:', 'MBBANK.png', 0, '2023-08-30 00:00:00', '2024-03-15 23:05:35');
+INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (5, 'MBBank', 'Ngân hàng Quân Đội', 'TK ', 'SD:', 'MBBANK.png', 0, '2023-08-30 00:00:00', '2024-04-06 22:43:57');
 INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (6, 'Techcombank', 'Ngân hàng Kỹ Thương', 'TK: ', 'SD:', 'Techcombank.png', 0, '2023-08-30 00:00:00', '2024-03-15 23:05:35');
 INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (7, 'Agribank', 'Ngân hàng NN&PT Nông thôn Việt Nam', 'TK: ', 'SD:', 'Agribank.png', 0, '2023-08-30 00:00:00', '2024-03-15 23:05:35');
 INSERT INTO `m_banks` (`id`, `brand_name`, `name`, `account_number_start`, `balance_start`, `img_path`, `is_deleted`, `created_date`, `updated_date`) VALUES (8, 'ACB', 'Ngân hàng Á Châu', 'TK: ', 'SD:', 'ACB.png', 0, '2023-08-30 00:00:00', '2024-03-15 23:05:35');
@@ -200,7 +201,7 @@ CREATE TABLE `m_settings` (
   `created_date` datetime NOT NULL,
   `updated_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of m_settings
@@ -227,6 +228,6 @@ CREATE TABLE `m_users` (
   `created_date` datetime NOT NULL,
   `updated_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

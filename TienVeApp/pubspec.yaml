@@ -53,6 +53,7 @@ dependencies:
   sms_advanced: ^1.0.1
   flutter_local_notifications: ^15.1.0+1
   mobile_number: ^2.1.1
+  permission_handler: ^10.4.5
 
 dev_dependencies:
   flutter_test:
@@ -116,6 +117,13 @@ flutter:
     - family: Roboto-Bold
       fonts:
         - asset: assets/fonts/Roboto-Bold.ttf
+    - family: Quicksand
+      fonts:
+        - asset: assets/fonts/Quicksand-SemiBold.ttf
+        - asset: assets/fonts/Quicksand-Bold.ttf
+        - asset: assets/fonts/Quicksand-Light.ttf
+        - asset: assets/fonts/Quicksand-Medium.ttf
+        - asset: assets/fonts/Quicksand-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

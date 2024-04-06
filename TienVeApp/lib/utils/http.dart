@@ -2,59 +2,85 @@ import 'dart:convert' as convert;
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:tien_ve/dtos/user_dto.dart';
 import 'package:tien_ve/utils/api_response.dart';
 import 'package:tien_ve/utils/constants.dart';
 import 'package:tien_ve/utils/extensions.dart';
 import 'package:tien_ve/utils/helpers.dart';
 
-class BaseHTTPClient {
-  final _headers = <String, String>{"content-type": "application/json"};
+class HTTPOptions {
+  /// HTTP headers
+  final headers = <String, String>{"content-type": "application/json"};
 
-  ///Should show loading or not
+  /// Should show loading or not
   bool shouldShowLoading = true;
 
-  BaseHTTPClient({this.shouldShowLoading = true});
+  /// Attach access token to request headers or not
+  bool useAccessToken = true;
+
+  static Future<HTTPOptions> create({
+    shouldShowLoading = true,
+    useAccessToken = true,
+  }) async {
+    final opts = HTTPOptions();
+    opts.shouldShowLoading = shouldShowLoading;
+    opts.useAccessToken = useAccessToken;
+
+    if (useAccessToken) {
+      LoginUserDTO? user = await LoginUserDTO.get();
+      if (user != null && Helpers.isString(user.accessToken)) {
+        opts.headers['Authorization'] = "Bearer ${user.accessToken}";
+      }
+    }
+
+    return opts;
+  }
+}
+
+class BaseHTTPClient {
+  final _successStatusCodeList = [
+    HttpStatuses.OK.value,
+    HttpStatuses.CREATED.value,
+    HttpStatuses.ACCEPTED.value,
+    HttpStatuses.NON_AUTHORITATIVE_INFORMATION.value,
+    HttpStatuses.NO_CONTENT.value,
+    HttpStatuses.RESET_CONTENT.value,
+    HttpStatuses.PARTIAL_CONTENT.value
+  ];
+
+  BaseHTTPClient() {}
 
   ///Construct a POST request
   ///
   ///[route] Defined in Constants.dart
   ///
   ///[body] The body of the POST request
-  Future<APIResponse<dynamic>> post(APIRoutes route, Map<String, dynamic>? body) async {
+  Future<APIResponse<dynamic>> post(APIRoutes route, Map<String, dynamic>? body, {HTTPOptions? httpOptions}) async {
+    HTTPOptions opts = httpOptions ?? await HTTPOptions.create();
     try {
-      if (shouldShowLoading) Helpers.showLoading();
+      if (opts.shouldShowLoading) Helpers.showLoading();
 
       final uri = Uri.parse("${CONSTANTS.API_URL}/${route.value}");
-      final response = await http.post(uri, headers: _headers, body: convert.jsonEncode(body)).timeout(const Duration(seconds: CONSTANTS.POST_TIMEOUT), onTimeout: () {
-        if (shouldShowLoading) Helpers.hideLoading();
+      final response = await http.post(uri, headers: opts.headers, body: convert.jsonEncode(body)).timeout(const Duration(seconds: CONSTANTS.POST_TIMEOUT), onTimeout: () {
+        if (opts.shouldShowLoading) Helpers.hideLoading();
         final timeoutErrRes = APIResponse.error(message: 'timeout');
         return http.Response(convert.jsonEncode(timeoutErrRes.toJson()), 200);
       });
 
-      if (shouldShowLoading) Helpers.hideLoading();
+      if (opts.shouldShowLoading) Helpers.hideLoading();
 
       final resMap = convert.jsonDecode(response.body);
       if (resMap is! Map<String, dynamic>) {
         return APIResponse.error();
       }
-
-      final successStatusCodeList = [
-        HttpStatuses.OK.value,
-        HttpStatuses.CREATED.value,
-        HttpStatuses.ACCEPTED.value,
-        HttpStatuses.NON_AUTHORITATIVE_INFORMATION.value,
-        HttpStatuses.NO_CONTENT.value,
-        HttpStatuses.RESET_CONTENT.value,
-        HttpStatuses.PARTIAL_CONTENT.value
-      ];
-      if (!successStatusCodeList.contains(response.statusCode)) {
+      if (!_successStatusCodeList.contains(response.statusCode)) {
         return APIResponse.error(message: resMap["message"], data: resMap["data"]);
       }
 
       return APIResponse.success(message: resMap["message"], data: resMap["data"]);
     } catch (e) {
       print(e);
-      if (shouldShowLoading) Helpers.hideLoading();
+      if (opts.shouldShowLoading) Helpers.hideLoading();
       return APIResponse.error();
     }
   }
@@ -64,9 +90,10 @@ class BaseHTTPClient {
   ///[route] Defined in Constants.dart
   ///
   ///[query] The body of the GET request
-  Future<APIResponse<dynamic>> get(APIRoutes route, Map<String, dynamic>? query) async {
+  Future<APIResponse<dynamic>> get(APIRoutes route, Map<String, dynamic>? query, {HTTPOptions? httpOptions}) async {
+    HTTPOptions opts = httpOptions ?? await HTTPOptions.create();
     try {
-      if (shouldShowLoading) Helpers.showLoading();
+      if (opts.shouldShowLoading) Helpers.showLoading();
 
       String url = "${CONSTANTS.API_URL}/${route.value}";
       if (query != null) {
@@ -74,38 +101,29 @@ class BaseHTTPClient {
         url = "$url?$queryStr";
       }
       final uri = Uri.parse(url);
-      final response = await http.get(uri, headers: _headers).timeout(const Duration(seconds: CONSTANTS.POST_TIMEOUT), onTimeout: () {
-        if (shouldShowLoading) Helpers.hideLoading();
+      final response = await http.get(uri, headers: opts.headers).timeout(const Duration(seconds: CONSTANTS.POST_TIMEOUT), onTimeout: () {
+        if (opts.shouldShowLoading) Helpers.hideLoading();
         final timeoutErrRes = APIResponse.error(message: 'timeout');
         return http.Response(convert.jsonEncode(timeoutErrRes.toJson()), 200);
       });
 
-      if (shouldShowLoading) Helpers.hideLoading();
+      if (opts.shouldShowLoading) Helpers.hideLoading();
 
       final resMap = convert.jsonDecode(response.body);
       if (resMap is! Map<String, dynamic>) {
         return APIResponse.error();
       }
 
-      final successStatusCodeList = [
-        HttpStatuses.OK.value,
-        HttpStatuses.CREATED.value,
-        HttpStatuses.ACCEPTED.value,
-        HttpStatuses.NON_AUTHORITATIVE_INFORMATION.value,
-        HttpStatuses.NO_CONTENT.value,
-        HttpStatuses.RESET_CONTENT.value,
-        HttpStatuses.PARTIAL_CONTENT.value
-      ];
-      if (!successStatusCodeList.contains(response.statusCode)) {
+      if (!_successStatusCodeList.contains(response.statusCode)) {
         return APIResponse.error(message: resMap["message"], data: resMap["data"]);
       }
 
-      if (shouldShowLoading) Helpers.hideLoading();
+      if (opts.shouldShowLoading) Helpers.hideLoading();
 
       return APIResponse.success(message: resMap["message"], data: resMap["data"]);
     } catch (e) {
       print(e);
-      if (shouldShowLoading) Helpers.hideLoading();
+      if (opts.shouldShowLoading) Helpers.hideLoading();
       return APIResponse.error();
     }
   }

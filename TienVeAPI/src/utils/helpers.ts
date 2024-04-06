@@ -183,7 +183,7 @@ export default class Helpers {
      * @param num - any number
      * @returns formatted number
      */
-    static formatNumber(num: number): string {
+    public static formatNumber(num: number): string {
         if (!num) return '0';
         const _moneyAmount = parseFloat(`${num}`);
         return new Intl.NumberFormat('en-US').format(_moneyAmount);

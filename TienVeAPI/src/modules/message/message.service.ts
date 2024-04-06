@@ -27,6 +27,7 @@ export class MessageService extends BaseService {
 
         try {
             const messageEntity = new MessageEntity();
+            messageEntity.user_id = message.user_id;
             messageEntity.address = message.address;
             messageEntity.phone = message.phone;
             messageEntity.body = message.body;
@@ -84,8 +85,8 @@ export class MessageService extends BaseService {
             query.andWhere('message.debt_id = :debt_id', { debt_id: params.debt_id });
         }
 
-        if (params.receive_user_id) {
-            query.andWhere('bank_account.user_id = :user_id', { user_id: params.receive_user_id });
+        if (params.user_id) {
+            query.andWhere('message.user_id = :user_id', { user_id: params.user_id });
         }
 
         if (Helpers.isString(params.keyword)) {
@@ -123,6 +124,10 @@ export class MessageService extends BaseService {
 
         if (Helpers.isString(params.debt_id)) {
             query.andWhere('message.debt_id = :debt_id', { debt_id: params.debt_id });
+        }
+
+        if (params.user_id) {
+            query.andWhere('message.user_id = :user_id', { user_id: params.user_id });
         }
 
         if (Helpers.isString(params.keyword)) {
@@ -186,9 +191,8 @@ export class MessageService extends BaseService {
             .createQueryBuilder('message')
             .select('DATE_FORMAT(message.created_date, \'%m/%Y\') as time')
             .addSelect('IFNULL(SUM(message.amount * message.sign), 0) as total_amount')
-            .leftJoin('d_debts', 'debt', 'debt.id = message.debt_id')
             .where('message.is_deleted = 0')
-            .andWhere('debt.user_id = :user_id', { user_id: userId })
+            .andWhere('message.user_id = :user_id', { user_id: userId })
             .andWhere('message.created_date >= :start_date', { start_date: `${params.start_date} 00:00:00` })
             .andWhere('message.created_date <= :end_date', { end_date: `${params.end_date} 23:59:59` })
             .groupBy('DATE_FORMAT(message.created_date, \'%m/%Y\')')
@@ -218,9 +222,8 @@ export class MessageService extends BaseService {
             .createQueryBuilder('message')
             .select('DATE_FORMAT(message.created_date, \'%d/%m/%Y\') as time')
             .addSelect('IFNULL(SUM(message.amount * message.sign), 0) as total_amount')
-            .leftJoin('d_debts', 'debt', 'debt.id = message.debt_id')
             .where('message.is_deleted = 0')
-            .andWhere('debt.user_id = :user_id', { user_id: userId })
+            .andWhere('message.user_id = :user_id', { user_id: userId })
             .andWhere('message.created_date >= :start_date', { start_date: `${params.start_date} 00:00:00` })
             .andWhere('message.created_date <= :end_date', { end_date: `${params.end_date} 23:59:59` })
             .groupBy('DATE_FORMAT(message.created_date, \'%d/%m/%Y\')')

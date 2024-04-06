@@ -1,6 +1,6 @@
-import 'package:tien_ve/entities/base_entity.dart';
+import 'package:tien_ve/dtos/base_dto.dart';
 
-class MessageEntity extends BaseEntity {
+class MessageDTO extends BaseDTO {
   int id = 0;
   String address = '';
   String phone = '';
@@ -9,17 +9,22 @@ class MessageEntity extends BaseEntity {
   String receiveDate = '';
   int isDeleted = 0;
 
-  MessageEntity({
-    required this.id,
-    required this.address,
-    required this.phone,
-    required this.body,
-    required this.sendDate,
-    required this.receiveDate,
-    required this.isDeleted,
-  });
+  MessageDTO({
+    this.id = 0,
+    this.address = '',
+    this.phone = '',
+    this.body = '',
+    this.sendDate = '',
+    this.receiveDate = '',
+    this.isDeleted = 0,
+    createdDate = '',
+    updatedDate = '',
+  }) : super(
+          createdDate: createdDate,
+          updatedDate: updatedDate,
+        );
 
-  MessageEntity.fromJson(Map<String, dynamic> json) {
+  MessageDTO.fromJson(Map<String, dynamic> json) {
     if (json["id"] is num) {
       id = (json["id"] as num).toInt();
     }
@@ -49,25 +54,25 @@ class MessageEntity extends BaseEntity {
     }
   }
 
-  static List<MessageEntity> fromList(List<dynamic> list) {
-    return list.map((map) => MessageEntity.fromJson(map)).toList();
+  static List<MessageDTO> fromList(List<dynamic> list) {
+    return list.map((map) => MessageDTO.fromJson(map)).toList();
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> _data = <String, dynamic>{};
-    _data["id"] = id;
-    _data["address"] = address;
-    _data["phone"] = phone;
-    _data["body"] = body;
-    _data["send_date"] = sendDate;
-    _data["receive_date"] = receiveDate;
-    _data["is_deleted"] = isDeleted;
-    _data["created_date"] = createdDate;
-    _data["updated_date"] = updatedDate;
-    return _data;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
+    data["address"] = address;
+    data["phone"] = phone;
+    data["body"] = body;
+    data["send_date"] = sendDate;
+    data["receive_date"] = receiveDate;
+    data["is_deleted"] = isDeleted;
+    data["created_date"] = createdDate;
+    data["updated_date"] = updatedDate;
+    return data;
   }
 
-  MessageEntity copyWith({
+  MessageDTO copyWith({
     int id = 0,
     String address = '',
     String phone = '',
@@ -75,8 +80,10 @@ class MessageEntity extends BaseEntity {
     String sendDate = '',
     String receiveDate = '',
     int isDeleted = 0,
+    String createdDate = '',
+    String updatedDate = '',
   }) =>
-      MessageEntity(
+      MessageDTO(
         id: id,
         address: address,
         phone: phone,
@@ -84,5 +91,7 @@ class MessageEntity extends BaseEntity {
         sendDate: sendDate,
         receiveDate: receiveDate,
         isDeleted: isDeleted,
+        createdDate: createdDate,
+        updatedDate: updatedDate,
       );
 }

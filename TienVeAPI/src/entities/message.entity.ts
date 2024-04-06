@@ -8,6 +8,10 @@ export class MessageEntity extends BaseEntity {
     @AutoMap()
         id: number;
 
+    @Column({ type: 'bigint' })
+    @AutoMap()
+        user_id: number;
+
     @Column({ type: 'varchar', length: 255 })
     @AutoMap()
         address: string;

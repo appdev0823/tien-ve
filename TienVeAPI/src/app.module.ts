@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -17,18 +17,18 @@ import { BankController } from './modules/bank/bank.controller';
 import { BankModule } from './modules/bank/bank.module';
 import { DebtController } from './modules/debt/debt.controller';
 import { DebtModule } from './modules/debt/debt.module';
+import { MessageController } from './modules/message/message.controller';
 import { MessageModule } from './modules/message/message.module';
 import { MessagingModule } from './modules/messaging/messaging.module';
 import { OtpModule } from './modules/otp/otp.module';
+import { RemindMessageController } from './modules/remind-message/remind-message.controller';
+import { RemindMessageModule } from './modules/remind-message/remind-message.module';
 import ROUTES from './modules/routes';
 import { SettingModule } from './modules/setting/setting.module';
 import { UserController } from './modules/user/user.controller';
 import { UserModule } from './modules/user/user.module';
 import { RepositoryModule } from './repository/repository.module';
 import { CONSTANTS } from './utils';
-import { RemindMessageModule } from './modules/remind-message/remind-message.module';
-import { MessageController } from './modules/message/message.controller';
-import { RemindMessageController } from './modules/remind-message/remind-message.controller';
 
 @Module({
     imports: [
@@ -94,20 +94,6 @@ export class AppModule {
             .exclude(...userExcludeRouteList.map((route) => `/${ROUTES.USER.MODULE}/${route}`))
             .forRoutes(UserController);
 
-        consumer
-            .apply(AuthMiddleware)
-            .exclude(
-                {
-                    path: `/${ROUTES.MESSAGE.MODULE}`,
-                    method: RequestMethod.GET,
-                },
-                {
-                    path: `/${ROUTES.MESSAGE.MODULE}`,
-                    method: RequestMethod.POST,
-                },
-            )
-            .forRoutes(MessageController);
-
-        consumer.apply(AuthMiddleware).forRoutes(BankController, BankAccountController, DebtController, RemindMessageController);
+        consumer.apply(AuthMiddleware).forRoutes(MessageController, BankController, BankAccountController, DebtController, RemindMessageController);
     }
 }
