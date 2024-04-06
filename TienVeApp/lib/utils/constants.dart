@@ -52,8 +52,8 @@ class AppSizes {
 }
 
 class CONSTANTS {
-  static const API_URL = 'http://192.168.1.9:3000';
-  // static const API_URL = 'https://api.tienve.cloud';
+  // static const API_URL = 'http://192.168.1.9:3000';
+  static const API_URL = 'https://api.tienve.cloud';
 
   /// Timeout(s) for a POST API request
   static const POST_TIMEOUT = 20;
