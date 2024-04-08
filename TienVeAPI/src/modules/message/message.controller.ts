@@ -34,7 +34,7 @@ export class MessageController extends BaseController {
     }
 
     /**
-     * Tạo message và phân tích data trong SMS data của table d_messages
+     * Phân tích và ghi nhận giao dịch với thông tin SMS
      */
     @Post(ROUTES.MESSAGE.CREATE)
     @UsePipes(new ValidationPipe(MessageSchemas.createSchema))
@@ -56,6 +56,10 @@ export class MessageController extends BaseController {
             let bankAccount: BankAccountDTO | null = null;
             if (Helpers.isString(accountNumber)) {
                 bankAccount = await this._bankAccountService.findBySMSMessage(accountNumber, req.userPayload.id, bank.id);
+            }
+            if (!bankAccount) {
+                const errRes = APIResponse.error(MESSAGES.ERROR.ERR_NOT_BANK_ACCOUNT_SMS);
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(errRes);
             }
 
             // Bóc tách số tiền của tin nhắn

@@ -36,6 +36,7 @@ const MESSAGES = {
         ERR_PASSWORD_NOT_CORRECT: 'err_password_not_correct',
         ERR_OVER_MAX_REMIND_COUNT: 'err_over_max_remind_count',
         ERR_NO_DEBT_NOT_PAID: 'err_no_debt_not_paid',
+        ERR_NOT_BANK_ACCOUNT_SMS: 'err_not_bank_account_sms',
     },
 } as const;
 
