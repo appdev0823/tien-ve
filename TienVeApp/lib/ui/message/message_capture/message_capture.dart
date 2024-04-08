@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -31,6 +33,8 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
 
   /// For capturing SMS
   SmsReceiver receiver = SmsReceiver();
+
+  StreamSubscription<SmsMessage>? smsReceiveListenSubscription;
 
   ScrollController scrollController = ScrollController();
 
@@ -120,11 +124,9 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
 
     final result = await MessageService.create(address, devicePhoneNumber, body, sendTimestamp, receiveTimestamp);
     if (!result.isSuccess) {
-      ToastrService.error(msgKey: result.message);
+      // ToastrService.error(msgKey: result.message);
       return;
     }
-
-    // ToastrService.success();
 
     _getList();
   }
@@ -169,7 +171,6 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
 
   /// Get phone number and set to storage
   Future<void> initPhoneNumber() async {
-    // await telephony.requestPhoneAndSmsPermissions;
     _devicePhoneNumber = await Helpers.getDevicePhoneNumber();
     print("=========== devicePhoneNumber: ${_devicePhoneNumber}");
 
@@ -180,13 +181,8 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
   /// Start listening to SMS
   void startListeningSMS() async {
     print("startListeningSMS");
-    // telephony.listenIncomingSms(
-    //   onNewMessage: messageHandler,
-    //   onBackgroundMessage: backgroundMessageHandler,
-    //   listenInBackground: true,
-    // );
 
-    receiver.onSmsReceived?.listen(_handleIncomingSMS);
+    smsReceiveListenSubscription = receiver.onSmsReceived?.listen(_handleIncomingSMS);
 
     showListeningNotification();
   }
@@ -194,8 +190,10 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
   /// Stop listening to SMS
   void stopListeningSMS() async {
     print("stopListeningSMS");
-    // telephony.listenIncomingSms(onNewMessage: (SmsMessage message) {}, listenInBackground: false);
-    receiver.onSmsReceived?.listen((event) => {});
+
+    if (smsReceiveListenSubscription != null) {
+      smsReceiveListenSubscription?.cancel();
+    }
 
     cancelListeningNotification();
   }
