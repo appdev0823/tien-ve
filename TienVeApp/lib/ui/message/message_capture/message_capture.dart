@@ -49,7 +49,9 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
     askPermissions().then((value) {
       initPhoneNumberAndNotification();
 
-      startListeningSMS();
+      if (GlobalEntity.isListeningSMS) {
+        startListeningSMS();
+      }
 
       _getList();
     });
