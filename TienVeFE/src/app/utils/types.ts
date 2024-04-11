@@ -35,3 +35,8 @@ export type ViewMode = 'VIEW' | 'CREATE' | 'UPDATE';
 export type CountObject = {
     count: number;
 };
+
+export type SelectInputModalItem = {
+    id: number | string;
+    label: string;
+};

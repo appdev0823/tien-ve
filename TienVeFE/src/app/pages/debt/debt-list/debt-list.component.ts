@@ -1,16 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription, debounceTime, map } from 'rxjs';
+import { Subscription, debounceTime } from 'rxjs';
 import { DateRangePickerModalComponent } from 'src/app/components/date-range-picker-modal/date-range-picker-modal.component';
+import { RadioModalComponent } from 'src/app/components/radio-modal/radio-modal.component';
 import { DebtDTO, DebtPaidStatus, DebtSearchQuery } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { DebtService } from 'src/app/services';
-import { DebtDetailComponent } from '../debt-detail/debt-detail.component';
-import { RadioModalComponent } from 'src/app/components/radio-modal/radio-modal.component';
-import { SendRemindMessageModalComponent } from '../send-remind-message-modal/send-remind-message-modal.component';
 import * as XLSX from 'xlsx';
 import { DebtCreateComponent } from '../debt-create/debt-create.component';
+import { DebtDetailComponent } from '../debt-detail/debt-detail.component';
+import { SendRemindMessageModalComponent } from '../send-remind-message-modal/send-remind-message-modal.component';
 
 @Component({
     selector: 'app-debt-list',
@@ -137,7 +137,7 @@ export class DebtListComponent extends PageComponent implements OnInit, OnDestro
                 String(item.id),
                 String(item.payer_name),
                 String(item.bank_account_number),
-                String(this.helpers.formatDate(item.created_date, 'DD/MM/YYYY HH:mm:ss')),
+                String(item.created_date),
                 String(item.remind_count),
                 String((item.paid_amount || 0) >= item.amount ? completedStr : notCompletedStr),
             ]);
@@ -145,9 +145,9 @@ export class DebtListComponent extends PageComponent implements OnInit, OnDestro
             const worksheet = XLSX.utils.aoa_to_sheet(data);
 
             const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách công nợ');
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách');
 
-            const outputFileName = 'TienVe.xlsx';
+            const outputFileName = `${this.CONSTANTS.EXCEL_FILE_NAME.DEBT_LIST}.xlsx`;
 
             XLSX.writeFile(workbook, outputFileName);
 

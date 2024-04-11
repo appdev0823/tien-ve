@@ -59,6 +59,10 @@ const CONSTANTS = {
         },
     },
     PRIMARY_COLOR: '#D82D8B',
+    EXCEL_FILE_NAME: {
+        DEBT_LIST: 'Danh sách công nợ',
+        MESSAGE_LIST: 'Danh sách tin nhắn giao dịch',
+    },
 } as const;
 Helpers.deepFreeze(CONSTANTS);
 

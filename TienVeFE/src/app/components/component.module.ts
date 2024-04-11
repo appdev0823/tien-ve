@@ -10,6 +10,7 @@ import { UpgradeModalComponent } from './upgrade-modal/upgrade-modal.component';
 import { PipeModule } from '../pipes/pipe.module';
 import { DateRangePickerModalComponent } from './date-range-picker-modal/date-range-picker-modal.component';
 import { DownloadAppModalComponent } from './download-app-modal/download-app-modal.component';
+import { SelectInputModalComponent } from './select-input-modal/select-input-modal.component';
 
 @NgModule({
     declarations: [
@@ -22,8 +23,19 @@ import { DownloadAppModalComponent } from './download-app-modal/download-app-mod
         UpgradeModalComponent,
         DateRangePickerModalComponent,
         DownloadAppModalComponent,
+        SelectInputModalComponent,
     ],
     imports: [SharedModule, PipeModule],
-    exports: [AppToastComponent, FormInputWrapperComponent, ConfirmModalComponent, UploadComponent, MessageSelectComponent, RadioModalComponent, DateRangePickerModalComponent],
+    exports: [
+        AppToastComponent,
+        FormInputWrapperComponent,
+        ConfirmModalComponent,
+        UploadComponent,
+        MessageSelectComponent,
+        RadioModalComponent,
+        DateRangePickerModalComponent,
+        DownloadAppModalComponent,
+        SelectInputModalComponent,
+    ],
 })
 export class ComponentModule {}

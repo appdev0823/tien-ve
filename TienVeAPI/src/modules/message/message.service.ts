@@ -110,6 +110,10 @@ export class MessageService extends BaseService {
             query.andWhere('message.created_date <= :end_date', { end_date: `${params.end_date} 23:59:59` });
         }
 
+        if (params.bank_account_id) {
+            query.andWhere('message.bank_account_id = :bank_account_id', { bank_account_id: params.bank_account_id });
+        }
+
         if (Number(params?.page) > 0) {
             const page = Number(params?.page);
             const offset = (page - 1) * CONSTANTS.PAGE_SIZE;
@@ -149,6 +153,10 @@ export class MessageService extends BaseService {
 
         if (Helpers.isString(params.end_date)) {
             query.andWhere('message.created_date <= :end_date', { end_date: `${params.end_date} 23:59:59` });
+        }
+
+        if (params.bank_account_id) {
+            query.andWhere('message.bank_account_id = :bank_account_id', { bank_account_id: params.bank_account_id });
         }
 
         return query.getCount();

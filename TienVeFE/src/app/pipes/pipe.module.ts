@@ -8,5 +8,6 @@ import { Nl2brPipe } from './nl2br.pipe';
     declarations: [AccountNumberPipe, SafeHtmlPipe, Nl2brPipe],
     imports: [CommonModule],
     exports: [AccountNumberPipe, SafeHtmlPipe, Nl2brPipe],
+    providers: [AccountNumberPipe, SafeHtmlPipe, Nl2brPipe],
 })
 export class PipeModule {}

@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <div class="w-100 text-center">
+        <h4 class="modal-title">{{ title }}</h4>
+    </div>
+</div>
+<div class="modal-body">
+    <div
+        *ngIf="helpers.isString(message)"
+        class="row">
+        <div class="col-12">
+            <p class="a-fs-12 mb-0">{{ message }}</p>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <app-form-input-wrapper [formClassName]="'form-group row'">
+            <div class="col-12">
+                <ng-select
+                    bindValue="id"
+                    bindLabel="label"
+                    [items]="itemList"
+                    [placeholder]="'label.bank_account' | translate"
+                    [clearable]="true"
+                    [(ngModel)]="selectedId">
+                </ng-select>
+            </div>
+        </app-form-input-wrapper>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+        type="button"
+        class="btn btn-primary btn-common btn-shadow"
+        (click)="onConfirm()">
+        {{ 'label.apply' | translate }}
+    </button>
+</div>
