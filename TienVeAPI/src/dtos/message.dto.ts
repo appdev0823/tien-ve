@@ -30,6 +30,7 @@ export class CreateMessageDTO {
 export type MessageSearchQuery = CommonSearchQuery & {
     debt_id?: string;
     bank_account_id?: number;
+    bank_account_number?: string;
     user_id: number;
     start_date?: string;
     end_date?: string;

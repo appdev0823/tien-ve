@@ -9,6 +9,7 @@ import { UploadFile } from 'src/app/utils/types';
 import { DebtValidator } from 'src/app/validators';
 import * as dayjs from 'dayjs';
 import { Router } from '@angular/router';
+import { AccountNumberPipe } from 'src/app/pipes/account-number.pipe';
 
 @Component({
     selector: 'app-debt-import',
@@ -53,7 +54,7 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
 
     @ViewChild('uploadInput') private _uploadInput?: UploadComponent;
 
-    constructor(private _bankAccount$: BankAccountService, private _debt$: DebtService, private _user$: UserService, private _router: Router) {
+    constructor(private _bankAccount$: BankAccountService, private _debt$: DebtService, private _user$: UserService, private _router: Router, private _accountNumberPipe: AccountNumberPipe) {
         super();
     }
 
@@ -82,7 +83,7 @@ export class DebtImportComponent extends PageComponent implements OnInit, OnDest
             this.isPageLoaded = true;
             this.bankAccountList =
                 res.data?.list.map((acc) => {
-                    acc.display_name = `${acc.bank_brand_name || ''} - ${acc.account_number}`;
+                    acc.display_name = `${acc.bank_brand_name || ''} - ${String(this._accountNumberPipe.transform(acc.account_number))}`;
                     return acc;
                 }) || [];
         });

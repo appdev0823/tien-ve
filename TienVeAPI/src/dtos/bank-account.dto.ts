@@ -45,4 +45,10 @@ export class SaveBankAccountDTO {
 
 export type BankAccountSearchQuery = CommonSearchQuery & {
     status?: ValueOf<typeof CONSTANTS.BANK_ACCOUNT_STATUSES>;
+    /** Only get bank accounts having SMS */
+    has_sms?: boolean;
+    /** Included deleted ones */
+    include_deleted?: boolean;
+    /** GROUP BY bank_account.account_number */
+    group_by_account_number?: boolean;
 };

@@ -8,6 +8,7 @@ import PageComponent from 'src/app/includes/page.component';
 import { BankAccountService, DebtService, MessageService } from 'src/app/services';
 import { DebtValidator } from 'src/app/validators';
 import { SendRemindMessageModalComponent } from '../send-remind-message-modal/send-remind-message-modal.component';
+import { AccountNumberPipe } from 'src/app/pipes/account-number.pipe';
 
 @Component({
     selector: 'app-debt-detail',
@@ -46,7 +47,7 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
         return this.debtMsgList.length > 0 ? this.debtMsgList.every((item) => item.is_checked) : false;
     }
 
-    constructor(public activeModal: NgbActiveModal, private _debt$: DebtService, private _message$: MessageService, private _bankAccount$: BankAccountService) {
+    constructor(public activeModal: NgbActiveModal, private _debt$: DebtService, private _message$: MessageService, private _bankAccount$: BankAccountService, private _accountNumberPipe: AccountNumberPipe) {
         super();
     }
 
@@ -108,7 +109,7 @@ export class DebtDetailComponent extends PageComponent implements OnInit, OnDest
         const sub = this._bankAccount$.getList({ page: -1 }).subscribe((res) => {
             this.bankAccountList =
                 res.data?.list.map((acc) => {
-                    acc.display_name = `${acc.bank_brand_name || ''} - ${acc.account_number}`;
+                    acc.display_name = `${acc.bank_brand_name || ''} - ${String(this._accountNumberPipe.transform(acc.account_number))}`;
                     return acc;
                 }) || [];
 

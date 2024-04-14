@@ -56,6 +56,7 @@ export class MessageDTO extends BaseDTO {
 export type MessageSearchQuery = CommonSearchQuery & {
     debt_id?: string;
     bank_account_id?: number;
+    bank_account_number?: string;
     receive_user_id?: number;
     start_date?: string;
     end_date?: string;

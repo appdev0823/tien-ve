@@ -6,6 +6,7 @@ import { BankAccountDTO, SaveDebtDTO } from 'src/app/dtos';
 import PageComponent from 'src/app/includes/page.component';
 import { BankAccountService, DebtService, UserService } from 'src/app/services';
 import { DebtValidator } from 'src/app/validators';
+import { AccountNumberPipe } from 'src/app/pipes/account-number.pipe';
 
 @Component({
     selector: 'app-debt-create',
@@ -22,7 +23,7 @@ export class DebtCreateComponent extends PageComponent implements OnInit, OnDest
 
     @Output() resultEvent = new EventEmitter<void>();
 
-    constructor(public activeModal: NgbActiveModal, private _user$: UserService, private _bankAccount$: BankAccountService, private _debt$: DebtService) {
+    constructor(public activeModal: NgbActiveModal, private _user$: UserService, private _bankAccount$: BankAccountService, private _debt$: DebtService, private _accountNumberPipe: AccountNumberPipe) {
         super();
     }
 
@@ -56,7 +57,7 @@ export class DebtCreateComponent extends PageComponent implements OnInit, OnDest
             this.isPageLoaded = true;
             this.bankAccountList =
                 res.data?.list.map((acc) => {
-                    acc.display_name = `${acc.bank_brand_name || ''} - ${acc.account_number}`;
+                    acc.display_name = `${acc.bank_brand_name || ''} - ${String(this._accountNumberPipe.transform(acc.account_number))}`;
                     return acc;
                 }) || [];
         });

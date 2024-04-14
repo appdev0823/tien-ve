@@ -24,8 +24,8 @@ export class BankAccountService extends BaseService {
             .addSelect('last_message.sign as last_message_sign')
             .leftJoin('m_banks', 'bank', 'bank.id = bank_account.bank_id')
             .leftJoin('d_messages', 'last_message', 'last_message.id = bank_account.last_message_id')
-            .where('bank_account.is_deleted = 0')
-            .andWhere('bank_account.user_id = :user_id', { user_id: userId })
+            // .where('bank_account.is_deleted = 0')
+            .where('bank_account.user_id = :user_id', { user_id: userId })
             .orderBy('bank_account.id', 'DESC');
 
         if (Helpers.isString(params.keyword)) {
@@ -46,13 +46,25 @@ export class BankAccountService extends BaseService {
             query.andWhere('bank_account.status = :status', { status: Number(params.status) });
         }
 
+        if (params.has_sms) {
+            query.andWhere('bank_account.last_message_id > 0');
+        }
+
+        if (!params.include_deleted) {
+            query.andWhere('bank_account.is_deleted = 0');
+        }
+
         if (Number(params?.page) > 0) {
             const page = Number(params?.page);
             const offset = (page - 1) * CONSTANTS.PAGE_SIZE;
             query.offset(offset).limit(CONSTANTS.PAGE_SIZE);
         }
 
-        query.groupBy('bank_account.id');
+        if (params.group_by_account_number) {
+            query.groupBy('bank_account.account_number');
+        } else {
+            query.groupBy('bank_account.id');
+        }
 
         const list = await query.getRawMany<BankAccountListDTO>();
         return Helpers.isFilledArray(list) ? list : [];

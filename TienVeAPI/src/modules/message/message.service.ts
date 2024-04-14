@@ -114,6 +114,10 @@ export class MessageService extends BaseService {
             query.andWhere('message.bank_account_id = :bank_account_id', { bank_account_id: params.bank_account_id });
         }
 
+        if (params.bank_account_number) {
+            query.andWhere('bank_account.account_number = :bank_account_number', { bank_account_number: params.bank_account_number });
+        }
+
         if (Number(params?.page) > 0) {
             const page = Number(params?.page);
             const offset = (page - 1) * CONSTANTS.PAGE_SIZE;

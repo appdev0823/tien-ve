@@ -10,6 +10,7 @@ import { AccountNumberPipe } from 'src/app/pipes/account-number.pipe';
 import { BankAccountService, MessageService } from 'src/app/services';
 import * as XLSX from 'xlsx';
 import { MessageDetailComponent } from '../message-detail/message-detail.component';
+import { Helpers } from 'src/app/utils';
 
 @Component({
     selector: 'app-message-list',
@@ -25,7 +26,7 @@ export class MessageListComponent extends PageComponent implements OnInit, OnDes
     private _startDate: NgbDate | null = null;
     private _endDate: NgbDate | null = null;
 
-    public bankAccountId?: number;
+    public bankAccountNumber?: string;
     public bankAccDataList: BankAccountDTO[] = [];
 
     public dataList: MessageDTO[] = [];
@@ -52,12 +53,12 @@ export class MessageListComponent extends PageComponent implements OnInit, OnDes
     }
 
     private _getBankAccList() {
-        const sub = this._bankAccount$.getList({ page: -1 }).subscribe((res) => {
+        const sub = this._bankAccount$.getList({ page: -1, include_deleted: true, group_by_account_number: true }).subscribe((res) => {
             this.isPageLoaded = true;
 
             this.bankAccDataList =
                 res.data?.list.map((acc) => {
-                    acc.display_name = `${acc.bank_brand_name || ''} - ${acc.account_number}`;
+                    acc.display_name = `${acc.bank_brand_name || ''} - ${String(this._accountNumberPipe.transform(acc.account_number))}`;
                     return acc;
                 }) || [];
         });
@@ -79,7 +80,7 @@ export class MessageListComponent extends PageComponent implements OnInit, OnDes
         if (this._endDate) {
             params.end_date = `${this._endDate.year}-${this._endDate.month < 10 ? `0${this._endDate.month}` : this._endDate.month}-${this._endDate.day}`;
         }
-        params.bank_account_id = this.bankAccountId;
+        params.bank_account_number = this.bankAccountNumber;
         return params;
     }
 
@@ -159,12 +160,12 @@ export class MessageListComponent extends PageComponent implements OnInit, OnDes
     public onFilterBankAccount() {
         const modal = this.modal$.open(SelectInputModalComponent, { centered: true, size: 'md' });
         const cmpIns = modal.componentInstance as SelectInputModalComponent;
-        cmpIns.itemList = this.bankAccDataList.map((acc) => ({ id: acc.id, label: acc.display_name || '' }));
+        cmpIns.itemList = this.bankAccDataList.map((acc) => ({ id: acc.account_number, label: acc.display_name || '' }));
         cmpIns.title = 'Lọc tài khoản ngân hàng';
         cmpIns.message = 'Chọn tài khoản ngân hàng';
-        cmpIns.selectedId = this.bankAccountId;
-        cmpIns.confirmEvent.subscribe((id) => {
-            this.bankAccountId = Number(id) || undefined;
+        cmpIns.selectedId = this.bankAccountNumber;
+        cmpIns.confirmEvent.subscribe((accNumber) => {
+            this.bankAccountNumber = Helpers.isString(accNumber) ? accNumber : undefined;
             this._getList();
         });
     }
