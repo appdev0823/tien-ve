@@ -12,6 +12,7 @@ export class MessageDTO extends BaseDTO {
     public sign: -1 | 1 = 1;
     public debt_id?: string;
     public amount = 0;
+    public balance = 0;
     public is_deleted: 0 | 1 = 0;
     public created_date = '';
     public updated_date = '';
@@ -32,6 +33,7 @@ export class MessageDTO extends BaseDTO {
             instance.debt_id = json['debt_id'];
         }
         instance.amount = Number(json['amount']) || 0;
+        instance.balance = Number(json['balance']) || 0;
         instance.created_date = String(json['created_date'] || '');
         instance.updated_date = String(json['updated_date'] || '');
         instance.is_deleted = json['is_deleted'] ? 1 : 0;

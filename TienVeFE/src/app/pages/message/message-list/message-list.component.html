@@ -82,6 +82,8 @@
                                         <th class="a-w-200 text-center">Ngày giao dịch</th>
                                         <th class="a-w-150 text-start">Ngân hàng</th>
                                         <th class="a-w-150 text-start">Số tài khoản</th>
+                                        <th class="a-w-150 text-end">Số tiền</th>
+                                        <th class="a-w-150 text-end">Số dư</th>
                                         <th class="a-w-200 text-center">Mã công nợ</th>
                                         <th class="a-w-150 text-center">Match nội dung</th>
                                         <th class="a-w-50 text-center"></th>
@@ -101,6 +103,8 @@
                                         <td class="text-center">{{ item.created_date }}</td>
                                         <td class="text-start">{{ item.bank_brand_name }}</td>
                                         <td class="text-start">{{ item.bank_account_number | accountNumber }}</td>
+                                        <td class="text-end {{ item.sign > 0 ? 'text-success' : 'text-danger' }}">{{ item.sign > 0 ? '+' : '-' }}{{ item.amount | number : '.0-3' }}</td>
+                                        <td class="text-end">{{ item.balance | number : '.0-3' }}</td>
                                         <td class="text-center">{{ item.debt_id }}</td>
                                         <td class="text-center">
                                             <div

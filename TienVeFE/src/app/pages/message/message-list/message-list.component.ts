@@ -183,10 +183,12 @@ export class MessageListComponent extends PageComponent implements OnInit, OnDes
                 item.created_date,
                 item.bank_brand_name,
                 this._accountNumberPipe.transform(item.bank_account_number),
+                item.amount,
+                item.balance,
                 item.debt_id,
                 this.helpers.isString(item.debt_id) ? 'Hoàn thành' : 'Không tìm thấy ID',
             ]);
-            const data = [['Ngày giao dịch', 'Ngân hàng', 'Số tài khoản', 'Mã công nợ', 'Match nội dung'], ...excelDataList];
+            const data = [['Ngày giao dịch', 'Ngân hàng', 'Số tài khoản', 'Số tiền', 'Số dư', 'Mã công nợ', 'Match nội dung'], ...excelDataList];
             const worksheet = XLSX.utils.aoa_to_sheet(data);
 
             const workbook = XLSX.utils.book_new();
