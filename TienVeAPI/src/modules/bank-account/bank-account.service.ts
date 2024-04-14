@@ -189,7 +189,7 @@ export class BankAccountService extends BaseService {
             .createQueryBuilder('bank_account')
             .select('bank_account.*')
             .where('bank_account.is_deleted = 0')
-            .where('bank_account.bank_id = :bank_id', { bank_id: bankId })
+            .andWhere('bank_account.bank_id = :bank_id', { bank_id: bankId })
             .andWhere('bank_account.user_id = :user_id', { user_id: userId })
             .andWhere('bank_account.account_number LIKE :account_number', { account_number: `%${findAccNumber}%` });
 

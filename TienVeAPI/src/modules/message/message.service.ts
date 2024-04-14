@@ -49,7 +49,7 @@ export class MessageService extends BaseService {
                 }
 
                 bankAccEntity.last_message_id = messageEntity.id;
-                if (bankAccEntity.status === CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED) {
+                if (Number(bankAccEntity.status) === CONSTANTS.BANK_ACCOUNT_STATUSES.NOT_ACTIVATED) {
                     bankAccEntity.status = CONSTANTS.BANK_ACCOUNT_STATUSES.ACTIVATED;
                 }
 
