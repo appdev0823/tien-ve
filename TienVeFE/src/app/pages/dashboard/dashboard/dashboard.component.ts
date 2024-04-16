@@ -208,12 +208,8 @@ export class DashboardComponent extends PageComponent implements OnInit, OnDestr
 
     private _getAmountMonthlyStats() {
         const params: MessageStatsQuery = {
-            start_date: `${this._monthlyStatsStartDate.year}-${this._monthlyStatsStartDate.month < 10 ? `0${this._monthlyStatsStartDate.month}` : this._monthlyStatsStartDate.month}-${
-                this._monthlyStatsStartDate.day
-            }`,
-            end_date: `${this._monthlyStatsEndDate.year}-${this._monthlyStatsEndDate.month < 10 ? `0${this._monthlyStatsEndDate.month}` : this._monthlyStatsEndDate.month}-${
-                this._monthlyStatsEndDate.day
-            }`,
+            start_date: this.helpers.convertNgbDateToDayJS(this._monthlyStatsStartDate).startOf('month').format('YYYY-MM-DD'),
+            end_date: this.helpers.convertNgbDateToDayJS(this._monthlyStatsEndDate).endOf('month').format('YYYY-MM-DD'),
         };
         const sub = this._message$.getAmountMonthlyStats(params).subscribe((res) => {
             this.monthlyAmountStatsList = res.data || [];
@@ -262,17 +258,15 @@ export class DashboardComponent extends PageComponent implements OnInit, OnDestr
                 this._dailyStatsStartDate = value.start;
                 this._dailyStatsEndDate = value.end;
             }
-            this._getAmountMonthlyStats();
+            this._getAmountDailyStats();
         });
         this._subscription.add(sub);
     }
 
     private _getAmountDailyStats() {
         const params: MessageStatsQuery = {
-            start_date: `${this._dailyStatsStartDate.year}-${this._dailyStatsStartDate.month < 10 ? `0${this._dailyStatsStartDate.month}` : this._dailyStatsStartDate.month}-${
-                this._dailyStatsStartDate.day
-            }`,
-            end_date: `${this._dailyStatsEndDate.year}-${this._dailyStatsEndDate.month < 10 ? `0${this._dailyStatsEndDate.month}` : this._dailyStatsEndDate.month}-${this._dailyStatsEndDate.day}`,
+            start_date: this.helpers.convertNgbDateToDayJS(this._dailyStatsStartDate).format('YYYY-MM-DD'),
+            end_date: this.helpers.convertNgbDateToDayJS(this._dailyStatsEndDate).format('YYYY-MM-DD'),
         };
         const sub = this._message$.getAmountDailyStats(params).subscribe((res) => {
             this.dailyAmountStatsList = res.data || [];

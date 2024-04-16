@@ -198,7 +198,7 @@ export class MessageService extends BaseService {
         if (!userId || !Helpers.isString(params.start_date) || !Helpers.isString(params.end_date)) return [];
 
         const monthList = Helpers.getDateListInRange(params.start_date, params.end_date, 'MM/YYYY', 'month');
-        if (!Helpers.isFilledArray(monthList)) return [];
+        // if (!Helpers.isFilledArray(monthList)) return [];
 
         const query = this._messageRepo
             .createQueryBuilder('message')
@@ -243,7 +243,7 @@ export class MessageService extends BaseService {
             .orderBy('time', 'DESC');
 
         const result = await query.getRawMany<MessageAmountStatsDTO>();
-        if (!Helpers.isFilledArray(result)) return [];
+        // if (!Helpers.isFilledArray(result)) return [];
 
         return dayList.map((day) => {
             const found = result.find((stats) => stats.time === day);

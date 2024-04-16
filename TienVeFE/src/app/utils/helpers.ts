@@ -360,4 +360,13 @@ export default class Helpers {
     public static padLeft(str: string | number, length: number, fillString = '0') {
         return String(str).padStart(length, fillString);
     }
+
+    /**
+     * Convert `NgbDate` object to a `Dayjs` object
+     * @param ngbDate - `NgbDate` object
+     * @returns `Dayjs` object
+     */
+    public static convertNgbDateToDayJS(ngbDate: NgbDateStruct) {
+        return dayjs(`${ngbDate.year}-${ngbDate.month}-${ngbDate.day}`, 'YYYY-MM-DD');
+    }
 }
