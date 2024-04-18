@@ -20,7 +20,8 @@ const routes: Routes = [
         children: [
             {
                 path: ROUTES.MESSAGE.LIST,
-                component: MessageTabComponent,
+                // component: MessageTabComponent,
+                component: MessageListComponent,
                 canActivate: [AuthGuard],
             },
         ],

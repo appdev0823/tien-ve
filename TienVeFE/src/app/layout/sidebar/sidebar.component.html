@@ -66,11 +66,11 @@
                         class="nav-link"
                         [routerLink]="'/' + ROUTES.BANK_ACCOUNT.MODULE + '/' + ROUTES.BANK_ACCOUNT.LIST"
                         [class.active]="helpers.isFilledArray(routePathList) && routePathList.length === 1 && routePathList[0] === ROUTES.BANK_ACCOUNT.MODULE">
-                        <fa-icon [icon]="icons.regular.faUser"></fa-icon>
-                        <p class="ms-3">Tài khoản</p>
+                        <fa-icon [icon]="icons.solid.faBank"></fa-icon>
+                        <p class="ms-3">Tài khoản ngân hàng</p>
                     </a>
                 </li>
-                <li
+                <!-- <li
                     class="nav-item"
                     (click)="collapseSidebar()">
                     <a
@@ -80,8 +80,8 @@
                         <fa-icon [icon]="icons.solid.faList"></fa-icon>
                         <p class="ms-3">Quản lý công nợ</p>
                     </a>
-                </li>
-                <li
+                </li> -->
+                <!-- <li
                     class="nav-item"
                     (click)="collapseSidebar()">
                     <a
@@ -91,7 +91,7 @@
                         <fa-icon [icon]="icons.solid.faCog"></fa-icon>
                         <p class="ms-3">Nhập công nợ</p>
                     </a>
-                </li>
+                </li> -->
                 <li
                     class="nav-item"
                     (click)="collapseSidebar()">
@@ -99,8 +99,8 @@
                         class="nav-link"
                         [routerLink]="'/' + ROUTES.MESSAGE.MODULE"
                         [class.active]="helpers.isFilledArray(routePathList) && routePathList[0] === ROUTES.MESSAGE.MODULE">
-                        <fa-icon [icon]="icons.regular.faMessage"></fa-icon>
-                        <p class="ms-3">Quản lý SMS</p>
+                        <fa-icon [icon]="icons.solid.faMoneyBill1Wave"></fa-icon>
+                        <p class="ms-3">Báo cáo giao dịch</p>
                     </a>
                 </li>
             </ul>

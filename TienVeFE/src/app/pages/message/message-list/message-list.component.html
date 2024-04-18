@@ -1,5 +1,32 @@
-<section class="content mt-3">
+<div class="content-header py-0">
     <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-12 ps-0 pt-1">
+                <h1>Báo cáo giao dịch</h1>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12 ps-0">
+                <p class="a-fs-11 mb-0">Quản lý thông báo và tin nhắn giao dịch</p>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12 text-end">
+                <button
+                    class="btn btn-create-new"
+                    [disabled]="dataTotal <= 0"
+                    (click)="onExportExcel()">
+                    <fa-icon
+                        class="me-2"
+                        [icon]="icons.solid.faDownload"></fa-icon>
+                    {{ 'label.download_excel_file' | translate }}
+                </button>
+            </div>
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">
@@ -47,7 +74,7 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-6 text-lg-end">
+                    <!-- <div class="col-12 col-md-4 col-lg-6 text-lg-end">
                         <button
                             class="btn btn-create-new"
                             [disabled]="dataTotal <= 0"
@@ -57,7 +84,7 @@
                                 [icon]="icons.solid.faDownload"></fa-icon>
                             {{ 'label.download_excel_file' | translate }}
                         </button>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="row mt-3">
                     <div class="col-12">
@@ -86,6 +113,7 @@
                                         <th class="a-w-150 text-end">Số dư</th>
                                         <th class="a-w-200 text-center">Mã công nợ</th>
                                         <th class="a-w-150 text-center">Match nội dung</th>
+                                        <th class="a-w-300 text-center">Nội dung SMS</th>
                                         <th class="a-w-50 text-center"></th>
                                     </tr>
                                 </thead>
@@ -114,6 +142,7 @@
                                                 {{ helpers.isString(item.debt_id) ? 'Hoàn thành' : 'Không tìm thấy ID' }}
                                             </div>
                                         </td>
+                                        <td class="text-start">{{ item.body }}</td>
                                         <td class="text-center">
                                             <button
                                                 type="button"

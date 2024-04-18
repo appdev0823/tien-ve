@@ -80,11 +80,11 @@ const ROUTES = {
         MODULE: 'bank-account',
         LIST: '',
     },
-    DEBT: {
-        MODULE: 'debt',
-        IMPORT: 'import',
-        LIST: '',
-    },
+    // DEBT: {
+    //     MODULE: 'debt',
+    //     IMPORT: 'import',
+    //     LIST: '',
+    // },
     MESSAGE: {
         MODULE: 'message',
         LIST: '',

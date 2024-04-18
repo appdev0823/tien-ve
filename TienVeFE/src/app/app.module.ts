@@ -17,7 +17,7 @@ import { LayoutModule } from './layout/layout.module';
 import { AuthModule } from './pages/auth/auth.module';
 import { BankAccountModule } from './pages/bank-account/bank-account.module';
 import { DashboardModule } from './pages/dashboard/dashboard.module';
-import { DebtModule } from './pages/debt/debt.module';
+// import { DebtModule } from './pages/debt/debt.module';
 import { reducers } from './store/app.states';
 import { AuthEffects } from './store/auth/auth.effects';
 import { MDateParserFormatter } from './components/datepicker/date-parser-formatter';
@@ -44,7 +44,7 @@ import { MessageModule } from './pages/message/message.module';
         AuthModule,
         DashboardModule,
         BankAccountModule,
-        DebtModule,
+        // DebtModule,
         MessageModule,
         ComponentModule,
         LayoutModule,

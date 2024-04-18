@@ -15,20 +15,20 @@ import { DebtCreateComponent } from './debt-create/debt-create.component';
 
 const routes: Routes = [
     {
-        path: ROUTES.DEBT.MODULE,
+        // path: ROUTES.DEBT.MODULE,
         component: MainLayoutComponent,
         canActivate: [AuthGuard],
         children: [
-            {
-                path: ROUTES.DEBT.IMPORT,
-                component: DebtImportComponent,
-                canActivate: [AuthGuard],
-            },
-            {
-                path: ROUTES.DEBT.LIST,
-                component: DebtListComponent,
-                canActivate: [AuthGuard],
-            },
+            // {
+            //     path: ROUTES.DEBT.IMPORT,
+            //     component: DebtImportComponent,
+            //     canActivate: [AuthGuard],
+            // },
+            // {
+            //     path: ROUTES.DEBT.LIST,
+            //     component: DebtListComponent,
+            //     canActivate: [AuthGuard],
+            // },
         ],
     },
 ];
