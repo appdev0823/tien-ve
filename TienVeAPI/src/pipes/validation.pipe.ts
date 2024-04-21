@@ -1,22 +1,30 @@
 import { Injectable, PipeTransform } from '@nestjs/common';
 import { ObjectSchema } from 'joi';
 import { ValidationException } from 'src/exceptions';
+import AppLogger from 'src/logger/logger';
 import { Helpers } from 'src/utils';
 
 @Injectable()
 export class ValidationPipe<T extends { [key: string]: any }> implements PipeTransform {
+    private _logger = new AppLogger(this.constructor.name);
+
     /**
      * Construct a validation pipe
      * @param _schema - `Joi` schema
      * @param _batchValidate - should validate multiple list items in the request body
+     * @param _logReqBody - log request body as INFO
      */
-    constructor(private _schema: ObjectSchema<T>, private _batchValidate = false) {}
+    constructor(private _schema: ObjectSchema<T>, private _batchValidate = false, private _logReqBody = false) {}
 
     /**
      * Validate request body
      * @throws `ValidationException`
      */
     public transform(reqBody: { [key: string]: any }) {
+        if (this._logReqBody) {
+            this._logger.info(JSON.stringify(reqBody));
+        }
+
         if (this._batchValidate) {
             if (!Array.isArray(reqBody)) {
                 throw new ValidationException(undefined, undefined, true);

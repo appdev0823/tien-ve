@@ -37,7 +37,7 @@ export class MessageController extends BaseController {
      * Phân tích và ghi nhận giao dịch với thông tin SMS
      */
     @Post(ROUTES.MESSAGE.CREATE)
-    @UsePipes(new ValidationPipe(MessageSchemas.createSchema))
+    @UsePipes(new ValidationPipe(MessageSchemas.createSchema, false, true))
     public async create(@Res() res: Response<APIResponse<MessageDTO | undefined>>, @Body() body: CreateMessageDTO, @Req() req: AuthenticatedRequest) {
         try {
             // Khi address của message nằm trong danh sách brand_name của các banks thì mới xử lý tiếp
@@ -69,11 +69,12 @@ export class MessageController extends BaseController {
                 sign = -1;
                 amountStr = Helpers.getSubstringBetweenStartEnd(body.body, '-', 'VND');
             }
-            const amount = Helpers.extractNumberFromString(amountStr);
+            // If amountStr have multiple '.', its thousand separators must be '.'
+            const amount = Helpers.extractNumberFromString(amountStr, amountStr?.split('.').length || 0 > 1 ? /[^0-9]*/g : /[^0-9.]*/g);
 
             // Bóc tách số dư tài khoản của tin nhắn
             const balanceStr = Helpers.getSubstringBetweenStartEnd(body.body, bank.balance_start, 'VND');
-            const balance = Helpers.extractNumberFromString(balanceStr);
+            const balance = Helpers.extractNumberFromString(balanceStr, balanceStr?.split('.').length || 0 > 1 ? /[^0-9]*/g : /[^0-9.]*/g);
 
             // Bóc tách mã công nợ trong tin nhắn
             const debtId = Helpers.getSubstringFromStart(

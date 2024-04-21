@@ -137,12 +137,12 @@ export default class Helpers {
      * const num = Lib.extractNumberFromString(str); //110122
      * ```
      */
-    public static extractNumberFromString(str: string | number | null | undefined): number {
+    public static extractNumberFromString(str: string | number | null | undefined, regex = /[^0-9.]*/g): number {
         if (typeof str === 'number') return str;
         if (!Helpers.isString(str)) return 0;
 
         const copy = str ? String(str) : '';
-        const result = copy.replace(/[^0-9.]*/g, '');
+        const result = copy.replace(regex, '');
         const resultNum = Number(result) ? Number(result) : 0;
         return String(str).startsWith('-') ? -resultNum : resultNum;
     }
