@@ -28,6 +28,6 @@ export class BankService extends BaseService {
             .andWhere('bank.is_deleted = 0');
 
         const item = await query.getOne();
-        return item;
+        return mapper.map(item, BankEntity, BankDTO);
     }
 }

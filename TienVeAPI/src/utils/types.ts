@@ -45,3 +45,10 @@ export type IdListObject<T extends string | number> = {
 export type CountObject = {
     count: number;
 };
+
+export type ExtractedSMSInfo = {
+    account_number: string;
+    amount: string;
+    balance: string;
+    debt_id: string;
+};

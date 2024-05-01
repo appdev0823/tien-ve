@@ -188,4 +188,36 @@ export default class Helpers {
         const _moneyAmount = parseFloat(`${num}`);
         return new Intl.NumberFormat('en-US').format(_moneyAmount);
     }
+
+    /**
+     * Extracts variables from a string based on a template.
+     * @param template - The template string containing variable placeholders. Ex: `'Hello {{ name }}'`
+     * @param inputString - The input string from which to extract variables. Ex: `'Hello world'`
+     * @returns An object containing the extracted variables. Ex: `{ name: 'world' }`
+     */
+    public static extractStringWithTemplate<T extends { [key: string]: string }>(template: string, inputString: string): T | null {
+        // Construct regex pattern dynamically based on the template
+        const regexPattern = template.replace(/{{\s*(\w+)\s*}}/g, '(.*?)').replace(/\(VND\)/g, '\\(VND\\)'); // Escape parentheses
+        const regex = new RegExp(regexPattern, 'g');
+
+        // Execute the regex pattern against the input string
+        const matches = regex.exec(inputString);
+
+        // If no matches found, return an empty object
+        if (!matches) return null;
+
+        // Extract variable names from the template
+        const variableNames = template.match(/{{\s*(\w+)\s*}}/g)?.map((match) => match.replace(/[{}]/g, '').trim());
+        if (!this.isFilledArray(variableNames)) return null;
+
+        // Initialize an empty object to store the extracted variables
+        const result = {};
+
+        // Populate the result object with extracted variables
+        for (let i = 1; i < matches.length; i++) {
+            result[variableNames[i - 1]] = matches[i];
+        }
+
+        return (result ?? null) as T | null;
+    }
 }

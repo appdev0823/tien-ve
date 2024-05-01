@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { MessageAmountStatsDTO, MessageDTO, MessageDetailDTO, MessageListDTO, MessageSearchQuery } from 'src/dtos';
+import { BankDTO, MessageAmountStatsDTO, MessageDTO, MessageDetailDTO, MessageListDTO, MessageSearchQuery } from 'src/dtos';
 import { MessageEntity } from 'src/entities';
 import { BaseService } from 'src/includes';
 import { BankAccountRepository, MessageRepository } from 'src/repository';
 import { CONSTANTS, Helpers, mapper } from 'src/utils';
+import { ExtractedSMSInfo } from 'src/utils/types';
 import { DataSource, In } from 'typeorm';
 import { MessageStatsQuery } from './../../dtos';
 
@@ -267,5 +268,48 @@ export class MessageService extends BaseService {
         await this._messageRepo.save(itemList);
 
         return itemList.map((item) => mapper.map(item, MessageEntity, MessageDTO));
+    }
+
+    /**
+     * Extract information from SMS body
+     * @param body - SMS body
+     * @param bank - Bank data with master extract data
+     * @returns Extracted information, `null` if error
+     */
+    public extractSMS(body: string, bank: BankDTO): ExtractedSMSInfo | null {
+        if (!Helpers.isString(body)) return null;
+
+        let result: ExtractedSMSInfo | null = null;
+        if (bank.use_extract_sms_template && Helpers.isString(bank.extract_sms_template)) {
+            // extract using template
+            result = Helpers.extractStringWithTemplate<ExtractedSMSInfo>(bank.extract_sms_template, body);
+            if (!result) return null;
+        } else {
+            // extract using extraction data (when not having template)
+            let accountNumber = Helpers.getSubstringBetweenStartEnd(body, bank.account_number_start, ' ');
+            if (accountNumber?.includes('\n')) {
+                accountNumber = Helpers.getSubstringBetweenStartEnd(body, bank.account_number_start, '\n');
+            }
+
+            let amountStr = Helpers.getSubstringBetweenStartEnd(body, '+', 'VND');
+            if (!Helpers.isString(amountStr)) {
+                amountStr = Helpers.getSubstringBetweenStartEnd(body, '-', 'VND');
+            }
+
+            const balanceStr = Helpers.getSubstringBetweenStartEnd(body, bank.balance_start, 'VND');
+
+            result = {
+                account_number: accountNumber || '',
+                amount: amountStr || '',
+                balance: balanceStr || '',
+                debt_id: '',
+            };
+        }
+
+        const debtIdStart = `${CONSTANTS.DEBT_ID_FORMAT.PREFIX}${CONSTANTS.DEBT_ID_FORMAT.SEPARATOR}`;
+        const debtId = Helpers.getSubstringFromStart(body, debtIdStart, CONSTANTS.DEBT_ID_FORMAT.LENGTH);
+        result.debt_id = Helpers.isString(debtId) ? debtId : '';
+
+        return result;
     }
 }

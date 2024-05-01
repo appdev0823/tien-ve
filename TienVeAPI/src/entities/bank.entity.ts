@@ -24,6 +24,14 @@ export class BankEntity extends BaseEntity {
     @AutoMap()
         balance_start: string;
 
+    @Column({ type: 'varchar', length: 1000 })
+    @AutoMap()
+        extract_sms_template: string;
+
+    @Column({ type: 'tinyint', default: 0 })
+    @AutoMap()
+        use_extract_sms_template: string;
+
     @Column({ type: 'varchar', length: 255 })
     @AutoMap()
         img_path: string;
