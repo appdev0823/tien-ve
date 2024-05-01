@@ -64,6 +64,10 @@ const ROUTES = {
         GET_LIST_BY_FIELD_NAME_LIST: 'list-by-field-name-list',
         UPDATE_MULTIPLE: 'update-multiple',
     },
+    TEST: {
+        MODULE: 'test',
+        INDEX: '',
+    },
 } as const;
 Helpers.deepFreeze(ROUTES);
 

@@ -29,6 +29,7 @@ import { UserController } from './modules/user/user.controller';
 import { UserModule } from './modules/user/user.module';
 import { RepositoryModule } from './repository/repository.module';
 import { CONSTANTS } from './utils';
+import { TestModule } from './modules/test/test.module';
 
 @Module({
     imports: [
@@ -49,6 +50,7 @@ import { CONSTANTS } from './utils';
         DebtModule,
         SettingModule,
         RemindMessageModule,
+        TestModule,
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
