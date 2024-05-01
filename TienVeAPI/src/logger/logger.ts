@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { CONSTANTS, Helpers } from 'src/utils';
 import { createLogger, format, transports, Logger } from 'winston';
-const { combine, timestamp, prettyPrint } = format;
 
 /** Application logger */
 export default class AppLogger extends ConsoleLogger {
@@ -77,7 +76,12 @@ export default class AppLogger extends ConsoleLogger {
      */
     private _initWinstonLogger() {
         this._winstonLogger = createLogger({
-            format: combine(timestamp(), prettyPrint()),
+            format: format.combine(
+                format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }), // Customize timestamp format
+                format.errors({ stack: true }), // Include errors if any
+                format.prettyPrint(),
+                format.printf((info) => `[${info.timestamp}] [${info.level.toUpperCase()}] ${info.message}`),
+            ),
             transports: [
                 new transports.File({
                     filename: path.join(CONSTANTS.APP_LOG_FOLDER_NAME, `/${this._className}.log`),
