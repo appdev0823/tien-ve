@@ -261,4 +261,10 @@ class LoginUserDTO extends UserDTO {
   static Future<LoginUserDTO?> get() async {
     return GlobalEntity.loginUser ?? await getFromStorage();
   }
+
+  static saveLoginInfo(String emailPhone, String password) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(DeviceStorageKeys.EMAIL_PHONE.value, emailPhone);
+    prefs.setString(DeviceStorageKeys.PASSWORD.value, password);
+  }
 }

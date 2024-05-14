@@ -2,7 +2,9 @@ import 'dart:convert' as convert;
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tien_ve/dtos/user_dto.dart';
+import 'package:tien_ve/services/user_service.dart';
 import 'package:tien_ve/utils/api_response.dart';
 import 'package:tien_ve/utils/constants.dart';
 import 'package:tien_ve/utils/extensions.dart';
@@ -17,6 +19,9 @@ class HTTPOptions {
 
   /// Attach access token to request headers or not
   bool useAccessToken = true;
+
+  /// Every requests in App can reauthenticate
+  bool canReauthenticate = true;
 
   static Future<HTTPOptions> create({
     shouldShowLoading = true,
@@ -48,7 +53,10 @@ class BaseHTTPClient {
     HttpStatuses.PARTIAL_CONTENT.value
   ];
 
-  BaseHTTPClient() {}
+  /// `true` if re-authentication is did before
+  bool _reauthenticated = false;
+
+  BaseHTTPClient();
 
   ///Construct a POST request
   ///
@@ -73,6 +81,22 @@ class BaseHTTPClient {
       if (resMap is! Map<String, dynamic>) {
         return APIResponse.error();
       }
+
+      // Reauthenticate and retry if allowed and not reauthenticate before
+      print("=========== _reauthenticated: ${_reauthenticated}");
+      print("=========== response.statusCode: ${response.statusCode}");
+      if (response.statusCode == HttpStatuses.UNAUTHORIZED.value && opts.canReauthenticate) {
+        if (_reauthenticated) {
+          return APIResponse.error(message: resMap["message"]);
+        }
+
+        _reauthenticated = true;
+
+        await reauthenticate();
+
+        return post(route, body, httpOptions: httpOptions);
+      }
+
       if (!_successStatusCodeList.contains(response.statusCode)) {
         return APIResponse.error(message: resMap["message"], data: resMap["data"]);
       }
@@ -83,6 +107,21 @@ class BaseHTTPClient {
       if (opts.shouldShowLoading) Helpers.hideLoading();
       return APIResponse.error();
     }
+  }
+
+  /// Reauthenticate
+  Future<void> reauthenticate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String emailPhone = prefs.getString(DeviceStorageKeys.EMAIL_PHONE.value) ?? '';
+    String password = prefs.getString(DeviceStorageKeys.PASSWORD.value) ?? '';
+    final result = await UserService.login(emailPhone, Helpers.encodeMd5(password));
+    final user = result.data;
+    if (!result.isSuccess || user == null) {
+      return;
+    }
+
+    LoginUserDTO.setToStorage(user);
+    LoginUserDTO.setToGlobal(user);
   }
 
   ///Construct a GET request
@@ -112,6 +151,21 @@ class BaseHTTPClient {
       final resMap = convert.jsonDecode(response.body);
       if (resMap is! Map<String, dynamic>) {
         return APIResponse.error();
+      }
+
+      // Reauthenticate and retry if allowed and not reauthenticate before
+      print("=========== _reauthenticated: ${_reauthenticated}");
+      print("=========== response.statusCode: ${response.statusCode}");
+      if (response.statusCode == HttpStatuses.UNAUTHORIZED.value && opts.canReauthenticate) {
+        if (_reauthenticated) {
+          return APIResponse.error(message: resMap["message"]);
+        }
+
+        _reauthenticated = true;
+
+        await reauthenticate();
+
+        return get(route, query, httpOptions: httpOptions);
       }
 
       if (!_successStatusCodeList.contains(response.statusCode)) {

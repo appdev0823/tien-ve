@@ -84,7 +84,9 @@ enum APIRoutes {
 enum DeviceStorageKeys {
   ///Device phone number
   DEVICE_PHONE('phone'),
-  LOGIN_USER('login_user');
+  LOGIN_USER('login_user'),
+  EMAIL_PHONE('email_phone'),
+  PASSWORD('password');
 
   const DeviceStorageKeys(this.value);
   final String value;

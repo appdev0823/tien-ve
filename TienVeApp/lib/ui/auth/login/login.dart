@@ -65,6 +65,7 @@ class LoginWidgetState extends BaseStatefulWidgetState<LoginWidget> {
 
     LoginUserDTO.setToStorage(user);
     LoginUserDTO.setToGlobal(user);
+    LoginUserDTO.saveLoginInfo(emailPhone, password);
 
     Navigator.of(context).push(
       MaterialPageRoute(
