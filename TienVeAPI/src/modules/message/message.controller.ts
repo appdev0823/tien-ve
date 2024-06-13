@@ -32,6 +32,7 @@ export class MessageController extends BaseController {
     @UsePipes(new ValidationPipe(MessageSchemas.createSchema, false, true))
     public async create(@Res() res: Response<APIResponse<MessageDTO | undefined>>, @Body() body: CreateMessageDTO, @Req() req: AuthenticatedRequest) {
         try {
+            this._logger.info(`req.userPayload: ${JSON.stringify(req.userPayload)}`);
             // Khi address của message nằm trong danh sách brand_name của các banks thì mới xử lý tiếp
             // Tránh ghi log các SMS cá nhân của users
             const bank = await this._bankService.getByBrandName(body.address);
