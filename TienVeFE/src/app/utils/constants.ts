@@ -23,7 +23,7 @@ const CONSTANTS = {
     },
     REGISTER_TYPES: {
         EMAIL: 1,
-        PHONE: 2,
+        // PHONE: 2,
     },
     OTP: {
         LENGTH: 6,

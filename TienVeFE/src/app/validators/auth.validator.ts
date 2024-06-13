@@ -19,7 +19,7 @@ export class AuthValidator extends BaseValidator {
         form.controlValidationMessages = {
             email_phone: {
                 required: this.translate$.instant('validation.required', {
-                    item: String(this.translate$.instant('label.email_phone')).toLowerCase(),
+                    item: String(this.translate$.instant('label.email')).toLowerCase(),
                 }) as string,
             },
             password: {

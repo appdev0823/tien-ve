@@ -37,7 +37,7 @@
             *ngIf="mode === 1"
             [formGroup]="registerForm"
             (ngSubmit)="sendOtp()">
-            <div class="row mt-3">
+            <!-- <div class="row mt-3">
                 <div class="col-12 d-flex">
                     <label class="tab-radio me-3">
                         <label
@@ -68,7 +68,7 @@
                         </label>
                     </label>
                 </div>
-            </div>
+            </div> -->
             <div class="row mt-3">
                 <div class="col-12">
                     <app-form-input-wrapper
@@ -81,7 +81,7 @@
                             class="form-control"
                             [placeholder]="('label.input' | translate) + ' ' + ('label.email_address' | translate | lowercase)"
                             [formControl]="registerForm.controls.email_phone" />
-                        <input
+                        <!-- <input
                             *ngIf="registerForm.controls.type.value === CONSTANTS.REGISTER_TYPES.PHONE"
                             appNumericInput
                             id="email_phone"
@@ -89,7 +89,7 @@
                             class="form-control"
                             [shouldFormatNumber]="false"
                             [placeholder]="('label.input' | translate) + ' ' + ('label.phone' | translate | lowercase)"
-                            [formControl]="registerForm.controls.email_phone" />
+                            [formControl]="registerForm.controls.email_phone" /> -->
                     </app-form-input-wrapper>
                 </div>
             </div>

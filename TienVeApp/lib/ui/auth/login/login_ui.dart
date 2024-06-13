@@ -43,11 +43,11 @@ extension LoginWidgetUI on LoginWidgetState {
                           Expanded(
                             child: TextFormField(
                               validator: ((value) {
-                                return (value == null || value.isEmpty) ? tr('validation.required', namedArgs: {'field': tr('label.email_phone').toLowerCase()}) : null;
+                                return (value == null || value.isEmpty) ? tr('validation.required', namedArgs: {'field': tr('label.email').toLowerCase()}) : null;
                               }),
                               onSaved: (value) => setState(() => emailPhone = value!),
                               decoration: InputDecoration(
-                                labelText: tr('label.email_phone'),
+                                labelText: tr('label.email'),
                                 labelStyle: TextStyle(fontSize: AppSizes.FS_CONTENT.sp),
                                 border: OutlineInputBorder(
                                   borderSide: const BorderSide(

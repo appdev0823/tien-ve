@@ -3,6 +3,7 @@
   "label": {
     "welcome_title": "Chào mừng đến với Tiền Về",
     "login": "Đăng nhập",
+    "email": "Email",
     "email_phone": "Email hoặc SĐT",
     "password": "Mật khẩu",
     "listening_to_sms": "Đang lắng nghe SMS",
@@ -31,7 +32,8 @@
     "err_sms_amount_not_positive": "Hệ thống không ghi nhận SMS vì số tiền giao dịch không phải số tiền dương.",
     "err_not_grant_permission": "Ứng dụng cần có đầy đủ quyền để hoạt động bình thường.",
     "err_not_bank_account_sms": "Không tìm thấy tài khoản ngân hàng trong SMS",
-    "err_cant_extract_sms": "Không thể bóc tách thông tin từ SMS"
+    "err_cant_extract_sms": "Không thể bóc tách thông tin từ SMS",
+    "err_setup_message_capture": "Lỗi khi thiết lập lắng nghe SMS"
   },
   "validation": {
     "required": "Vui lòng nhập {field}."
