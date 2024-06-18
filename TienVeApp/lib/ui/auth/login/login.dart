@@ -18,6 +18,7 @@ class LoginWidget extends BaseStatefulWidget {
 class LoginWidgetState extends BaseStatefulWidgetState<LoginWidget> {
   ///This key will be used to identify the state of the form.
   final formKey = GlobalKey<FormState>();
+  bool obscureText = true;
   String emailPhone = '';
   String password = '';
 
@@ -46,6 +47,13 @@ class LoginWidgetState extends BaseStatefulWidgetState<LoginWidget> {
   Widget build(BuildContext context) {
     Helpers.initScreenUtil(context);
     return buildLayout(context);
+  }
+
+  /// Toggle obscureText for password input
+  void toggleObscureText() {
+    setState(() {
+      obscureText = !obscureText;
+    });
   }
 
   ///On login form submitted

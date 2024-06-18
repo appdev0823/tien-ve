@@ -70,25 +70,36 @@ extension LoginWidgetUI on LoginWidgetState {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
-                            child: TextFormField(
-                              obscureText: true,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              validator: ((value) {
-                                return (value == null || value.isEmpty) ? tr('validation.required', namedArgs: {'field': tr('label.password').toLowerCase()}) : null;
-                              }),
-                              onSaved: (value) => setState(() => password = value!),
-                              decoration: InputDecoration(
-                                labelText: tr('label.password'),
-                                labelStyle: TextStyle(fontSize: AppSizes.FS_CONTENT.sp),
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: AppColors.INPUT_BORDER_COLOR,
-                                    width: 1.0,
+                            child: Stack(
+                              alignment: Alignment.centerRight,
+                              children: [
+                                TextFormField(
+                                  obscureText: obscureText,
+                                  enableSuggestions: false,
+                                  autocorrect: false,
+                                  validator: ((value) {
+                                    return (value == null || value.isEmpty) ? tr('validation.required', namedArgs: {'field': tr('label.password').toLowerCase()}) : null;
+                                  }),
+                                  onSaved: (value) => setState(() => password = value!),
+                                  decoration: InputDecoration(
+                                    labelText: tr('label.password'),
+                                    labelStyle: TextStyle(fontSize: AppSizes.FS_CONTENT.sp),
+                                    border: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                        color: AppColors.INPUT_BORDER_COLOR,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(AppSizes.BORDER_RADIUS),
+                                    ),
                                   ),
-                                  borderRadius: BorderRadius.circular(AppSizes.BORDER_RADIUS),
                                 ),
-                              ),
+                                IconButton(
+                                  icon: Icon(
+                                    obscureText ? Icons.visibility_off : Icons.visibility,
+                                  ),
+                                  onPressed: toggleObscureText,
+                                ),
+                              ],
                             ),
                           ),
                         ],
