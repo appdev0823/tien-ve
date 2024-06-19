@@ -6,13 +6,14 @@ import 'package:tien_ve/dtos/global_entity.dart';
 import 'package:tien_ve/ui/message/message_capture/message_capture.dart';
 import 'package:tien_ve/utils/constants.dart';
 import 'package:tien_ve/utils/extensions.dart';
+import 'package:tien_ve/utils/helpers.dart';
 import 'package:tien_ve/utils/styles.dart';
 
 extension MessageCaptureWidgetUI on MessageCaptureWidgetState {
   Widget buildLayout(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr('app_name'), textAlign: TextAlign.center),
+        title: Text(Helpers.isString(GlobalEntity.loginUser?.name) ? (GlobalEntity.loginUser?.name ?? "") : tr('app_name'), textAlign: TextAlign.center),
         backgroundColor: AppColors.MAIN,
         leading: IconButton(
           icon: const Icon(Icons.logout),
@@ -108,7 +109,8 @@ class MessageInfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ConstrainedBox( // Make text wrapped
+        ConstrainedBox(
+          // Make text wrapped
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - AppSizes.SPACING_SMALL.sp * 2),
           child: RichText(
             textAlign: TextAlign.left,
