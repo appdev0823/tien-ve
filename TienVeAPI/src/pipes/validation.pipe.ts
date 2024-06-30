@@ -45,6 +45,7 @@ export class ValidationPipe<T extends { [key: string]: any }> implements PipeTra
             const body = typeof reqBody === 'object' && !Array.isArray(reqBody) && reqBody != null ? reqBody : {};
             const errors = this._validate(body);
             if (errors && !Helpers.isEmptyObject(errors)) {
+                this._logger.warn(JSON.stringify(errors));
                 throw new ValidationException(errors);
             }
         }
