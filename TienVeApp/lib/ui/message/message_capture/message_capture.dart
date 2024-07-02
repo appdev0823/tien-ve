@@ -163,11 +163,11 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
 
   /// Initialize local notification plugin
   Future<void> initLocalNotificationPlugin() async {
-    const androidSettings = AndroidInitializationSettings('app_icon');
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
 
     const initializationSettings = InitializationSettings(android: androidSettings);
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (res) => print("=========== res.toString(): ${res.toString()}"));
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings, onDidReceiveNotificationResponse: (res) => print("=========== onDidReceiveNotificationResponse res: ${res.toString()}"));
 
     // await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
   }
@@ -204,6 +204,7 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
   /// Show "Listening to SMS" local notification
   void showListeningNotification() async {
     try {
+      print("showListeningNotification");
       AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
         'tien_ve',
         tr('app_name'),
@@ -213,11 +214,12 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
         ticker: 'ticker',
         ongoing: true,
         autoCancel: false,
+        icon: '@mipmap/ic_launcher',
       );
       NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
       await flutterLocalNotificationsPlugin.show(0, tr('app_name'), tr('label.listening_to_sms'), notificationDetails);
     } catch (e) {
-      print(e);
+      print("showListeningNotification EXCEPTION: ${e}");
     }
   }
 
