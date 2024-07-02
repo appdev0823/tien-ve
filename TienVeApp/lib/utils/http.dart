@@ -83,9 +83,7 @@ class BaseHTTPClient {
       }
 
       // Reauthenticate and retry if allowed and not reauthenticate before
-      print("=========== API: POST /${route.value}");
-      print("=========== _reauthenticated: ${_reauthenticated}");
-      print("=========== response.statusCode: ${response.statusCode}");
+      print("=========== API: POST /${route.value}, _reauthenticated = $_reauthenticated, response.statusCode = ${response.statusCode}");
       if (response.statusCode == HttpStatuses.UNAUTHORIZED.value && opts.canReauthenticate) {
         if (_reauthenticated) {
           return APIResponse.error(message: resMap["message"]);
@@ -155,9 +153,7 @@ class BaseHTTPClient {
       }
 
       // Reauthenticate and retry if allowed and not reauthenticate before
-      print("=========== API: GET /${route.value}");
-      print("=========== _reauthenticated: ${_reauthenticated}");
-      print("=========== response.statusCode: ${response.statusCode}");
+      print("=========== API: GET /${route.value}, _reauthenticated = $_reauthenticated, response.statusCode = ${response.statusCode}");
       if (response.statusCode == HttpStatuses.UNAUTHORIZED.value && opts.canReauthenticate) {
         if (_reauthenticated) {
           return APIResponse.error(message: resMap["message"]);
