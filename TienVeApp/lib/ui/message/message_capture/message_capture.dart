@@ -114,6 +114,7 @@ class MessageCaptureWidgetState extends State<MessageCaptureWidget> with Widgets
   void _handleIncomingSMS(SmsMessage message) async {
     final address = Helpers.isString(message.address) ? message.address.toString() : '';
     final body = Helpers.isString(message.body) ? message.body.toString() : '';
+    print("_handleIncomingSMS address = $address, body = $body");
     int sendTimestamp = 0;
     DateTime? dateSent = message.dateSent;
     if (dateSent != null) {
